@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Box, Flex, Button, useTheme, Image, Input } from '@chakra-ui/react';
+import { Box, Flex, Button, useTheme, Image, Input, Textarea } from '@chakra-ui/react';
 import { useToast } from '@/hooks/useToast';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useMutation } from '@tanstack/react-query';
@@ -16,13 +16,13 @@ import { TrainingModeEnum } from '@/constants/plugin';
 import FileSelect, { type FileItemType } from './FileSelect';
 import { useRouter } from 'next/router';
 import { putMarkFilesUsed } from '@/api/core/dataset/file';
-import { Prompt_AgentQA } from '@/prompts/core/agent';
+import { Prompt_AgentQA, Prompt_AgentCustom } from '@/prompts/core/agent';
 import { replaceVariable } from '@/utils/common/tools/text';
 import { chunksUpload } from '@/utils/web/core/dataset';
 
 const fileExtension = '.txt, .doc, .docx, .pdf, .md';
 
-const QAImport = ({ kbId }: { kbId: string }) => {
+const QAImport = ({ kbId, custom }: { kbId: string; custom: boolean }) => {
   const unitPrice = qaModel.price || 3;
   const chunkLen = qaModel.maxToken * 0.45;
   const theme = useTheme();
@@ -134,6 +134,8 @@ const QAImport = ({ kbId }: { kbId: string }) => {
     maxW: '400px'
   };
 
+  console.log(previewQAPrompt, 'previewQAPrompt');
+
   return (
     <Box display={['block', 'flex']} h={['auto', '100%']} overflow={'overlay'}>
       <Flex
@@ -198,23 +200,39 @@ const QAImport = ({ kbId }: { kbId: string }) => {
             </Box>
             {/* prompt */}
             <Box py={5}>
-              <Box mb={2}>
-                QA 拆分引导词{' '}
-                <MyTooltip label={previewQAPrompt} forceShow>
-                  <InfoOutlineIcon ml={1} />
-                </MyTooltip>
-              </Box>
-              <Flex alignItems={'center'} fontSize={'sm'}>
-                <Box mr={2}>文件主题</Box>
-                <Input
-                  fontSize={'sm'}
-                  flex={1}
-                  placeholder={Prompt_AgentQA.defaultTheme}
-                  bg={'myWhite.500'}
-                  defaultValue={prompt}
-                  onChange={(e) => setPrompt(e.target.value || '')}
-                />
-              </Flex>
+              {!custom && (
+                <Box mb={2}>
+                  QA 拆分引导词{' '}
+                  <MyTooltip label={previewQAPrompt} forceShow>
+                    <InfoOutlineIcon ml={1} />
+                  </MyTooltip>
+                </Box>
+              )}
+              {custom ? (
+                <Flex alignItems={'top'} fontSize={'sm'}>
+                  <Box mr={2}>提示词</Box>
+                  <Textarea
+                    fontSize={'sm'}
+                    flex={1}
+                    bg={'myWhite.500'}
+                    placeholder={Prompt_AgentCustom.defaultTheme}
+                    defaultValue={Prompt_AgentCustom.prompt}
+                    onChange={(e) => setPrompt(e.target.value || '')}
+                  />
+                </Flex>
+              ) : (
+                <Flex alignItems={'center'} fontSize={'sm'}>
+                  <Box mr={2}>文件主题</Box>
+                  <Input
+                    fontSize={'sm'}
+                    flex={1}
+                    placeholder={Prompt_AgentQA.defaultTheme}
+                    bg={'myWhite.500'}
+                    defaultValue={prompt}
+                    onChange={(e) => setPrompt(e.target.value || '')}
+                  />
+                </Flex>
+              )}
             </Box>
             {/* price */}
             <Flex py={5} alignItems={'center'}>

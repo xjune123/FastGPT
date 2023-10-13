@@ -15,6 +15,23 @@ A2:
   defaultTheme: '它们可能包含多个主题内容'
 };
 
+export const Prompt_AgentCustom = {
+  prompt: `我会给你一段文本，学习它们，并整理学习成果，要求为：
+1. 提出最多 25 个问题。
+2. 给出每个问题的答案。
+3. 答案要详细完整，答案可以包含普通文字、链接、代码、表格、公示、媒体链接等 markdown 元素。
+4. 按格式返回多个问题和答案:
+
+Q1: 问题。
+A1: 答案。
+Q2:
+A2:
+……
+
+我的文本："""{{text}}"""`,
+  defaultTheme: '它们可能包含多个主题内容'
+};
+
 export const Prompt_ExtractJson = `你可以从 "对话记录" 中提取指定信息，并返回一个 JSON 对象，JSON 对象要求：
 1. JSON 对象仅包含字段说明中的值。
 2. 字段说明中的 required 决定 JSON 对象是否必须存在该字段。
