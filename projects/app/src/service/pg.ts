@@ -3,6 +3,7 @@ import type { QueryResultRow } from 'pg';
 import { PgDatasetTableName } from '@/constants/plugin';
 import { addLog } from './utils/tools';
 import type { DatasetDataItemType } from '@/types/core/dataset/data';
+import { DatasetSpecialIdEnum, datasetSpecialIdMap } from '@fastgpt/core/dataset/constant';
 
 export const connectPg = async (): Promise<Pool> => {
   if (global.pgClient) {
@@ -179,13 +180,37 @@ export const insertData2Dataset = ({
     values: data.map((item) => [
       { key: 'user_id', value: userId },
       { key: 'kb_id', value: kbId },
-      { key: 'source', value: item.source?.slice(0, 60)?.trim() || '' },
-      { key: 'file_id', value: item.file_id || '' },
+      {
+        key: 'source',
+        value:
+          item.source?.slice(0, 200)?.trim() ||
+          datasetSpecialIdMap[DatasetSpecialIdEnum.manual].sourceName
+      },
+      { key: 'file_id', value: item.file_id?.slice(0, 200)?.trim() || DatasetSpecialIdEnum.manual },
       { key: 'q', value: item.q.replace(/'/g, '"') },
       { key: 'a', value: item.a.replace(/'/g, '"') },
       { key: 'vector', value: `[${item.vector}]` }
     ])
   });
+};
+
+/**
+ * Update data file_id
+ */
+export const updateDataFileId = async ({
+  oldFileId,
+  userId,
+  newFileId = DatasetSpecialIdEnum.manual
+}: {
+  oldFileId: string;
+  userId: string;
+  newFileId?: string;
+}) => {
+  await PgClient.update(PgDatasetTableName, {
+    where: [['file_id', oldFileId], 'AND', ['user_id', userId]],
+    values: [{ key: 'file_id', value: newFileId }]
+  });
+  return newFileId;
 };
 
 export async function initPg() {
@@ -198,14 +223,12 @@ export async function initPg() {
           vector VECTOR(1536) NOT NULL,
           user_id VARCHAR(50) NOT NULL,
           kb_id VARCHAR(50),
-          source VARCHAR(100),
-          file_id VARCHAR(100),
+          source VARCHAR(256),
+          file_id VARCHAR(256),
           q TEXT NOT NULL,
           a TEXT
       );
-      CREATE INDEX IF NOT EXISTS modelData_userId_index ON ${PgDatasetTableName} USING HASH (user_id);
-      CREATE INDEX IF NOT EXISTS modelData_kbId_index ON ${PgDatasetTableName} USING HASH (kb_id);
-      CREATE INDEX IF NOT EXISTS idx_model_data_md5_q_a_user_id_kb_id ON ${PgDatasetTableName} (md5(q), md5(a), user_id, kb_id);
+      CREATE INDEX IF NOT EXISTS vector_index ON ${PgDatasetTableName} USING hnsw (vector vector_ip_ops) WITH (m = 16, ef_construction = 64);
     `);
     console.log('init pg successful');
   } catch (error) {

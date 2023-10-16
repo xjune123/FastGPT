@@ -14,11 +14,11 @@ import Avatar from '@/components/Avatar';
 import MyTooltip from '@/components/MyTooltip';
 import MyModal from '@/components/MyModal';
 import MyIcon from '@/components/Icon';
-import { KbTypeEnum } from '@/constants/dataset';
+import { DatasetTypeEnum } from '@fastgpt/core/dataset/constant';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { getDatasets, putDatasetById, getDatasetPaths } from '@/api/core/dataset';
-import { useRequest } from '@/hooks/useRequest';
+import { getDatasets, putDatasetById, getDatasetPaths } from '@/web/core/api/dataset';
+import { useRequest } from '@/web/common/hooks/useRequest';
 
 const MoveModal = ({
   onClose,
@@ -112,7 +112,7 @@ const MoveModal = ({
                   <MyTooltip
                     key={item._id}
                     label={
-                      item.type === KbTypeEnum.dataset
+                      item.type === DatasetTypeEnum.dataset
                         ? t('kb.Select Dataset')
                         : t('kb.Select Folder')
                     }
@@ -142,7 +142,7 @@ const MoveModal = ({
                         </Box>
                       </Flex>
                       <Flex justifyContent={'flex-end'} alignItems={'center'} fontSize={'sm'}>
-                        {item.type === KbTypeEnum.folder ? (
+                        {item.type === DatasetTypeEnum.folder ? (
                           <Box color={'myGray.500'}>{t('Folder')}</Box>
                         ) : (
                           <>

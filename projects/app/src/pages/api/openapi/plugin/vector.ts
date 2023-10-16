@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@/service/response';
-import { authBalanceByUid, authUser } from '@/service/utils/auth';
+import { authBalanceByUid, authUser } from '@fastgpt/support/user/auth';
 import { withNextCors } from '@/service/utils/tools';
-import { getAIChatApi, axiosConfig } from '@fastgpt/core/ai/config';
+import { getAIApi } from '@fastgpt/core/ai/config';
 import { pushGenerateVectorBill } from '@/service/common/bill/push';
+import { connectToDatabase } from '@/service/mongo';
 
 type Props = {
   model: string;
@@ -17,6 +18,7 @@ type Response = {
 
 export default withNextCors(async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
+    await connectToDatabase();
     const { userId } = await authUser({ req, authToken: true });
     let { input, model } = req.query as Props;
 
@@ -54,29 +56,31 @@ export async function getVector({
   }
 
   // 获取 chatAPI
-  const chatAPI = getAIChatApi();
+  const ai = getAIApi();
 
   // 把输入的内容转成向量
-  const result = await chatAPI
-    .createEmbedding(
+  const result = await ai.embeddings
+    .create(
       {
         model,
         input
       },
       {
-        timeout: 60000,
-        ...axiosConfig()
+        timeout: 60000
       }
     )
     .then(async (res) => {
-      if (!res.data?.data?.[0]?.embedding) {
-        console.log(res.data);
+      if (!res.data) {
+        return Promise.reject('Embedding API 404');
+      }
+      if (!res?.data?.[0]?.embedding) {
+        console.log(res?.data);
         // @ts-ignore
         return Promise.reject(res.data?.err?.message || 'Embedding API Error');
       }
       return {
-        tokenLen: res.data.usage.total_tokens || 0,
-        vectors: await Promise.all(res.data.data.map((item) => unityDimensional(item.embedding)))
+        tokenLen: res.usage.total_tokens || 0,
+        vectors: await Promise.all(res.data.map((item) => unityDimensional(item.embedding)))
       };
     });
 

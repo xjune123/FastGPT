@@ -1,4 +1,4 @@
-import { SystemInputEnum } from '../app';
+import { AppTypeEnum, SystemInputEnum } from '../app';
 import { TaskResponseKeyEnum } from '../chat';
 import {
   FlowModuleTypeEnum,
@@ -9,13 +9,14 @@ import {
 } from './index';
 import type { AppItemType } from '@/types/app';
 import type { FlowModuleTemplateType } from '@/types/core/app/flow';
-import { chatModelList } from '@/store/static';
+import { chatModelList } from '@/web/common/store/static';
 import {
   Input_Template_History,
   Input_Template_TFSwitch,
   Input_Template_UserChatInput
 } from './inputTemplate';
 import { ContextExtractEnum, HttpPropsEnum } from './flowField';
+import { Output_Template_Finish } from './outputTemplate';
 
 export const ChatModelSystemTip =
   '模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。可使用变量，例如 {{language}}';
@@ -130,12 +131,15 @@ export const ChatModule: FlowModuleTemplateType = {
   intro: 'AI 大模型对话',
   showStatus: true,
   inputs: [
+    Input_Template_TFSwitch,
     {
       key: 'model',
-      type: FlowInputItemTypeEnum.custom,
+      type: FlowInputItemTypeEnum.selectChatModel,
       label: '对话模型',
       value: chatModelList[0]?.model,
-      list: chatModelList.map((item) => ({ label: item.name, value: item.model }))
+      list: chatModelList.map((item) => ({ label: item.name, value: item.model })),
+      required: true,
+      valueCheck: (val) => !!val
     },
     {
       key: 'temperature',
@@ -152,7 +156,7 @@ export const ChatModule: FlowModuleTemplateType = {
     },
     {
       key: 'maxToken',
-      type: FlowInputItemTypeEnum.custom,
+      type: FlowInputItemTypeEnum.maxToken,
       label: '回复上限',
       value: chatModelList[0] ? chatModelList[0].contextMaxToken / 2 : 2000,
       min: 100,
@@ -190,10 +194,9 @@ export const ChatModule: FlowModuleTemplateType = {
       valueType: FlowValueTypeEnum.string,
       value: ''
     },
-    Input_Template_TFSwitch,
     {
       key: 'quoteQA',
-      type: FlowInputItemTypeEnum.custom,
+      type: FlowInputItemTypeEnum.quoteList,
       label: '引用内容',
       description: "对象数组格式，结构：\n [{q:'问题',a:'回答'}]",
       valueType: FlowValueTypeEnum.kbQuote,
@@ -219,14 +222,7 @@ export const ChatModule: FlowModuleTemplateType = {
       type: FlowOutputItemTypeEnum.source,
       targets: []
     },
-    {
-      key: 'finish',
-      label: '回复结束',
-      description: 'AI 回复完成后触发',
-      valueType: FlowValueTypeEnum.boolean,
-      type: FlowOutputItemTypeEnum.source,
-      targets: []
-    }
+    Output_Template_Finish
   ]
 };
 
@@ -237,12 +233,15 @@ export const KBSearchModule: FlowModuleTemplateType = {
   intro: '去知识库中搜索对应的答案。可作为 AI 对话引用参考。',
   showStatus: true,
   inputs: [
+    Input_Template_TFSwitch,
     {
       key: 'kbList',
-      type: FlowInputItemTypeEnum.custom,
+      type: FlowInputItemTypeEnum.selectDataset,
       label: '关联的知识库',
       value: [],
-      list: []
+      list: [],
+      required: true,
+      valueCheck: (val) => !!val.length
     },
     {
       key: 'similarity',
@@ -271,7 +270,6 @@ export const KBSearchModule: FlowModuleTemplateType = {
         { label: '20', value: 20 }
       ]
     },
-    Input_Template_TFSwitch,
     Input_Template_UserChatInput
   ],
   outputs: [
@@ -297,7 +295,8 @@ export const KBSearchModule: FlowModuleTemplateType = {
       type: FlowOutputItemTypeEnum.source,
       valueType: FlowValueTypeEnum.kbQuote,
       targets: []
-    }
+    },
+    Output_Template_Finish
   ]
 };
 
@@ -312,23 +311,14 @@ export const AnswerModule: FlowModuleTemplateType = {
     {
       key: SpecialInputKeyEnum.answerText,
       type: FlowInputItemTypeEnum.textarea,
-      valueType: FlowValueTypeEnum.string,
+      valueType: FlowValueTypeEnum.any,
       value: '',
       label: '回复的内容',
       description:
-        '可以使用 \\n 来实现连续换行。\n\n可以通过外部模块输入实现回复，外部模块输入时会覆盖当前填写的内容'
+        '可以使用 \\n 来实现连续换行。\n\n可以通过外部模块输入实现回复，外部模块输入时会覆盖当前填写的内容。\n\n如传入非字符串类型数据将会自动转成字符串'
     }
   ],
-  outputs: [
-    {
-      key: 'finish',
-      label: '回复结束',
-      description: '回复完成后触发',
-      valueType: FlowValueTypeEnum.boolean,
-      type: FlowOutputItemTypeEnum.source,
-      targets: []
-    }
-  ]
+  outputs: [Output_Template_Finish]
 };
 export const ClassifyQuestionModule: FlowModuleTemplateType = {
   flowType: FlowModuleTypeEnum.classifyQuestion,
@@ -461,6 +451,7 @@ export const HttpModule: FlowModuleTemplateType = {
   description: '可以发出一个 HTTP POST 请求，实现更为复杂的操作（联网搜索、数据库查询等）',
   showStatus: true,
   inputs: [
+    Input_Template_TFSwitch,
     {
       key: HttpPropsEnum.url,
       value: '',
@@ -468,19 +459,11 @@ export const HttpModule: FlowModuleTemplateType = {
       label: '请求地址',
       description: '请求目标地址',
       placeholder: 'https://api.fastgpt.run/getInventory',
-      required: true
-    },
-    Input_Template_TFSwitch
-  ],
-  outputs: [
-    {
-      key: HttpPropsEnum.finish,
-      label: '请求结束',
-      valueType: FlowValueTypeEnum.boolean,
-      type: FlowOutputItemTypeEnum.source,
-      targets: []
+      required: true,
+      valueCheck: (val) => !!val
     }
-  ]
+  ],
+  outputs: [Output_Template_Finish]
 };
 export const EmptyModule: FlowModuleTemplateType = {
   flowType: FlowModuleTypeEnum.empty,
@@ -527,13 +510,7 @@ export const AppModule: FlowModuleTemplateType = {
       type: FlowOutputItemTypeEnum.source,
       targets: []
     },
-    {
-      key: 'finish',
-      label: '请求结束',
-      valueType: FlowValueTypeEnum.boolean,
-      type: FlowOutputItemTypeEnum.source,
-      targets: []
-    }
+    Output_Template_Finish
   ]
 };
 
@@ -575,12 +552,17 @@ export const ModuleTemplatesFlat = [
 ];
 
 // template
-export const appTemplates: (AppItemType & { avatar: string; intro: string })[] = [
+export const appTemplates: (AppItemType & {
+  avatar: string;
+  intro: string;
+  type: `${AppTypeEnum}`;
+})[] = [
   {
     id: 'simpleChat',
     avatar: '/imgs/module/AI.png',
     name: '简单的对话',
     intro: '一个极其简单的 AI 对话应用',
+    type: AppTypeEnum.basic,
     modules: [
       {
         moduleId: 'userGuide',
@@ -797,6 +779,7 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
     avatar: '/imgs/module/db.png',
     name: '知识库 + 对话引导',
     intro: '每次提问时进行一次知识库搜索，将搜索结果注入 LLM 模型进行参考回答',
+    type: AppTypeEnum.basic,
     modules: [
       {
         moduleId: 'userGuide',
@@ -811,7 +794,7 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
             key: 'welcomeText',
             type: 'input',
             label: '开场白',
-            value: '你好，我是 laf 助手，有什么可以帮助你的么？',
+            value: '你好，我是知识库助手，请不要忘记选择知识库噢~',
             connected: true
           }
         ],
@@ -1162,6 +1145,7 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
     avatar: '/imgs/module/userGuide.png',
     name: '对话引导 + 变量',
     intro: '可以在对话开始发送一段提示，或者让用户填写一些内容，作为本次对话的变量',
+    type: AppTypeEnum.basic,
     modules: [
       {
         moduleId: 'userGuide',
@@ -1174,27 +1158,15 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
         inputs: [
           {
             key: 'welcomeText',
-            type: 'input',
+            type: 'hidden',
             label: '开场白',
             value: '你好，我可以为你翻译各种语言，请告诉我你需要翻译成什么语言？',
             connected: true
-          }
-        ],
-        outputs: []
-      },
-      {
-        moduleId: 'variable',
-        name: '全局变量',
-        flowType: 'variable',
-        position: {
-          x: 444.0369195277651,
-          y: 1008.5185781784537
-        },
-        inputs: [
+          },
           {
             key: 'variables',
-            type: 'systemInput',
-            label: '变量输入',
+            type: 'hidden',
+            label: '对话框变量',
             value: [
               {
                 id: '35c640eb-cf22-431f-bb57-3fc21643880e',
@@ -1226,6 +1198,13 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
                 ]
               }
             ],
+            connected: true
+          },
+          {
+            key: 'questionGuide',
+            type: 'switch',
+            label: '问题引导',
+            value: false,
             connected: true
           }
         ],
@@ -1275,7 +1254,7 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
             key: 'maxContext',
             type: 'numberInput',
             label: '最长记录数',
-            value: 10,
+            value: 2,
             min: 0,
             max: 50,
             connected: true
@@ -1317,7 +1296,6 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
             type: 'custom',
             label: '对话模型',
             value: 'gpt-3.5-turbo-16k',
-            list: [],
             connected: true
           },
           {
@@ -1346,7 +1324,7 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
             label: '回复上限',
             value: 8000,
             min: 100,
-            max: 16000,
+            max: 4000,
             step: 50,
             markList: [
               {
@@ -1354,8 +1332,8 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
                 value: 100
               },
               {
-                label: '16000',
-                value: 16000
+                label: '4000',
+                value: 4000
               }
             ],
             connected: true
@@ -1364,11 +1342,28 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
             key: 'systemPrompt',
             type: 'textarea',
             label: '系统提示词',
+            max: 300,
             valueType: 'string',
             description:
               '模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。可使用变量，例如 {{language}}',
             placeholder:
               '模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。可使用变量，例如 {{language}}',
+            value: '请直接将我的问题翻译成{{language}}，不需要回答问题。',
+            connected: true
+          },
+          {
+            key: 'quoteTemplate',
+            type: 'hidden',
+            label: '引用内容模板',
+            valueType: 'string',
+            value: '',
+            connected: true
+          },
+          {
+            key: 'quotePrompt',
+            type: 'hidden',
+            label: '引用内容提示词',
+            valueType: 'string',
             value: '',
             connected: true
           },
@@ -1381,8 +1376,9 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
           },
           {
             key: 'quoteQA',
-            type: 'target',
+            type: 'custom',
             label: '引用内容',
+            description: "对象数组格式，结构：\n [{q:'问题',a:'回答'}]",
             valueType: 'kb_quote',
             connected: false
           },
@@ -1406,8 +1402,9 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
           {
             key: 'answerText',
             label: '模型回复',
-            description: '直接响应，无需配置',
-            type: 'hidden',
+            description: '将在 stream 回复完毕后触发',
+            valueType: 'string',
+            type: 'source',
             targets: []
           },
           {
@@ -1415,6 +1412,14 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
             label: '回复结束',
             description: 'AI 回复完成后触发',
             valueType: 'boolean',
+            type: 'source',
+            targets: []
+          },
+          {
+            key: 'history',
+            label: '新的上下文',
+            description: '将本次回复内容拼接上历史记录，作为新的上下文返回',
+            valueType: 'chat_history',
             type: 'source',
             targets: []
           }
@@ -1427,6 +1432,7 @@ export const appTemplates: (AppItemType & { avatar: string; intro: string })[] =
     avatar: '/imgs/module/cq.png',
     name: '问题分类 + 知识库',
     intro: '先对用户的问题进行分类，再根据不同类型问题，执行不同的操作',
+    type: AppTypeEnum.advanced,
     modules: [
       {
         moduleId: '7z5g5h',

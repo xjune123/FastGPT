@@ -2,23 +2,28 @@ import type { BoxProps } from '@chakra-ui/react';
 
 export enum FlowInputItemTypeEnum {
   systemInput = 'systemInput', // history, userChatInput, variableInput
-  input = 'input',
+  input = 'input', // one line input
   textarea = 'textarea',
   numberInput = 'numberInput',
   select = 'select',
   slider = 'slider',
   custom = 'custom',
-  target = 'target',
-  none = 'none',
+  target = 'target', // data input
   switch = 'switch',
-  hidden = 'hidden',
-  selectApp = 'selectApp'
+  chatInput = 'chatInput',
+  selectApp = 'selectApp',
+  // chat special input
+  quoteList = 'quoteList',
+  maxToken = 'maxToken',
+  selectChatModel = 'selectChatModel',
+  // dataset special input
+  selectDataset = 'selectDataset',
+  hidden = 'hidden'
 }
 
 export enum FlowOutputItemTypeEnum {
   answer = 'answer',
   source = 'source',
-  none = 'none',
   hidden = 'hidden'
 }
 

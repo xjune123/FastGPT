@@ -1,5 +1,5 @@
 import { ChatCompletionRequestMessage } from '../type';
-import { getAIChatApi } from '../config';
+import { getAIApi } from '../config';
 
 export const Prompt_QuestionGuide = `我不太清楚问你什么问题，请帮我生成 3 个问题，引导我继续提问。问题的长度应小于20个字符，按 JSON 格式返回: ["问题1", "问题2", "问题3"]`;
 
@@ -10,8 +10,8 @@ export async function createQuestionGuide({
   messages: ChatCompletionRequestMessage[];
   model: string;
 }) {
-  const chatAPI = getAIChatApi();
-  const { data } = await chatAPI.createChatCompletion({
+  const ai = getAIApi(undefined, 48000);
+  const data = await ai.chat.completions.create({
     model: model,
     temperature: 0,
     max_tokens: 200,
@@ -25,7 +25,7 @@ export async function createQuestionGuide({
     stream: false
   });
 
-  const answer = data.choices?.[0].message?.content || '';
+  const answer = data.choices?.[0]?.message?.content || '';
   const totalTokens = data.usage?.total_tokens || 0;
 
   const start = answer.indexOf('[');

@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { serviceSideProps } from '@/utils/web/i18n';
-import { useGlobalStore } from '@/store/global';
-import { addLog } from '@/service/utils/tools';
-import { getErrText } from '@/utils/tools';
+import { serviceSideProps } from '@/web/common/utils/i18n';
+import { useGlobalStore } from '@/web/common/store/global';
 
 function Error() {
   const router = useRouter();
@@ -35,8 +33,6 @@ function Error() {
 
 export async function getServerSideProps(context: any) {
   console.log('[render error]: ', context);
-
-  addLog.error(getErrText(context?.res));
 
   return {
     props: { ...(await serviceSideProps(context)) }

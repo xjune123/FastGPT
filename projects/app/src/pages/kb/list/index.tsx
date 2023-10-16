@@ -10,25 +10,29 @@ import {
   Image
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useDatasetStore } from '@/store/dataset';
+import { useDatasetStore } from '@/web/core/store/dataset';
 import PageContainer from '@/components/PageContainer';
-import { useConfirm } from '@/hooks/useConfirm';
+import { useConfirm } from '@/web/common/hooks/useConfirm';
 import { AddIcon } from '@chakra-ui/icons';
 import { useQuery } from '@tanstack/react-query';
-import { delDatasetById, getDatasetPaths, putDatasetById } from '@/api/core/dataset';
-import { exportDatasetData } from '@/api/core/dataset/data';
+import {
+  delDatasetById,
+  getDatasetPaths,
+  putDatasetById,
+  exportDatasetData
+} from '@/web/core/api/dataset';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/components/Avatar';
 import MyIcon from '@/components/Icon';
-import { serviceSideProps } from '@/utils/web/i18n';
+import { serviceSideProps } from '@/web/common/utils/i18n';
 import dynamic from 'next/dynamic';
-import { FolderAvatarSrc, KbTypeEnum } from '@/constants/dataset';
+import { FolderAvatarSrc, DatasetTypeEnum } from '@fastgpt/core/dataset/constant';
 import Tag from '@/components/Tag';
 import MyMenu from '@/components/MyMenu';
-import { useRequest } from '@/hooks/useRequest';
-import { useGlobalStore } from '@/store/global';
-import { useEditTitle } from '@/hooks/useEditTitle';
-import { feConfigs } from '@/store/static';
+import { useRequest } from '@/web/common/hooks/useRequest';
+import { useGlobalStore } from '@/web/common/store/global';
+import { useEditTitle } from '@/web/common/hooks/useEditTitle';
+import { feConfigs } from '@/web/common/store/static';
 
 const CreateModal = dynamic(() => import('./component/CreateModal'), { ssr: false });
 const EditFolderModal = dynamic(() => import('./component/EditFolderModal'), { ssr: false });
@@ -42,8 +46,8 @@ const Kb = () => {
   const { setLoading } = useGlobalStore();
 
   const DeleteTipsMap = useRef({
-    [KbTypeEnum.folder]: t('kb.deleteFolderTips'),
-    [KbTypeEnum.dataset]: t('kb.deleteDatasetTips')
+    [DatasetTypeEnum.folder]: t('kb.deleteFolderTips'),
+    [DatasetTypeEnum.dataset]: t('kb.deleteDatasetTips')
   });
 
   const { openConfirm, ConfirmModal } = useConfirm({
@@ -220,7 +224,7 @@ const Kb = () => {
             border={theme.borders.md}
             boxShadow={'none'}
             position={'relative'}
-            data-drag-id={kb.type === KbTypeEnum.folder ? kb._id : undefined}
+            data-drag-id={kb.type === DatasetTypeEnum.folder ? kb._id : undefined}
             borderColor={dragTargetId === kb._id ? 'myBlue.600' : ''}
             draggable
             onDragStart={(e) => {
@@ -230,7 +234,7 @@ const Kb = () => {
               e.preventDefault();
               const targetId = e.currentTarget.getAttribute('data-drag-id');
               if (!targetId) return;
-              KbTypeEnum.folder && setDragTargetId(targetId);
+              DatasetTypeEnum.folder && setDragTargetId(targetId);
             }}
             onDragLeave={(e) => {
               e.preventDefault();
@@ -257,14 +261,14 @@ const Kb = () => {
               }
             }}
             onClick={() => {
-              if (kb.type === KbTypeEnum.folder) {
+              if (kb.type === DatasetTypeEnum.folder) {
                 router.push({
                   pathname: '/kb/list',
                   query: {
                     parentId: kb._id
                   }
                 });
-              } else if (kb.type === KbTypeEnum.dataset) {
+              } else if (kb.type === DatasetTypeEnum.dataset) {
                 router.push({
                   pathname: '/kb/detail',
                   query: {
@@ -373,7 +377,7 @@ const Kb = () => {
               </Flex>
             </Box>
             <Flex justifyContent={'flex-end'} alignItems={'center'} fontSize={'sm'}>
-              {kb.type === KbTypeEnum.folder ? (
+              {kb.type === DatasetTypeEnum.folder ? (
                 <Box color={'myGray.500'}>{t('Folder')}</Box>
               ) : (
                 <>
