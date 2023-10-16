@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ChatHistoryItemResType, ChatItemType, QuoteItemType } from '@/types/chat';
 import { Flex, BoxProps, useDisclosure } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { useGlobalStore } from '@/store/global';
+import { useGlobalStore } from '@/web/common/store/global';
 import dynamic from 'next/dynamic';
 import Tag from '../Tag';
 import MyTooltip from '../MyTooltip';
@@ -36,7 +36,8 @@ const ResponseTags = ({ responseData = [] }: { responseData?: ChatHistoryItemRes
       quoteList: responseData
         .filter((item) => item.moduleType === FlowModuleTypeEnum.chatNode)
         .map((item) => item.quoteList)
-        .flat(),
+        .flat()
+        .filter((item) => item) as QuoteItemType[],
       historyPreview: chatData?.historyPreview,
       runningTime: +responseData.reduce((sum, item) => sum + (item.runningTime || 0), 0).toFixed(2)
     };

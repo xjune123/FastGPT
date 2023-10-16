@@ -2,19 +2,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@/service/response';
 import { connectToDatabase } from '@/service/mongo';
-import { authUser } from '@/service/utils/auth';
+import { authUser } from '@fastgpt/support/user/auth';
 import { App } from '@/service/models/app';
-import { AppModuleItemType } from '@/types/app';
-
-export type Props = {
-  name: string;
-  avatar?: string;
-  modules: AppModuleItemType[];
-};
+import type { CreateAppParams } from '@/types/app';
+import { AppTypeEnum } from '@/constants/app';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
-    const { name, avatar, modules } = req.body as Props;
+    await connectToDatabase();
+    const {
+      name = 'APP',
+      avatar,
+      type = AppTypeEnum.advanced,
+      modules
+    } = req.body as CreateAppParams;
 
     if (!name || !Array.isArray(modules)) {
       throw new Error('缺少参数');
@@ -22,8 +23,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // 凭证校验
     const { userId } = await authUser({ req, authToken: true });
-
-    await connectToDatabase();
 
     // 上限校验
     const authCount = await App.countDocuments({
@@ -38,7 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       avatar,
       name,
       userId,
-      modules
+      modules,
+      type
     });
 
     jsonRes(res, {

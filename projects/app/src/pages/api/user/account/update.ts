@@ -1,20 +1,19 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@/service/response';
-import { User } from '@/service/models/user';
-import { connectToDatabase } from '@/service/mongo';
-import { authUser } from '@/service/utils/auth';
+import { MongoUser } from '@fastgpt/support/user/schema';
+import { authUser } from '@fastgpt/support/user/auth';
 import { UserUpdateParams } from '@/types/user';
-import { axiosConfig, getAIChatApi, openaiBaseUrl } from '@fastgpt/core/ai/config';
+import { getAIApi, openaiBaseUrl } from '@fastgpt/core/ai/config';
+import { connectToDatabase } from '@/service/mongo';
 
 /* update user info */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
+    await connectToDatabase();
     const { avatar, timezone, openaiAccount } = req.body as UserUpdateParams;
 
     const { userId } = await authUser({ req, authToken: true });
-
-    await connectToDatabase();
 
     // auth key
     if (openaiAccount?.key) {
@@ -22,25 +21,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const baseUrl = openaiAccount?.baseUrl || openaiBaseUrl;
       openaiAccount.baseUrl = baseUrl;
 
-      const chatAPI = getAIChatApi(openaiAccount);
+      const ai = getAIApi(openaiAccount);
 
-      const response = await chatAPI.createChatCompletion(
-        {
-          model: 'gpt-3.5-turbo',
-          max_tokens: 1,
-          messages: [{ role: 'user', content: 'hi' }]
-        },
-        {
-          ...axiosConfig(openaiAccount)
-        }
-      );
-      if (response?.data?.choices?.[0]?.message?.content === undefined) {
-        throw new Error(JSON.stringify(response?.data));
+      const response = await ai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        max_tokens: 1,
+        messages: [{ role: 'user', content: 'hi' }]
+      });
+      if (response?.choices?.[0]?.message?.content === undefined) {
+        throw new Error('Key response is empty');
       }
     }
 
     // 更新对应的记录
-    await User.updateOne(
+    await MongoUser.updateOne(
       {
         _id: userId
       },

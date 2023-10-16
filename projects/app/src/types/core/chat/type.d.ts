@@ -1,9 +1,9 @@
 import type { ChatCompletionRequestMessage } from '@fastgpt/core/ai/type';
 import type { NextApiResponse } from 'next';
 import { RunningModuleItemType } from '@/types/app';
-import { UserModelSchema } from '@/types/mongoSchema';
+import type { UserModelSchema } from '@fastgpt/support/user/type.d';
 
-export type MessageItemType = ChatCompletionRequestMessage & { dataId?: string };
+export type MessageItemType = ChatCompletionRequestMessage & { dataId?: string; content: string };
 
 // module dispatch props type
 export type ModuleDispatchProps<T> = {

@@ -1,15 +1,15 @@
 import { TrainingData } from '@/service/mongo';
 import { pushQABill } from '@/service/common/bill/push';
 import { TrainingModeEnum } from '@/constants/plugin';
-import { ERROR_ENUM } from '../errorCode';
+import { ERROR_ENUM } from '@fastgpt/common/constant/errorCode';
 import { sendInform } from '@/pages/api/user/inform/send';
-import { authBalanceByUid } from '../utils/auth';
-import { axiosConfig, getAIChatApi } from '@fastgpt/core/ai/config';
+import { authBalanceByUid } from '@fastgpt/support/user/auth';
+import { getAIApi } from '@fastgpt/core/ai/config';
 import type { ChatCompletionRequestMessage } from '@fastgpt/core/ai/type';
 import { addLog } from '../utils/tools';
 import { splitText2Chunks } from '@/utils/file';
 import { replaceVariable } from '@/utils/common/tools/text';
-import { Prompt_AgentQA } from '@/prompts/core/agent';
+import { Prompt_AgentQA } from '@/global/core/prompt/agent';
 import { pushDataToKb } from '@/pages/api/core/dataset/data/pushData';
 
 const reduceQueue = () => {
@@ -58,8 +58,6 @@ export async function generateQA(): Promise<any> {
 
     const startTime = Date.now();
 
-    const chatAPI = getAIChatApi();
-
     // request LLM to get QA
     const text = data.q;
     const messages: ChatCompletionRequestMessage[] = [
@@ -73,19 +71,13 @@ export async function generateQA(): Promise<any> {
             })
       }
     ];
-
-    const { data: chatResponse } = await chatAPI.createChatCompletion(
-      {
-        model: global.qaModel.model,
-        temperature: 0.01,
-        messages,
-        stream: false
-      },
-      {
-        timeout: 480000,
-        ...axiosConfig()
-      }
-    );
+    const ai = getAIApi(undefined, 480000);
+    const chatResponse = await ai.chat.completions.create({
+      model: global.qaModel.model,
+      temperature: 0.01,
+      messages,
+      stream: false
+    });
     const answer = chatResponse.choices?.[0].message?.content;
     const totalTokens = chatResponse.usage?.total_tokens || 0;
 

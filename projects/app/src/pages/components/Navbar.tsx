@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Flex, Box, type BoxProps, Button, useDisclosure } from '@chakra-ui/react';
-import { feConfigs } from '@/store/static';
+import { feConfigs } from '@/web/common/store/static';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import Avatar from '@/components/Avatar';
 import CommunityModal from '@/components/CommunityModal';
-import { useGlobalStore } from '@/store/global';
+import { useGlobalStore } from '@/web/common/store/global';
 import MyIcon from '@/components/Icon';
 
 const Navbar = () => {
@@ -22,6 +22,16 @@ const Navbar = () => {
   const menuList = [
     ...(feConfigs?.show_contact
       ? [
+          {
+            label: t('home.Commercial'),
+            key: 'community',
+            onClick: () => {
+              window.open(
+                'https://fael3z0zfze.feishu.cn/share/base/form/shrcnRxj3utrzjywsom96Px4sud',
+                '_blank'
+              );
+            }
+          },
           {
             label: t('home.Community'),
             key: 'community',

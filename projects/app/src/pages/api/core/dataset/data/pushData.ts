@@ -1,16 +1,19 @@
+/* push data to training queue */
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@/service/response';
-import { connectToDatabase, TrainingData, KB } from '@/service/mongo';
-import { authUser } from '@/service/utils/auth';
-import { authKb } from '@/service/utils/auth';
+import { connectToDatabase, TrainingData } from '@/service/mongo';
+import { MongoDataset } from '@fastgpt/core/dataset/schema';
+import { authUser } from '@fastgpt/support/user/auth';
+import { authDataset } from '@/service/utils/auth';
 import { withNextCors } from '@/service/utils/tools';
-import { PgDatasetTableName, TrainingModeEnum } from '@/constants/plugin';
+import { TrainingModeEnum } from '@/constants/plugin';
 import { startQueue } from '@/service/utils/tools';
-import { PgClient } from '@/service/pg';
 import { getVectorModel } from '@/service/utils/data';
 import { DatasetDataItemType } from '@/types/core/dataset/data';
 import { countPromptTokens } from '@/utils/common/tiktoken';
-import type { PushDataProps, PushDataResponse } from '@/api/core/dataset/data.d';
+import type { PushDataResponse } from '@/global/core/api/datasetRes.d';
+import type { PushDataProps } from '@/global/core/api/datasetReq.d';
+import { authFileIdValid } from '@/service/dataset/auth';
 
 const modeMap = {
   [TrainingModeEnum.index]: true,
@@ -19,6 +22,7 @@ const modeMap = {
 
 export default withNextCors(async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
+    await connectToDatabase();
     const { kbId, data, mode = TrainingModeEnum.index } = req.body as PushDataProps;
 
     if (!kbId || !Array.isArray(data)) {
@@ -32,8 +36,6 @@ export default withNextCors(async function handler(req: NextApiRequest, res: Nex
     if (data.length > 500) {
       throw new Error('Data is too long, max 500');
     }
-
-    await connectToDatabase();
 
     // 凭证校验
     const { userId } = await authUser({ req, authToken: true, authApiKey: true });
@@ -61,13 +63,13 @@ export async function pushDataToKb({
   billId
 }: { userId: string } & PushDataProps): Promise<PushDataResponse> {
   const [kb, vectorModel] = await Promise.all([
-    authKb({
+    authDataset({
       userId,
       kbId
     }),
     (async () => {
       if (mode === TrainingModeEnum.index) {
-        const vectorModel = (await KB.findById(kbId, 'vectorModel'))?.vectorModel;
+        const vectorModel = (await MongoDataset.findById(kbId, 'vectorModel'))?.vectorModel;
 
         return getVectorModel(vectorModel || global.vectorModels[0].model);
       }
@@ -80,69 +82,49 @@ export async function pushDataToKb({
     [TrainingModeEnum.qa]: global.qaModel.maxToken * 0.8
   };
 
-  // 过滤重复的 qa 内容
+  // filter repeat or equal content
   const set = new Set();
-  const filterData: DatasetDataItemType[] = [];
+  const filterResult: Record<string, DatasetDataItemType[]> = {
+    success: [],
+    overToken: [],
+    fileIdInvalid: [],
+    error: []
+  };
 
-  data.forEach((item) => {
-    if (!item.q) return;
+  await Promise.all(
+    data.map(async (item) => {
+      if (!item.q) {
+        filterResult.error.push(item);
+        return;
+      }
 
-    const text = item.q + item.a;
+      const text = item.q + item.a;
 
-    // count q token
-    const token = countPromptTokens(item.q, 'system');
+      // count q token
+      const token = countPromptTokens(item.q, 'system');
 
-    if (token > modeMaxToken[mode]) {
-      return;
-    }
+      if (token > modeMaxToken[mode]) {
+        filterResult.overToken.push(item);
+        return;
+      }
 
-    if (!set.has(text)) {
-      filterData.push(item);
-      set.add(text);
-    }
-  });
+      try {
+        await authFileIdValid(item.file_id);
+      } catch (error) {
+        filterResult.fileIdInvalid.push(item);
+        return;
+      }
 
-  // 数据库去重
-  const insertData = (
-    await Promise.allSettled(
-      filterData.map(async (data) => {
-        let { q, a } = data;
-        if (mode !== TrainingModeEnum.index) {
-          return Promise.resolve(data);
-        }
-
-        if (!q) {
-          return Promise.reject('q为空');
-        }
-
-        q = q.replace(/\\n/g, '\n').trim().replace(/'/g, '"');
-        a = a.replace(/\\n/g, '\n').trim().replace(/'/g, '"');
-
-        // Exactly the same data, not push
-        try {
-          const { rows } = await PgClient.query(`
-            SELECT COUNT(*) > 0 AS exists
-            FROM  ${PgDatasetTableName} 
-            WHERE md5(q)=md5('${q}') AND md5(a)=md5('${a}') AND user_id='${userId}' AND kb_id='${kbId}'
-          `);
-          const exists = rows[0]?.exists || false;
-
-          if (exists) {
-            return Promise.reject('已经存在');
-          }
-        } catch (error) {
-          console.log(error);
-        }
-        return Promise.resolve(data);
-      })
-    )
-  )
-    .filter((item) => item.status === 'fulfilled')
-    .map<DatasetDataItemType>((item: any) => item.value);
+      if (!set.has(text)) {
+        filterResult.success.push(item);
+        set.add(text);
+      }
+    })
+  );
 
   // 插入记录
   const insertRes = await TrainingData.insertMany(
-    insertData.map((item) => ({
+    filterResult.success.map((item) => ({
       ...item,
       userId,
       kbId,
@@ -154,9 +136,11 @@ export async function pushDataToKb({
   );
 
   insertRes.length > 0 && startQueue();
+  delete filterResult.success;
 
   return {
-    insertLen: insertRes.length
+    insertLen: insertRes.length,
+    ...filterResult
   };
 }
 

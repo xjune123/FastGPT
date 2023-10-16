@@ -127,8 +127,11 @@
     "Output": "输出",
     "Password inconsistency": "两次密码不一致",
     "Rename": "重命名",
+    "Rename Failed": "重命名失败",
+    "Rename Success": "重命名成功",
     "Search": "搜索",
     "Status": "状态",
+    "Unknow": "未知",
     "Update Successful": "更新成功",
     "export": ""
   },
@@ -178,6 +181,7 @@
     "Choice QA Desc": "采用 QA 对的结构构建索引，适应问答、阅读等多种场景",
     "Choice Visual": "可视化工作流",
     "Choice Visual Desc": "可视化模块操作，轻松实现复杂工作流，让你的 AI 不再单一",
+    "Commercial": "商务咨询",
     "Community": "社区",
     "Dateset": "自动数据预处理",
     "Dateset Desc": "提供手动输入、直接分段、LLM 自动处理和 CSV 等多种数据导入途径",
@@ -214,10 +218,14 @@
     "Filename": "文件名",
     "Files": "文件: {{total}}个",
     "Folder Name": "输入文件夹名称",
+    "Insert Data": "插入",
+    "Manual Data": "手动录入",
+    "Manual Input": "手动录入",
+    "Manual Mark": "手动标注",
+    "Mark Data": "标注数据",
     "Move Failed": "移动出现错误~",
     "My Dataset": "我的知识库",
     "No Folder": "没有子目录了~",
-    "Other Data": "其他数据",
     "Select Dataset": "选择该知识库",
     "Select Folder": "进入文件夹",
     "Upload Time": "上传时间",
@@ -235,7 +243,7 @@
   "openapi": {
     "app key tips": "这些 key 已有当前应用标识，具体使用可参考文档",
     "key alias": "key 的别名，仅用于展示",
-    "key tips": "你可以使用 API 秘钥访问一些特定的接口"
+    "key tips": "你可以使用 API 秘钥访问一些特定的接口(无法访问应用，访问应用需使用应用内的API Key)"
   },
   "outlink": {
     "Copy Iframe": "嵌入网页",

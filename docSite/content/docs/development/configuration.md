@@ -23,7 +23,7 @@ weight: 520
   "SystemParams": {
     "vectorMaxProcess": 15, // 向量生成最大进程，结合数据库性能和 key 来设置
     "qaMaxProcess": 15,  // QA 生成最大进程，结合数据库性能和 key 来设置
-    "pgIvfflatProbe": 20  // pg vector 搜索探针。没有设置索引前可忽略，通常 50w 组以上才需要设置。
+    "pgHNSWEfSearch": 40  // pg vector 索引参数，越大精度高但速度慢
   },
   "ChatModels": [
     {
@@ -77,13 +77,21 @@ weight: 520
     "price": 0,
     "prompt": ""
   },
-  "CQModel": { // 问题分类模型
+  "CQModel": { // Classify Question: 问题分类模型
     "model": "gpt-3.5-turbo-16k",
     "functionCall": true,
     "name": "GPT35-16k",
     "maxToken": 16000,
     "price": 0,
     "prompt": ""
+  },
+  "QGModel": { // Question Generation: 生成下一步指引模型
+    "model": "gpt-3.5-turbo",
+    "name": "GPT35-4k",
+    "maxToken": 4000,
+    "price": 0,
+    "prompt": "",
+    "functionCall": false
   }
 }
 ```
