@@ -101,7 +101,8 @@ const iconPaths = {
   moveLight: () => import('./icons/light/move.svg'),
   questionGuide: () => import('./icons/app/questionGuide.svg'),
   loading: () => import('./icons/light/loading.svg'),
-  pause: () => import('./icons/common/pause.svg')
+  pause: () => import('./icons/common/pause.svg'),
+  word: () => import('./icons/word.svg')
 };
 
 export type IconName = keyof typeof iconPaths;

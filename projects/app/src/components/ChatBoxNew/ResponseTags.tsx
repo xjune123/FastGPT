@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ChatHistoryItemResType, ChatItemType, QuoteItemType } from '@/types/chat';
 import { Flex, BoxProps, useDisclosure } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { useGlobalStore } from '@/store/global';
+import { useGlobalStore } from '@/web/common/store/global';
 import dynamic from 'next/dynamic';
 import Tag from '../Tag';
 import MyTooltip from '../MyTooltip';
@@ -36,7 +36,8 @@ const ResponseTags = ({ responseData = [] }: { responseData?: ChatHistoryItemRes
       quoteList: responseData
         .filter((item) => item.moduleType === FlowModuleTypeEnum.chatNode)
         .map((item) => item.quoteList)
-        .flat(),
+        .flat()
+        .filter((item) => item) as QuoteItemType[],
       historyPreview: chatData?.historyPreview,
       runningTime: +responseData.reduce((sum, item) => sum + (item.runningTime || 0), 0).toFixed(2)
     };
@@ -51,7 +52,7 @@ const ResponseTags = ({ responseData = [] }: { responseData?: ChatHistoryItemRes
 
   return responseData.length === 0 ? null : (
     <Flex alignItems={'center'} mt={2} flexWrap={'wrap'}>
-      {/* {quoteList.length > 0 && (
+      {quoteList.length > 0 && (
         <MyTooltip label="查看引用">
           <Tag
             colorSchema="blue"
@@ -83,9 +84,9 @@ const ResponseTags = ({ responseData = [] }: { responseData?: ChatHistoryItemRes
         <Tag colorSchema="blue" {...TagStyles}>
           多组 AI 对话
         </Tag>
-      )} */}
+      )}
 
-      {/* {isPc && runningTime > 0 && (
+      {isPc && runningTime > 0 && (
         <MyTooltip label={'模块运行时间和'}>
           <Tag colorSchema="purple" cursor={'default'} {...TagStyles}>
             {runningTime}s
@@ -96,7 +97,7 @@ const ResponseTags = ({ responseData = [] }: { responseData?: ChatHistoryItemRes
         <Tag colorSchema="gray" cursor={'pointer'} {...TagStyles} onClick={onOpenWholeModal}>
           {t('chat.Complete Response')}
         </Tag>
-      </MyTooltip> */}
+      </MyTooltip>
 
       {!!quoteModalData && (
         <QuoteModal
