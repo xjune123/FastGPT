@@ -28,7 +28,9 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
 
   function arrayUnique1(arr: any[], name: string) {
     const res = new Map();
-    const list = arr.filter((item) => !res.has(item[name]) && res.set(item[name], 1));
+    const list = arr
+      .filter((item) => !res.has(item[name]) && res.set(item[name], 1))
+      .filter((item) => item.source !== '手动录入' && item.source !== 'kb.Manual Data');
     return list.slice(0, isShowMore ? quoteList.length : 3);
   }
 
