@@ -66,7 +66,7 @@ const ImportData = ({ kbId }: { kbId: string }) => {
               value: ImportTypeEnum.csv
             },
             {
-              // icon: 'qaImport',
+              icon: 'custom',
               title: '自定义导入',
               desc: '根据指令让AI总结文档内容',
               value: ImportTypeEnum.custom
