@@ -73,7 +73,7 @@ const QAImport = ({ kbId, custom }: { kbId: string; custom: boolean }) => {
         kbId,
         chunks,
         mode: TrainingModeEnum.qa,
-        prompt: previewQAPrompt,
+        prompt: custom ? prompt : previewQAPrompt,
         rate: 10,
         onUploading: (insertLen) => {
           setSuccessChunks(insertLen);
@@ -134,8 +134,6 @@ const QAImport = ({ kbId, custom }: { kbId: string; custom: boolean }) => {
     className: 'textEllipsis',
     maxW: '400px'
   };
-
-  console.log(previewQAPrompt, 'previewQAPrompt');
 
   return (
     <Box display={['block', 'flex']} h={['auto', '100%']} overflow={'overlay'}>
