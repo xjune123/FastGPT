@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>位图备份 3@2x</title>
+    <defs>
+        <circle id="path-1" cx="12" cy="12" r="12"></circle>
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="60.1785062%" id="radialGradient-3">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="48.421708%"></stop>
+            <stop stop-color="#E6E6E6" offset="71.8692869%"></stop>
+            <stop stop-color="#EBEBEB" offset="100%"></stop>
+            <stop stop-color="#E6E6E6" offset="100%"></stop>
+        </radialGradient>
+        <path d="M8.00950082,1 C4.13949629,1 1,3.94692015 1,7.59224335 C1,9.56395438 1.92896998,11.3355133 3.36887348,12.5513308 C3.09229377,13.3072243 3.07329212,14.0844107 3.19152465,14.5826616 C3.25064093,14.8424335 3.48710601,15 3.7256824,15 C3.78479867,15 3.84391495,14.9808365 3.90303123,14.9595437 C4.3759614,14.7998479 5.14658423,14.5422053 5.60051274,14.4421293 C6.29090634,14.2824335 7.99049916,14.1823574 7.99049916,14.1823574 C11.8605037,14.1823574 15,11.2354373 15,7.59224335 C15,3.94904943 11.8795053,1 8.00950082,1 Z" id="path-4"></path>
+        <filter x="-25.0%" y="-17.9%" width="150.0%" height="150.0%" filterUnits="objectBoundingBox" id="filter-5">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.132353242 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="问答主界面" transform="translate(-40.000000, -314.000000)">
+            <g id="位图备份-3" transform="translate(40.000000, 314.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="蒙版" fill="#BAECE2" xlink:href="#path-1"></use>
+                <g id="编组" mask="url(#mask-2)">
+                    <g transform="translate(4.000000, 4.000000)">
+                        <g id="路径" fill-rule="nonzero">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-5)" xlink:href="#path-4"></use>
+                            <use fill="url(#radialGradient-3)" xlink:href="#path-4"></use>
+                        </g>
+                        <circle id="椭圆形" fill="#444444" cx="5" cy="7.5" r="1"></circle>
+                        <circle id="椭圆形备份-3" fill="#444444" cx="8" cy="7.5" r="1"></circle>
+                        <circle id="椭圆形备份-4" fill="#444444" cx="11" cy="7.5" r="1"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

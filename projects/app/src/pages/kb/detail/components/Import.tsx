@@ -19,7 +19,8 @@ enum ImportTypeEnum {
   manual = 'manual',
   index = 'index',
   qa = 'qa',
-  csv = 'csv'
+  csv = 'csv',
+  custom = 'custom'
 }
 
 const ImportData = ({ kbId }: { kbId: string }) => {
@@ -63,6 +64,12 @@ const ImportData = ({ kbId }: { kbId: string }) => {
               title: 'CSV 导入',
               desc: '批量导入问答对，是最精准的数据',
               value: ImportTypeEnum.csv
+            },
+            {
+              // icon: 'qaImport',
+              title: '自定义导入',
+              desc: '根据指令让AI总结文档内容',
+              value: ImportTypeEnum.custom
             }
           ]}
           value={importType}
@@ -73,8 +80,9 @@ const ImportData = ({ kbId }: { kbId: string }) => {
       <Box flex={'1 0 0'} h={0}>
         {importType === ImportTypeEnum.manual && <ManualImport kbId={kbId} />}
         {importType === ImportTypeEnum.index && <ChunkImport kbId={kbId} />}
-        {importType === ImportTypeEnum.qa && <QAImport kbId={kbId} />}
+        {importType === ImportTypeEnum.qa && <QAImport kbId={kbId} custom={false} />}
         {importType === ImportTypeEnum.csv && <CsvImport kbId={kbId} />}
+        {importType === ImportTypeEnum.custom && <QAImport kbId={kbId} custom={true} />}
       </Box>
     </Flex>
   );

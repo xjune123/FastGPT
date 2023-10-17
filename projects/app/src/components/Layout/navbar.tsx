@@ -27,6 +27,13 @@ const Navbar = ({ unread }: { unread: number }) => {
   const navbarList = useMemo(
     () => [
       {
+        label: t('navbar.Chat') + '_新',
+        icon: 'chat',
+        activeIcon: 'chatFill',
+        link: `/chat_new?appId=${lastChatAppId}&chatId=${lastChatId}`,
+        activeLink: ['/chat_new']
+      },
+      {
         label: t('navbar.Chat'),
         icon: 'chat',
         activeIcon: 'chatFill',

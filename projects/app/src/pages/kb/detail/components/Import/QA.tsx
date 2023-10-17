@@ -16,13 +16,13 @@ import { TrainingModeEnum } from '@/constants/plugin';
 import FileSelect, { type FileItemType } from './FileSelect';
 import { useRouter } from 'next/router';
 import { putMarkFilesUsed } from '@/web/core/api/dataset';
-import { Prompt_AgentQA } from '@/global/core/prompt/agent';
+import { Prompt_AgentQA, Prompt_AgentCustom } from '@/global/core/prompt/agent';
 import { replaceVariable } from '@/utils/common/tools/text';
 import { chunksUpload } from '@/web/core/utils/dataset';
 
 const fileExtension = '.txt, .doc, .docx, .pdf, .md';
 
-const QAImport = ({ kbId }: { kbId: string }) => {
+const QAImport = ({ kbId, custom }: { kbId: string; custom: boolean }) => {
   const qaModel = qaModelList[0];
   const unitPrice = qaModel?.price || 3;
   const chunkLen = qaModel?.maxToken * 0.45;
@@ -135,6 +135,8 @@ const QAImport = ({ kbId }: { kbId: string }) => {
     maxW: '400px'
   };
 
+  console.log(previewQAPrompt, 'previewQAPrompt');
+
   return (
     <Box display={['block', 'flex']} h={['auto', '100%']} overflow={'overlay'}>
       <Flex
@@ -199,23 +201,39 @@ const QAImport = ({ kbId }: { kbId: string }) => {
             </Box>
             {/* prompt */}
             <Box py={5}>
-              <Box mb={2}>
-                QA 拆分引导词{' '}
-                <MyTooltip label={previewQAPrompt} forceShow>
-                  <InfoOutlineIcon ml={1} />
-                </MyTooltip>
-              </Box>
-              <Flex alignItems={'center'} fontSize={'sm'}>
-                <Box mr={2}>文件主题</Box>
-                <Input
-                  fontSize={'sm'}
-                  flex={1}
-                  placeholder={Prompt_AgentQA.defaultTheme}
-                  bg={'myWhite.500'}
-                  defaultValue={prompt}
-                  onChange={(e) => setPrompt(e.target.value || '')}
-                />
-              </Flex>
+              {!custom && (
+                <Box mb={2}>
+                  QA 拆分引导词{' '}
+                  <MyTooltip label={previewQAPrompt} forceShow>
+                    <InfoOutlineIcon ml={1} />
+                  </MyTooltip>
+                </Box>
+              )}
+              {custom ? (
+                <Flex alignItems={'top'} fontSize={'sm'}>
+                  <Box mr={2}>提示词</Box>
+                  <Textarea
+                    fontSize={'sm'}
+                    flex={1}
+                    bg={'myWhite.500'}
+                    placeholder={Prompt_AgentCustom.defaultTheme}
+                    defaultValue={Prompt_AgentCustom.prompt}
+                    onChange={(e) => setPrompt(e.target.value || '')}
+                  />
+                </Flex>
+              ) : (
+                <Flex alignItems={'center'} fontSize={'sm'}>
+                  <Box mr={2}>文件主题</Box>
+                  <Input
+                    fontSize={'sm'}
+                    flex={1}
+                    placeholder={Prompt_AgentQA.defaultTheme}
+                    bg={'myWhite.500'}
+                    defaultValue={prompt}
+                    onChange={(e) => setPrompt(e.target.value || '')}
+                  />
+                </Flex>
+              )}
             </Box>
             {/* price */}
             <Flex py={5} alignItems={'center'}>
