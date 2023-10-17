@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Box, Flex, Button, useTheme, Image, Input } from '@chakra-ui/react';
+import { Box, Flex, Button, useTheme, Image, Input, Textarea } from '@chakra-ui/react';
 import { useToast } from '@/web/common/hooks/useToast';
 import { useConfirm } from '@/web/common/hooks/useConfirm';
 import { useMutation } from '@tanstack/react-query';
