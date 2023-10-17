@@ -1176,7 +1176,7 @@ function ChatController({
   const { copyData } = useCopyData();
   const { audioLoading, audioPlaying, hasAudio, playAudio, cancelAudio } = useAudioPlay({});
   const controlIconStyle = {
-    w: '14px',
+    w: '18px',
     cursor: 'pointer',
     p: 1,
     bg: chat.obj === 'Human' ? 'myBlue.1100' : 'myBlue.1200',
@@ -1198,10 +1198,10 @@ function ChatController({
   return (
     <Flex {...controlContainerStyle} ml={ml} mr={mr} display={display}>
       <MyTooltip label={'复制'}>
-        <Box mr={3} onClick={() => copyData(chat.value)}>
+        <Box mr={3} display={'flex'} alignItems={'center'} onClick={() => copyData(chat.value)}>
           <MyIcon
             {...controlIconStyle}
-            name={'copy'}
+            name={'copy1'}
             // _hover={{ color: 'myBlue.700' }}
           />
           复制
@@ -1284,17 +1284,21 @@ function ChatController({
             {...(!!chat.userFeedback
               ? {
                   color: 'white',
-                  bg: '#FC9663',
+                  // bg: '#FC9663',
                   fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
                   onClick: onFeedback
                 }
               : {
                   // _hover: { color: '#FB7C3C' },
+                  display: 'flex',
+                  alignItems: 'center',
                   onClick: onFeedback
                 })}
           >
-            <MyIcon {...controlIconStyle} name={'badLight'} />
-            反馈
+            <MyIcon {...controlIconStyle} name={chat.userFeedback ? 'bad1' : 'bad2'} />
+            <Box>{chat.userFeedback ? '' : '反馈'}</Box>
           </Box>
         </MyTooltip>
       )}

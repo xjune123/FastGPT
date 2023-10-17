@@ -93,6 +93,8 @@ const iconPaths = {
   promotionLight: () => import('./icons/light/promotion.svg'),
   logsLight: () => import('./icons/light/logs.svg'),
   badLight: () => import('./icons/light/bad.svg'),
+  bad1: () => import('./icons/light/bad1.svg'),
+  bad2: () => import('./icons/light/bad2.svg'),
   markLight: () => import('./icons/light/mark.svg'),
   retryLight: () => import('./icons/light/retry.svg'),
   rightArrowLight: () => import('./icons/light/rightArrow.svg'),
@@ -106,7 +108,8 @@ const iconPaths = {
   arrow: () => import('./icons/arrow.svg'),
   send: () => import('./icons/send.svg'),
   pdf1: () => import('./icons/pdf.svg'),
-  custom: () => import('./icons/custom.svg')
+  custom: () => import('./icons/custom.svg'),
+  copy1: () => import('./icons/copy1.svg')
 };
 
 export type IconName = keyof typeof iconPaths;
