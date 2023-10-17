@@ -215,6 +215,7 @@ const QAImport = ({ kbId, custom }: { kbId: string; custom: boolean }) => {
                   <Textarea
                     fontSize={'sm'}
                     flex={1}
+                    h={194}
                     bg={'myWhite.500'}
                     placeholder={Prompt_AgentCustom.defaultTheme}
                     defaultValue={Prompt_AgentCustom.prompt}
