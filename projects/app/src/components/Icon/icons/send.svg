@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>切片</title>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="问答主界面" transform="translate(-1060.000000, -674.000000)">
+            <g id="2.图标/发送" transform="translate(1060.000000, 674.000000)">
+                <circle id="椭圆形" fill="#3B6EFF" fill-rule="nonzero" cx="16" cy="16" r="16"></circle>
+                <polyline id="路径-2" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="11 13.0265949 16 8.02659494 21 13.0265949"></polyline>
+                <line x1="16" y1="8.88278537" x2="16" y2="18" id="路径-3" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"></line>
+                <circle id="椭圆形" fill="#FFFFFF" cx="16" cy="22.5" r="1.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

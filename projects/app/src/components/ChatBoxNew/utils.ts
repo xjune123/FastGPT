@@ -1,6 +1,5 @@
 import { SystemInputEnum } from '@/constants/app';
 import { FlowModuleTypeEnum } from '@/constants/flow';
-import { getChatModel } from '@/service/utils/data';
 import { AppModuleItemType, VariableItemType } from '@/types/app';
 
 export const getGuideModule = (modules: AppModuleItemType[]) =>

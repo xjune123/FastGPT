@@ -102,7 +102,10 @@ const iconPaths = {
   questionGuide: () => import('./icons/app/questionGuide.svg'),
   loading: () => import('./icons/light/loading.svg'),
   pause: () => import('./icons/common/pause.svg'),
-  word: () => import('./icons/word.svg')
+  word: () => import('./icons/word.svg'),
+  arrow: () => import('./icons/arrow.svg'),
+  send: () => import('./icons/send.svg'),
+  pdf1: () => import('./icons/pdf.svg')
 };
 
 export type IconName = keyof typeof iconPaths;

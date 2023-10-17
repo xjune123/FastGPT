@@ -161,6 +161,16 @@ const Share = ({ appId }: { appId: string }) => {
                       </MenuItem>
                       <MenuItem
                         onClick={() => {
+                          const url = `${location.origin}/chat_new/share?shareId=${item.shareId}`;
+                          copyData(url, '已复制分享链接，可直接分享使用');
+                        }}
+                        py={[2, 3]}
+                      >
+                        <MyIcon name={'copy'} w={['14px', '16px']} />
+                        <Box ml={[1, 2]}>{t('common.Copy') + '新版'}</Box>
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
                           const url = `${location.origin}/chat/share?shareId=${item.shareId}`;
                           const src = `${location.origin}/js/iframe.js`;
                           const script = `<script src="${src}" id="fastgpt-iframe" data-src="${url}" data-color="#4e83fd"></script>`;

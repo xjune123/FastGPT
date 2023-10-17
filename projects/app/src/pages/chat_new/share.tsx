@@ -15,7 +15,7 @@ import { ChatSiteItemType } from '@/types/chat';
 import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12);
 
-import ChatBox, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBox';
+import ChatBoxNew, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBoxNew';
 import PageContainer from '@/components/PageContainer';
 import ChatHeader from './components/ChatHeader';
 import ChatHistorySlider from './components/ChatHistorySlider';
@@ -237,15 +237,15 @@ const OutLink = ({
           flexDirection={'column'}
         >
           {/* header */}
-          <ChatHeader
+          {/* <ChatHeader
             appAvatar={shareChatData.app.avatar}
             appName={shareChatData.app.name}
             history={shareChatData.history.chats}
             onOpenSlider={onOpenSlider}
-          />
+          /> */}
           {/* chat box */}
           <Box flex={1}>
-            <ChatBox
+            <ChatBoxNew
               active={!!shareChatData.app.name}
               ref={ChatBoxRef}
               appAvatar={shareChatData.app.avatar}

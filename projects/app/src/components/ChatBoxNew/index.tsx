@@ -691,7 +691,6 @@ const ChatBox = (
                           isChatting={index === chatHistory.length - 1 && isChatting}
                         />
                         {/* <ResponseTags responseData={item.responseData} /> */}
-                        <FileList responseData={item.responseData} />
                         <ChatController
                           // ml={1}
                           chat={item}
@@ -756,6 +755,7 @@ const ChatBox = (
                               : undefined
                           }
                         />
+                        <FileList responseData={item.responseData} />
                         {/* question guide */}
                         {index === chatHistory.length - 1 &&
                           !isChatting &&
@@ -821,10 +821,10 @@ const ChatBox = (
           <Box
             py={'18px'}
             position={'relative'}
-            boxShadow={`0 0 10px rgba(0,0,0,0.2)`}
-            borderTop={['1px solid', 0]}
-            borderTopColor={'myGray.200'}
-            borderRadius={['none', 'md']}
+            boxShadow={`0px 6px 20px 0px rgba(0,0,0,0.08)`}
+            border={'1px solid'}
+            borderColor={'#E5E5E5'}
+            borderRadius={16}
             backgroundColor={'white'}
           >
             {/* 输入框 */}
@@ -836,7 +836,7 @@ const ChatBox = (
               _focusVisible={{
                 border: 'none'
               }}
-              placeholder="提问"
+              placeholder="请输入提问信息..."
               resize={'none'}
               rows={1}
               height={'22px'}
@@ -886,9 +886,9 @@ const ChatBox = (
                 />
               ) : (
                 <MyIcon
-                  name={'chatSend'}
-                  width={['18px', '20px']}
-                  height={['18px', '20px']}
+                  name={'send'}
+                  width={['18px', '32px']}
+                  height={['18px', '32px']}
                   cursor={'pointer'}
                   color={'gray.500'}
                   onClick={() => {
