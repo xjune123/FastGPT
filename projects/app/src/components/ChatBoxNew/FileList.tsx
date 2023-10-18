@@ -50,7 +50,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
 
   return responseData.length === 0 ? null : (
     <Flex flexDirection={'column'} mt={2} flexWrap={'wrap'}>
-      <Divider />
+      {quoteList.length > 0 && <Divider />}
       {quoteList.length > 0 && (
         <Box color={'#999999'} mt={4} mb={3} fontSize={'sm'}>
           来源:
