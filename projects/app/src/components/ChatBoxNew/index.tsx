@@ -544,7 +544,7 @@ const ChatBox = (
               {/* avatar */}
               <ChatAvatar src={appAvatar} type={'AI'} />
               {/* message */}
-              <Box textAlign={'left'}>
+              <Box textAlign={'left'} ml={2}>
                 <Card order={2} {...MessageCardStyle} bg={'white'}>
                   <Markdown source={`~~~guide \n${welcomeText}`} isChatting={false} />
                 </Card>
