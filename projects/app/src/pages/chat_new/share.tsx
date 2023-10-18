@@ -235,14 +235,15 @@ const OutLink = ({
           w={['100%', 0]}
           flex={'1 0 0'}
           flexDirection={'column'}
+          bg={'url(/imgs/files/bg.svg) no-repeat right'}
         >
           {/* header */}
-          {/* <ChatHeader
+          <ChatHeader
             appAvatar={shareChatData.app.avatar}
             appName={shareChatData.app.name}
             history={shareChatData.history.chats}
             onOpenSlider={onOpenSlider}
-          /> */}
+          />
           {/* chat box */}
           <Box flex={1}>
             <ChatBoxNew
