@@ -45,7 +45,7 @@ const ChatHeader = ({
             {title}
           </Box> */}
           <Image src={'/imgs/files/chat_logo.svg'} />
-          <Divider orientation="vertical" h={16} m={'0 12px'} />
+          <Divider orientation="vertical" h={5} m={'0 12px'} />
           <Tag bg={'none'} borderColor={'#BBC3CD'}>
             <MyIcon name={'history'} w={'14px'} color={'#BBC3CD'} />
             <Box color={'#BBC3CD'} ml={1}>
