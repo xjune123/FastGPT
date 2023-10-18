@@ -469,7 +469,7 @@ const ChatBox = (
     px: 4,
     py: 3,
     borderRadius: '0 8px 8px 8px',
-    boxShadow: 'none',
+    boxShadow: '0 0 8px rgba(0,0,0,0.15)',
     display: 'inline-block',
     maxW: ['calc(100% - 25px)', 'calc(100% - 40px)']
   };
@@ -631,6 +631,7 @@ const ChatBox = (
                         {...MessageCardStyle}
                         px={0}
                         py={0}
+                        boxShadow={'none'}
                         bg={'none'}
                         color={'#fff'}
                         textAlign={'left'}

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Flex, useTheme, Box } from '@chakra-ui/react';
+import { Flex, useTheme, Box, Image, Divider } from '@chakra-ui/react';
 import { useGlobalStore } from '@/web/common/store/global';
 import MyIcon from '@/components/Icon';
 import Tag from '@/components/Tag';
@@ -7,7 +7,6 @@ import Avatar from '@/components/Avatar';
 import ToolMenu from './ToolMenu';
 import { ChatItemType } from '@/types/chat';
 import { useRouter } from 'next/router';
-
 const ChatHeader = ({
   history,
   appName,
@@ -42,19 +41,23 @@ const ChatHeader = ({
     >
       {isPc ? (
         <>
-          <Box mr={3} color={'myGray.1000'}>
+          {/* <Box mr={3} color={'myGray.1000'}>
             {title}
-          </Box>
-          <Tag>
-            <MyIcon name={'history'} w={'14px'} />
-            <Box ml={1}>{history.length === 0 ? '新的对话' : `${history.length}条记录`}</Box>
+          </Box> */}
+          <Image src={'/imgs/files/chat_logo.svg'} />
+          <Divider orientation="vertical" h={16} m={'0 12px'} />
+          <Tag bg={'none'} borderColor={'#BBC3CD'}>
+            <MyIcon name={'history'} w={'14px'} color={'#BBC3CD'} />
+            <Box color={'#BBC3CD'} ml={1}>
+              {history.length === 0 ? '新的对话' : `${history.length}条记录`}
+            </Box>
           </Tag>
-          {!!chatModels && chatModels.length > 0 && (
+          {/* {!!chatModels && chatModels.length > 0 && (
             <Tag ml={2} colorSchema={'green'}>
               <MyIcon name={'chatModelTag'} w={'14px'} />
               <Box ml={1}>{chatModels.join(',')}</Box>
             </Tag>
-          )}
+          )} */}
           <Box flex={1} />
         </>
       ) : (

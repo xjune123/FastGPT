@@ -342,16 +342,17 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
             w={['100%', 0]}
             flex={'1 0 0'}
             flexDirection={'column'}
+            bg={'url(/imgs/files/bg.svg) no-repeat right'}
           >
             {/* header */}
-            {/* <ChatHeader
+            <ChatHeader
               appAvatar={chatData.app.avatar}
               appName={chatData.app.name}
               appId={appId}
               history={chatData.history}
               chatModels={chatData.app.chatModels}
               onOpenSlider={onOpenSlider}
-            /> */}
+            />
 
             {/* chat box */}
             <Box flex={1}>
