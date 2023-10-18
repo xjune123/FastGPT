@@ -469,7 +469,7 @@ const ChatBox = (
     px: 4,
     py: 3,
     borderRadius: '0 8px 8px 8px',
-    boxShadow: '0 0 8px rgba(0,0,0,0.15)',
+    boxShadow: 'none',
     display: 'inline-block',
     maxW: ['calc(100% - 25px)', 'calc(100% - 40px)']
   };
@@ -629,12 +629,20 @@ const ChatBox = (
                         className="markdown"
                         whiteSpace={'pre-wrap'}
                         {...MessageCardStyle}
-                        bg={'myBlue.1100'}
+                        px={0}
+                        py={0}
+                        bg={'none'}
                         color={'#fff'}
-                        borderRadius={'8px 8px 8px 8px'}
                         textAlign={'left'}
                       >
-                        <Box as={'p'}>{item.value}</Box>
+                        <Box
+                          bg={'myBlue.1100'}
+                          borderRadius={'8px 8px 8px 8px'}
+                          padding={3}
+                          as={'p'}
+                        >
+                          {item.value}
+                        </Box>
                         <ChatController
                           chat={item}
                           // onDelete={
@@ -1176,35 +1184,35 @@ function ChatController({
   const { copyData } = useCopyData();
   const { audioLoading, audioPlaying, hasAudio, playAudio, cancelAudio } = useAudioPlay({});
   const controlIconStyle = {
-    w: '18px',
     cursor: 'pointer',
-    p: 1,
-    bg: chat.obj === 'Human' ? 'myBlue.1100' : 'myBlue.1200',
-    color: chat.obj === 'Human' ? 'white' : 'myBlue.1100',
+    p: 1
+    // color: '#999999',
     // borderRadius: 'lg',
     // boxShadow: '0 0 5px rgba(0,0,0,0.1)',
     // border: theme.borders.base,
-    mr: 1
+    // mr: 1，
   };
   const controlContainerStyle = {
     className: 'control',
-    color: chat.obj === 'Human' ? 'white' : 'myBlue.1100',
     display: 'flex',
     pl: 1,
     cursor: 'pointer',
     mt: 3,
-    justifyContent: chat.obj === 'Human' ? 'end' : 'start'
+    justifyContent: 'end',
+    color: '#999999'
   };
 
   return (
     <Flex {...controlContainerStyle} ml={ml} mr={mr} display={display}>
       <MyTooltip label={'复制'}>
-        <Box mr={3} display={'flex'} alignItems={'center'} onClick={() => copyData(chat.value)}>
-          <MyIcon
-            {...controlIconStyle}
-            name={chat.obj === 'Human' ? 'copy_white' : 'copy_blue'}
-            // _hover={{ color: 'myBlue.700' }}
-          />
+        <Box
+          mr={3}
+          display={'flex'}
+          alignItems={'center'}
+          _hover={{ color: '#3B6EFF' }}
+          onClick={() => copyData(chat.value)}
+        >
+          <MyIcon {...controlIconStyle} name={'copy_white'} _hover={{ color: '#3B6EFF' }} />
           复制
         </Box>
       </MyTooltip>
@@ -1290,7 +1298,6 @@ function ChatController({
           <Box
             {...(!!chat.userFeedback
               ? {
-                  color: 'white',
                   // bg: '#FC9663',
                   fontWeight: 'bold',
                   display: 'flex',
@@ -1298,13 +1305,17 @@ function ChatController({
                   onClick: onFeedback
                 }
               : {
-                  // _hover: { color: '#FB7C3C' },
+                  _hover: { color: '#3B6EFF' },
                   display: 'flex',
                   alignItems: 'center',
                   onClick: onFeedback
                 })}
           >
-            <MyIcon {...controlIconStyle} name={chat.userFeedback ? 'bad1' : 'bad2'} />
+            <MyIcon
+              {...controlIconStyle}
+              name={chat.userFeedback ? 'bad1' : 'bad2'}
+              _hover={{ color: '#3B6EFF' }}
+            />
             <Box>{chat.userFeedback ? '' : '反馈'}</Box>
           </Box>
         </MyTooltip>
