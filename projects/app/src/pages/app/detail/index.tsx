@@ -28,7 +28,8 @@ enum TabEnum {
   'adEdit' = 'adEdit',
   'outLink' = 'outLink',
   'logs' = 'logs',
-  'startChat' = 'startChat'
+  'startChat' = 'startChat',
+  'startNewChat' = 'startNewChat'
 }
 
 const AppDetail = ({ currentTab }: { currentTab: `${TabEnum}` }) => {
@@ -58,7 +59,8 @@ const AppDetail = ({ currentTab }: { currentTab: `${TabEnum}` }) => {
         : [{ label: '高级编排', id: TabEnum.adEdit, icon: 'settingLight' }]),
       { label: '外部使用', id: TabEnum.outLink, icon: 'shareLight' },
       { label: '对话日志', id: TabEnum.logs, icon: 'logsLight' },
-      { label: '立即对话', id: TabEnum.startChat, icon: 'chat' }
+      { label: '立即对话', id: TabEnum.startChat, icon: 'chat' },
+      { label: '立即对话(新版)', id: TabEnum.startNewChat, icon: 'chat' }
     ],
     []
   );
@@ -117,8 +119,11 @@ const AppDetail = ({ currentTab }: { currentTab: `${TabEnum}` }) => {
             list={tabList}
             activeId={currentTab}
             onChange={(e: any) => {
+              console.log(e, 'e');
               if (e === 'startChat') {
                 router.push(`/chat?appId=${appId}`);
+              } else if (e === 'startNewChat') {
+                router.push(`/chat_new?appId=${appId}`);
               } else {
                 setCurrentTab(e);
               }

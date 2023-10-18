@@ -109,7 +109,8 @@ const iconPaths = {
   send: () => import('./icons/send.svg'),
   pdf1: () => import('./icons/pdf.svg'),
   custom: () => import('./icons/custom.svg'),
-  copy1: () => import('./icons/copy1.svg')
+  copy_white: () => import('./icons/copy_white.svg'),
+  copy_blue: () => import('./icons/copy_blue.svg')
 };
 
 export type IconName = keyof typeof iconPaths;

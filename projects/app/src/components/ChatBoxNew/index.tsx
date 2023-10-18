@@ -1192,7 +1192,8 @@ function ChatController({
     display: 'flex',
     pl: 1,
     cursor: 'pointer',
-    mt: 3
+    mt: 3,
+    justifyContent: chat.obj === 'Human' ? 'end' : 'start'
   };
 
   return (
@@ -1201,7 +1202,7 @@ function ChatController({
         <Box mr={3} display={'flex'} alignItems={'center'} onClick={() => copyData(chat.value)}>
           <MyIcon
             {...controlIconStyle}
-            name={'copy1'}
+            name={chat.obj === 'Human' ? 'copy_white' : 'copy_blue'}
             // _hover={{ color: 'myBlue.700' }}
           />
           复制
