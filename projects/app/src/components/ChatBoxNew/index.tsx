@@ -1141,10 +1141,10 @@ function ChatAvatar({ src, type }: { src?: string; type: 'Human' | 'AI' }) {
     <Box
       w={['28px', '34px']}
       h={['28px', '34px']}
-      p={'2px'}
+      // p={'2px'}
       borderRadius={'lg'}
       border={theme.borders.base}
-      boxShadow={'0 0 5px rgba(0,0,0,0.1)'}
+      // boxShadow={'0 0 5px rgba(0,0,0,0.1)'}
       bg={type === 'Human' ? 'white' : 'myBlue.100'}
     >
       <Avatar src={src} w={'100%'} h={'100%'} />
