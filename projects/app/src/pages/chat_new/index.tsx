@@ -366,6 +366,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
                 onUpdateVariable={(e) => {}}
                 onStartChat={startChat}
                 onDelMessage={delOneHistoryItem}
+                appId={appId}
               />
             </Box>
           </Flex>

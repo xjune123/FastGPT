@@ -65,6 +65,7 @@ import Script from 'next/script';
 import { postQuestionGuide } from '@/web/core/api/ai';
 import { splitGuideModule } from './utils';
 import { DatasetSpecialIdEnum } from '@fastgpt/core/dataset/constant';
+import { useUserStore } from '@/web/support/store/user';
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 24);
 
@@ -94,6 +95,7 @@ enum FeedbackTypeEnum {
 }
 
 type Props = {
+  appId: string;
   feedbackType?: `${FeedbackTypeEnum}`;
   showMarkIcon?: boolean; // admin mark dataset
   showVoiceIcon?: boolean;
@@ -113,6 +115,7 @@ type Props = {
 
 const ChatBox = (
   {
+    appId,
     feedbackType = FeedbackTypeEnum.hidden,
     showMarkIcon = false,
     showVoiceIcon = true,
@@ -157,6 +160,8 @@ const ChatBox = (
     a: string;
   }>();
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
+  const { userInfo } = useUserStore();
+  const isShare = useMemo(() => !appId || !userInfo, [appId, userInfo]);
 
   const isChatting = useMemo(
     () =>
@@ -699,71 +704,75 @@ const ChatBox = (
                           source={item.value}
                           isChatting={index === chatHistory.length - 1 && isChatting}
                         />
-                        {/* <ResponseTags responseData={item.responseData} /> */}
-                        <ChatController
-                          // ml={1}
-                          chat={item}
-                          display={index === chatHistory.length - 1 && isChatting ? 'none' : 'flex'}
-                          // showVoiceIcon={showVoiceIcon}
-                          // onDelete={
-                          //   onDelMessage
-                          //     ? () => {
-                          //         delOneMessage({ dataId: item.dataId, index });
-                          //       }
-                          //     : undefined
-                          // }
-                          onMark={
-                            showMarkIcon
-                              ? () => {
-                                  if (!item.dataId) return;
-                                  if (item.adminFeedback) {
-                                    setAdminMarkData({
-                                      chatItemId: item.dataId,
-                                      kbId: item.adminFeedback.kbId,
-                                      dataId: item.adminFeedback.dataId,
-                                      q: chatHistory[index - 1]?.value || '',
-                                      a: item.adminFeedback.content
-                                    });
-                                  } else {
-                                    setAdminMarkData({
-                                      chatItemId: item.dataId,
-                                      q: chatHistory[index - 1]?.value || '',
-                                      a: item.value
-                                    });
-                                  }
-                                }
-                              : undefined
-                          }
-                          onReadFeedback={
-                            feedbackType === FeedbackTypeEnum.admin
-                              ? () =>
-                                  setReadFeedbackData({
-                                    chatItemId: item.dataId || '',
-                                    content: item.userFeedback || '',
-                                    isMarked: !!item.adminFeedback
-                                  })
-                              : undefined
-                          }
-                          onFeedback={
-                            feedbackType === FeedbackTypeEnum.user
-                              ? item.userFeedback
+                        <Flex justifyContent={'space-between'}>
+                          {!isShare && <ResponseTags responseData={item.responseData} />}
+                          <ChatController
+                            // ml={1}
+                            chat={item}
+                            display={
+                              index === chatHistory.length - 1 && isChatting ? 'none' : 'flex'
+                            }
+                            // showVoiceIcon={showVoiceIcon}
+                            // onDelete={
+                            //   onDelMessage
+                            //     ? () => {
+                            //         delOneMessage({ dataId: item.dataId, index });
+                            //       }
+                            //     : undefined
+                            // }
+                            onMark={
+                              showMarkIcon
                                 ? () => {
                                     if (!item.dataId) return;
-                                    setChatHistory((state) =>
-                                      state.map((chatItem) =>
-                                        chatItem.dataId === item.dataId
-                                          ? { ...chatItem, userFeedback: undefined }
-                                          : chatItem
-                                      )
-                                    );
-                                    try {
-                                      userUpdateChatFeedback({ chatItemId: item.dataId });
-                                    } catch (error) {}
+                                    if (item.adminFeedback) {
+                                      setAdminMarkData({
+                                        chatItemId: item.dataId,
+                                        kbId: item.adminFeedback.kbId,
+                                        dataId: item.adminFeedback.dataId,
+                                        q: chatHistory[index - 1]?.value || '',
+                                        a: item.adminFeedback.content
+                                      });
+                                    } else {
+                                      setAdminMarkData({
+                                        chatItemId: item.dataId,
+                                        q: chatHistory[index - 1]?.value || '',
+                                        a: item.value
+                                      });
+                                    }
                                   }
-                                : () => setFeedbackId(item.dataId)
-                              : undefined
-                          }
-                        />
+                                : undefined
+                            }
+                            onReadFeedback={
+                              feedbackType === FeedbackTypeEnum.admin
+                                ? () =>
+                                    setReadFeedbackData({
+                                      chatItemId: item.dataId || '',
+                                      content: item.userFeedback || '',
+                                      isMarked: !!item.adminFeedback
+                                    })
+                                : undefined
+                            }
+                            onFeedback={
+                              feedbackType === FeedbackTypeEnum.user
+                                ? item.userFeedback
+                                  ? () => {
+                                      if (!item.dataId) return;
+                                      setChatHistory((state) =>
+                                        state.map((chatItem) =>
+                                          chatItem.dataId === item.dataId
+                                            ? { ...chatItem, userFeedback: undefined }
+                                            : chatItem
+                                        )
+                                      );
+                                      try {
+                                        userUpdateChatFeedback({ chatItemId: item.dataId });
+                                      } catch (error) {}
+                                    }
+                                  : () => setFeedbackId(item.dataId)
+                                : undefined
+                            }
+                          />
+                        </Flex>
                         <FileList responseData={item.responseData} />
                         {/* question guide */}
                         {index === chatHistory.length - 1 &&
@@ -1200,7 +1209,8 @@ function ChatController({
     cursor: 'pointer',
     mt: 3,
     justifyContent: 'end',
-    color: '#999999'
+    color: '#999999',
+    flex: '1'
   };
 
   return (
