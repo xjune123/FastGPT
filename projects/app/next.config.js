@@ -45,7 +45,10 @@ const nextConfig = {
         },
       ]),
       exprContextCritical: false,
-      unknownContextCritical: false
+      unknownContextCritical: false,
+      sassOptions: {
+        includePaths: [path.join(__dirname, 'styles')],
+      },
     };
 
     return config;
