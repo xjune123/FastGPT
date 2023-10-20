@@ -253,6 +253,7 @@ const OutLink = ({
               userAvatar={shareChatData.userAvatar}
               userGuideModule={shareChatData.app?.userGuideModule}
               feedbackType={'user'}
+              appId={''}
               onUpdateVariable={(e) => {
                 setShareChatData((state) => ({
                   ...state,
