@@ -35,20 +35,9 @@ const nextConfig = {
           issuer: /\.[jt]sx?$/,
           use: ['@svgr/webpack']
         },
-        {
-          test: /\.css$/i,//指明需要匹配什么样的文件类型
-          use: ['style-loader', 'css-loader'],//数组写法是由解析顺序的，从后往前的顺序解析
-        },
-        {
-          test: /\.scss$/i,//指明需要匹配什么样的文件类型
-          use: ['style-loader', 'css-loader', 'sass-loader'],//数组写法是由解析顺序的，从后往前的顺序解析
-        },
       ]),
       exprContextCritical: false,
-      unknownContextCritical: false,
-      sassOptions: {
-        includePaths: [path.join(__dirname, 'styles')],
-      },
+      unknownContextCritical: false
     };
 
     return config;
