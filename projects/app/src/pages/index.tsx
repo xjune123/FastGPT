@@ -3,6 +3,7 @@ import { Box } from '@chakra-ui/react';
 import { feConfigs } from '@/web/common/store/static';
 import { serviceSideProps } from '@/web/common/utils/i18n';
 import { useRouter } from 'next/router';
+import { getToken } from '@/utils/user';
 
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -12,11 +13,17 @@ import Footer from './components/Footer';
 import Loading from '@/components/Loading';
 import Head from 'next/head';
 
-const Home = ({ homeUrl = '/' }: { homeUrl: string }) => {
+const Home = ({ homeUrl = '/app/list' }: { homeUrl: string }) => {
   const router = useRouter();
 
   if (homeUrl !== '/') {
     router.replace(homeUrl);
+  } else {
+    if (getToken()) {
+      router.replace('/app/list');
+    } else {
+      router.replace('/login');
+    }
   }
 
   useEffect(() => {
@@ -26,7 +33,7 @@ const Home = ({ homeUrl = '/' }: { homeUrl: string }) => {
 
   return (
     <>
-      <Head>
+      {/* <Head>
         <title>{feConfigs?.systemTitle || 'FastGPT'}</title>
       </Head>
       <Box id="home" bg={'myWhite.600'} h={'100vh'} overflowY={'auto'} overflowX={'hidden'}>
@@ -45,7 +52,7 @@ const Home = ({ homeUrl = '/' }: { homeUrl: string }) => {
             <Footer />
           </Box>
         )}
-      </Box>
+      </Box> */}
       {homeUrl !== '/' && <Loading bg={'white'} />}
     </>
   );
