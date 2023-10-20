@@ -60,6 +60,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
         <Box>
           {arrayUnique1(quoteList, 'source').map((item) => (
             <Flex
+              key={item.id}
               alignItems={'center'}
               cursor={'pointer'}
               bg={'white'}
