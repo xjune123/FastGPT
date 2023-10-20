@@ -6,7 +6,7 @@ import { getDatasetDataList, delOneDatasetDataById, getFileInfoById } from '@/we
 import { DeleteIcon, RepeatIcon } from '@chakra-ui/icons';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/web/common/hooks/useToast';
-import InputModal, { FormData as InputDataType, RawFileText } from './InputDataModal';
+import InputModal, { FormData as InputDataType, RawFileText } from './InputDataModaNew';
 import { debounce } from 'lodash';
 import { getErrText } from '@/utils/tools';
 import { useConfirm } from '@/web/common/hooks/useConfirm';
