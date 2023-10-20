@@ -65,23 +65,25 @@ const Login = () => {
         ></Script>
       )}
       <Flex
+        flexDirection={'column'}
         alignItems={'center'}
         justifyContent={'center'}
         className={styles.loginPage}
         h={'100%'}
         px={[0, '10vw']}
       >
+        <Image src={'/icon/login_logo.svg'} alt="" loading={'lazy'} mb={'34px'} />
         <Flex
-          height="100%"
-          w={'100%'}
+          // height="100%"
+          w={'416px'}
           maxW={'1240px'}
-          maxH={['auto', 'max(660px,80vh)']}
+          // maxH={['auto', 'max(660px,80vh)']}
           backgroundColor={'#fff'}
           alignItems={'center'}
           justifyContent={'center'}
           py={[5, 10]}
           px={'5vw'}
-          borderRadius={isPc ? 'md' : 'none'}
+          borderRadius={isPc ? 'md' : 'md'}
           gap={5}
         >
           {isPc && (
@@ -103,7 +105,7 @@ const Login = () => {
             order={1}
             flex={`0 0 ${isPc ? '400px' : '100%'}`}
             height={'100%'}
-            border="1px"
+            // border="1px"
             borderColor="gray.200"
             py={5}
             px={10}

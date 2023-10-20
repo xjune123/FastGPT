@@ -1,5 +1,15 @@
 import React, { useState, Dispatch, useCallback, useRef } from 'react';
-import { FormControl, Flex, Input, Button, FormErrorMessage, Box, Link } from '@chakra-ui/react';
+import {
+  FormControl,
+  Flex,
+  Input,
+  Button,
+  FormErrorMessage,
+  Box,
+  Link,
+  InputGroup,
+  InputLeftElement
+} from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { OAuthEnum, PageTypeEnum } from '@/constants/user';
@@ -86,35 +96,49 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
 
   return (
     <>
-      <Box fontWeight={'bold'} fontSize={'2xl'} textAlign={'center'}>
-        登录 {feConfigs?.systemTitle}
+      <Box fontWeight={'bold'} fontSize={'3xl'} textAlign={'center'}>
+        {/* 登录 {feConfigs?.systemTitle} */}
+        欢迎来到璞辰AI知识库
+      </Box>
+      <Box mt={'20px'} textAlign={'center'} fontWeight={'bold'}>
+        账户密码登录
       </Box>
       <form onSubmit={handleSubmit(onclickLogin)}>
         <FormControl mt={8} isInvalid={!!errors.username}>
-          <Input
-            placeholder="邮箱/手机号/用户名"
-            size={['md', 'lg']}
-            {...register('username', {
-              required: '邮箱/手机号/用户名不能为空'
-            })}
-          ></Input>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <MyIcon name="login_user" />
+            </InputLeftElement>
+            <Input
+              placeholder="邮箱/手机号/用户名"
+              // size={['md', 'lg']}
+              {...register('username', {
+                required: '邮箱/手机号/用户名不能为空'
+              })}
+            ></Input>
+          </InputGroup>
           <FormErrorMessage position={'absolute'} fontSize="xs">
             {!!errors.username && errors.username.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl mt={8} isInvalid={!!errors.password}>
-          <Input
-            type={'password'}
-            size={['md', 'lg']}
-            placeholder="密码"
-            {...register('password', {
-              required: '密码不能为空',
-              maxLength: {
-                value: 20,
-                message: '密码最多 20 位'
-              }
-            })}
-          ></Input>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <MyIcon name="login_pas" />
+            </InputLeftElement>
+            <Input
+              type={'password'}
+              // size={['md', 'lg']}
+              placeholder="密码"
+              {...register('password', {
+                required: '密码不能为空',
+                maxLength: {
+                  value: 20,
+                  message: '密码最多 20 位'
+                }
+              })}
+            ></Input>
+          </InputGroup>
           <FormErrorMessage position={'absolute'} fontSize="xs">
             {!!errors.password && errors.password.message}
           </FormErrorMessage>
@@ -156,13 +180,15 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
 
         <Button
           type="submit"
+          bg={'#3B6EFF'}
           mt={5}
           w={'100%'}
+          h={'40px'}
           size={['md', 'lg']}
           colorScheme="blue"
           isLoading={requesting}
         >
-          登录
+          立即登录
         </Button>
         {feConfigs?.show_register && (
           <>
