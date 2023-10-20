@@ -1,6 +1,7 @@
 import { SystemInputEnum } from '@/constants/app';
 import { FlowModuleTypeEnum } from '@/constants/flow';
 import { AppModuleItemType, VariableItemType } from '@/types/app';
+import { getChatModel } from '@/service/core/ai/model';
 
 export const getGuideModule = (modules: AppModuleItemType[]) =>
   modules.find((item) => item.flowType === FlowModuleTypeEnum.userGuide);
