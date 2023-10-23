@@ -50,6 +50,11 @@ const ImportData = ({
         unitPrice: qaModel?.price || 3,
         mode: TrainingModeEnum.qa
       },
+      [ImportTypeEnum.custom]: {
+        defaultChunkLen: qaModel?.maxToken * 0.5 || 8000,
+        unitPrice: qaModel?.price || 3,
+        mode: TrainingModeEnum.qa
+      },
       [ImportTypeEnum.csv]: {
         defaultChunkLen: vectorModel?.defaultToken || 500,
         unitPrice: vectorModel?.price || 0.2,

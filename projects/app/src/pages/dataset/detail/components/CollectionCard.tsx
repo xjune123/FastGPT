@@ -279,7 +279,7 @@ const CollectionCard = () => {
           </Flex>
         )}
         <Button variant={'base'} mr={2} onClick={onOpenFileImportModal}>
-          自定义导入
+          文件导入
         </Button>
         <MyMenu
           offset={[-10, 10]}
