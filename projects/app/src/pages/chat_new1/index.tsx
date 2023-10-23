@@ -22,7 +22,7 @@ const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12);
 import type { ChatHistoryItemType } from '@/types/chat';
 import { useTranslation } from 'react-i18next';
 
-import ChatBox, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBox';
+import ChatBox, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBoxNew1';
 import PageContainer from '@/components/PageContainer';
 import SideBar from '@/components/SideBar';
 import ChatHistorySlider from './components/ChatHistorySlider';
@@ -365,6 +365,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
                 onUpdateVariable={(e) => {}}
                 onStartChat={startChat}
                 onDelMessage={delOneHistoryItem}
+                appId={appId}
               />
             </Box>
           </Flex>

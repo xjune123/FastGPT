@@ -8,6 +8,7 @@ import React, {
   ForwardedRef,
   useEffect
 } from 'react';
+import Script from 'next/script';
 import { throttle } from 'lodash';
 import {
   ChatHistoryItemResType,
@@ -30,7 +31,7 @@ import {
   BoxProps,
   FlexProps
 } from '@chakra-ui/react';
-import { feConfigs } from '@/web/common/store/static';
+import { feConfigs } from '@/web/common/system/staticData';
 import { eventBus } from '@/web/common/utils/eventbus';
 import { adaptChat2GptMessages } from '@/utils/common/adapt/message';
 import { useMarkdown } from '@/web/common/hooks/useMarkdown';
@@ -38,14 +39,16 @@ import { AppModuleItemType } from '@/types/app';
 import { VariableInputEnum } from '@/constants/app';
 import { useForm } from 'react-hook-form';
 import type { MessageItemType } from '@/types/core/chat/type';
-import { fileDownload } from '@/web/common/utils/file';
+import { fileDownload } from '@/web/common/file/utils';
 import { htmlTemplate } from '@/constants/common';
 import { useRouter } from 'next/router';
-import { useGlobalStore } from '@/web/common/store/global';
+import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { TaskResponseKeyEnum } from '@/constants/chat';
 import { useTranslation } from 'react-i18next';
 import { customAlphabet } from 'nanoid';
-import { userUpdateChatFeedback, adminUpdateChatFeedback } from '@/web/core/api/chat';
+import { adminUpdateChatFeedback, userUpdateChatFeedback } from '@/web/core/chat/api';
+import type { AdminMarkType } from './SelectMarkCollection';
+import { useUserStore } from '@/web/support/user/useUserStore';
 
 import MyIcon from '@/components/Icon';
 import Avatar from '@/components/Avatar';
@@ -54,18 +57,14 @@ import MySelect from '@/components/Select';
 import MyTooltip from '../MyTooltip';
 import dynamic from 'next/dynamic';
 const ResponseTags = dynamic(() => import('./ResponseTags'));
-const FileList = dynamic(() => import('./FileList'));
 const FeedbackModal = dynamic(() => import('./FeedbackModal'));
 const ReadFeedbackModal = dynamic(() => import('./ReadFeedbackModal'));
-const SelectDataset = dynamic(() => import('./SelectDataset'));
-const InputDataModal = dynamic(() => import('@/pages/kb/detail/components/InputDataModal'));
+const SelectMarkCollection = dynamic(() => import('./SelectMarkCollection'));
+const FileList = dynamic(() => import('./FileList'));
 
 import styles from './index.module.scss';
-import Script from 'next/script';
-import { postQuestionGuide } from '@/web/core/api/ai';
-import { splitGuideModule } from './utils';
-import { DatasetSpecialIdEnum } from '@fastgpt/core/dataset/constant';
-import { useUserStore } from '@/web/support/store/user';
+import { postQuestionGuide } from '@/web/core/ai/api';
+import { splitGuideModule } from '@/global/core/app/modules/utils';
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 24);
 
@@ -135,7 +134,7 @@ const ChatBox = (
   const router = useRouter();
   const { t } = useTranslation();
   const { toast } = useToast();
-  const { isPc } = useGlobalStore();
+  const { isPc } = useSystemStore();
   const TextareaDom = useRef<HTMLTextAreaElement>(null);
   const chatController = useRef(new AbortController());
   const questionGuideController = useRef(new AbortController());
@@ -151,14 +150,7 @@ const ChatBox = (
     content: string;
     isMarked: boolean;
   }>();
-  const [adminMarkData, setAdminMarkData] = useState<{
-    // mark modal data
-    kbId?: string;
-    chatItemId: string;
-    dataId?: string;
-    q: string;
-    a: string;
-  }>();
+  const [adminMarkData, setAdminMarkData] = useState<AdminMarkType & { chatItemId: string }>();
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
   const { userInfo } = useUserStore();
   const isShare = useMemo(() => !appId || !userInfo, [appId, userInfo]);
@@ -541,16 +533,16 @@ const ChatBox = (
 
       {/* chat box container */}
       <Box ref={ChatBoxRef} flex={'1 0 0'} h={0} w={'100%'} overflow={'overlay'} px={[4, 0]} pb={3}>
-        <Box id="chat-container" maxW={['auto', 'min(750px, 100%)']} h={'100%'} mx={'auto'}>
+        <Box id="chat-container" maxW={['100%', '92%']} h={'100%'} mx={'auto'}>
           {showEmpty && <Empty />}
 
           {!!welcomeText && (
-            <Box py={3} display={'flex'}>
+            <Box py={3}>
               {/* avatar */}
               <ChatAvatar src={appAvatar} type={'AI'} />
               {/* message */}
-              <Box textAlign={'left'} ml={2}>
-                <Card order={2} {...MessageCardStyle} bg={'#F6F6F6'}>
+              <Box textAlign={'left'}>
+                <Card order={2} mt={2} {...MessageCardStyle} bg={'white'}>
                   <Markdown source={`~~~guide \n${welcomeText}`} isChatting={false} />
                 </Card>
               </Box>
@@ -620,14 +612,12 @@ const ChatBox = (
             {chatHistory.map((item, index) => (
               <Box
                 key={item.dataId}
-                display={'flex'}
-                flexDirection={'row'}
-                alignItems={item.obj === 'Human' ? 'flex-start' : 'flex-start'}
-                justifyContent={item.obj === 'Human' ? 'end' : 'start'}
+                flexDirection={'column'}
+                alignItems={item.obj === 'Human' ? 'flex-end' : 'flex-start'}
                 py={5}
               >
                 {item.obj === 'Human' && (
-                  <>
+                  <Flex justifyContent={'flex-end'}>
                     {/* content */}
                     <Box mr={['6px', 2]} flex={'1'} textAlign={'right'}>
                       <Card
@@ -642,10 +632,10 @@ const ChatBox = (
                         textAlign={'left'}
                       >
                         <Box
+                          as={'p'}
                           bg={'myBlue.1100'}
                           borderRadius={'8px 8px 8px 8px'}
                           padding={3}
-                          as={'p'}
                         >
                           {item.value}
                         </Box>
@@ -654,11 +644,11 @@ const ChatBox = (
                           // onDelete={
                           //   onDelMessage
                           //     ? () => {
-                          //         delOneMessage({ dataId: item.dataId, index });
-                          //       }
+                          //       delOneMessage({ dataId: item.dataId, index });
+                          //     }
                           //     : undefined
                           // }
-                          // onRetry={() => retryInput(index)}
+                          onRetry={() => retryInput(index)}
                         />
                       </Card>
                     </Box>
@@ -666,17 +656,16 @@ const ChatBox = (
                     <Flex>
                       <ChatAvatar src={userAvatar} type={'Human'} />
                     </Flex>
-                  </>
+                  </Flex>
                 )}
                 {item.obj === 'AI' && (
-                  <>
+                  <Flex w={'100%'} alignItems={'start'}>
                     {/* control icon */}
-                    <Flex alignItems={'center'}>
+                    <Flex mr={1} alignItems={'center'}>
                       <ChatAvatar src={appAvatar} type={'AI'} />
                       {/* chatting status */}
                       {statusBoxData && index === chatHistory.length - 1 && (
                         <Flex
-                          ml={3}
                           alignItems={'center'}
                           px={3}
                           py={'1px'}
@@ -698,8 +687,8 @@ const ChatBox = (
                       )}
                     </Flex>
                     {/* content */}
-                    <Box textAlign={'left'} flex={'1'} ml={['6px', 2]}>
-                      <Card bg={'myBlue.1200'} {...MessageCardStyle}>
+                    <Box textAlign={'left'}>
+                      <Card bg={'white'} {...MessageCardStyle}>
                         <Markdown
                           source={item.value}
                           isChatting={index === chatHistory.length - 1 && isChatting}
@@ -707,40 +696,10 @@ const ChatBox = (
                         <Flex justifyContent={'space-between'}>
                           {!isShare && <ResponseTags responseData={item.responseData} />}
                           <ChatController
-                            // ml={1}
+                            ml={2}
                             chat={item}
                             display={
                               index === chatHistory.length - 1 && isChatting ? 'none' : 'flex'
-                            }
-                            // showVoiceIcon={showVoiceIcon}
-                            // onDelete={
-                            //   onDelMessage
-                            //     ? () => {
-                            //         delOneMessage({ dataId: item.dataId, index });
-                            //       }
-                            //     : undefined
-                            // }
-                            onMark={
-                              showMarkIcon
-                                ? () => {
-                                    if (!item.dataId) return;
-                                    if (item.adminFeedback) {
-                                      setAdminMarkData({
-                                        chatItemId: item.dataId,
-                                        kbId: item.adminFeedback.kbId,
-                                        dataId: item.adminFeedback.dataId,
-                                        q: chatHistory[index - 1]?.value || '',
-                                        a: item.adminFeedback.content
-                                      });
-                                    } else {
-                                      setAdminMarkData({
-                                        chatItemId: item.dataId,
-                                        q: chatHistory[index - 1]?.value || '',
-                                        a: item.value
-                                      });
-                                    }
-                                  }
-                                : undefined
                             }
                             onReadFeedback={
                               feedbackType === FeedbackTypeEnum.admin
@@ -821,12 +780,14 @@ const ChatBox = (
                               </Box>
                               <Box h={'1px'} bg={'myGray.300'} flex={'1'} />
                             </Flex>
-                            <Box>{item.adminFeedback.content}</Box>
+                            <Box whiteSpace={'pre'}>{`${item.adminFeedback.q || ''}${
+                              item.adminFeedback.a ? `\n${item.adminFeedback.a}` : ''
+                            }`}</Box>
                           </Box>
                         )}
                       </Card>
                     </Box>
-                  </>
+                  </Flex>
                 )}
               </Box>
             ))}
@@ -839,10 +800,10 @@ const ChatBox = (
           <Box
             py={'18px'}
             position={'relative'}
-            boxShadow={`0px 6px 20px 0px rgba(0,0,0,0.08)`}
-            border={'1px solid'}
-            borderColor={'#E5E5E5'}
-            borderRadius={16}
+            boxShadow={`0 0 10px rgba(0,0,0,0.2)`}
+            borderTop={['1px solid', 0]}
+            borderTopColor={'myGray.200'}
+            borderRadius={['none', 'md']}
             backgroundColor={'white'}
           >
             {/* 输入框 */}
@@ -854,7 +815,7 @@ const ChatBox = (
               _focusVisible={{
                 border: 'none'
               }}
-              placeholder="请输入提问信息..."
+              placeholder="提问"
               resize={'none'}
               rows={1}
               height={'22px'}
@@ -904,9 +865,9 @@ const ChatBox = (
                 />
               ) : (
                 <MyIcon
-                  name={'send'}
-                  width={['18px', '32px']}
-                  height={['18px', '32px']}
+                  name={'chatSend'}
+                  width={['18px', '20px']}
+                  height={['18px', '20px']}
                   cursor={'pointer'}
                   color={'gray.500'}
                   onClick={() => {
@@ -963,75 +924,44 @@ const ChatBox = (
         />
       )}
       {/* admin mark data */}
-      {showMarkIcon && (
-        <>
-          {/* select one dataset to insert markData */}
-          <SelectDataset
-            isOpen={!!adminMarkData && !adminMarkData.kbId}
-            onClose={() => setAdminMarkData(undefined)}
-            // @ts-ignore
-            onSuccess={(kbId) => setAdminMarkData((state) => ({ ...state, kbId }))}
-          />
+      {!!adminMarkData && (
+        <SelectMarkCollection
+          adminMarkData={adminMarkData}
+          setAdminMarkData={(e) => setAdminMarkData({ ...e, chatItemId: adminMarkData.chatItemId })}
+          onClose={() => setAdminMarkData(undefined)}
+          onSuccess={(adminFeedback) => {
+            adminUpdateChatFeedback({
+              chatItemId: adminMarkData.chatItemId,
+              ...adminFeedback
+            });
+            // update dom
+            setChatHistory((state) =>
+              state.map((chatItem) =>
+                chatItem.dataId === adminMarkData.chatItemId
+                  ? {
+                      ...chatItem,
+                      adminFeedback
+                    }
+                  : chatItem
+              )
+            );
 
-          {/* edit markData modal */}
-          {adminMarkData && adminMarkData.kbId && (
-            <InputDataModal
-              onClose={() => setAdminMarkData(undefined)}
-              onSuccess={async (data) => {
-                if (!adminMarkData.kbId || !data.dataId) {
-                  return setAdminMarkData(undefined);
-                }
-                const adminFeedback = {
-                  kbId: adminMarkData.kbId,
-                  dataId: data.dataId,
-                  content: data.a
-                };
-
-                // update dom
-                setChatHistory((state) =>
-                  state.map((chatItem) =>
-                    chatItem.dataId === adminMarkData.chatItemId
-                      ? {
-                          ...chatItem,
-                          adminFeedback
-                        }
-                      : chatItem
-                  )
-                );
-                // request to update adminFeedback
-                try {
-                  adminUpdateChatFeedback({
-                    chatItemId: adminMarkData.chatItemId,
-                    ...adminFeedback
-                  });
-
-                  if (readFeedbackData) {
-                    userUpdateChatFeedback({
-                      chatItemId: readFeedbackData.chatItemId,
-                      userFeedback: undefined
-                    });
-                    setChatHistory((state) =>
-                      state.map((chatItem) =>
-                        chatItem.dataId === readFeedbackData.chatItemId
-                          ? { ...chatItem, userFeedback: undefined }
-                          : chatItem
-                      )
-                    );
-                    setReadFeedbackData(undefined);
-                  }
-                } catch (error) {}
-                setAdminMarkData(undefined);
-              }}
-              kbId={adminMarkData.kbId}
-              defaultValues={{
-                dataId: adminMarkData.dataId,
-                q: adminMarkData.q,
-                a: adminMarkData.a,
-                file_id: DatasetSpecialIdEnum.mark
-              }}
-            />
-          )}
-        </>
+            if (readFeedbackData) {
+              userUpdateChatFeedback({
+                chatItemId: readFeedbackData.chatItemId,
+                userFeedback: undefined
+              });
+              setChatHistory((state) =>
+                state.map((chatItem) =>
+                  chatItem.dataId === readFeedbackData.chatItemId
+                    ? { ...chatItem, userFeedback: undefined }
+                    : chatItem
+                )
+              );
+              setReadFeedbackData(undefined);
+            }
+          }}
+        />
       )}
     </Flex>
   );
@@ -1141,10 +1071,10 @@ function ChatAvatar({ src, type }: { src?: string; type: 'Human' | 'AI' }) {
     <Box
       w={['28px', '34px']}
       h={['28px', '34px']}
-      // p={'2px'}
+      p={'2px'}
       borderRadius={'lg'}
       border={theme.borders.base}
-      // boxShadow={'0 0 5px rgba(0,0,0,0.1)'}
+      boxShadow={'0 0 5px rgba(0,0,0,0.1)'}
       bg={type === 'Human' ? 'white' : 'myBlue.100'}
     >
       <Avatar src={src} w={'100%'} h={'100%'} />
