@@ -542,7 +542,7 @@ const ChatBox = (
               <ChatAvatar src={appAvatar} type={'AI'} />
               {/* message */}
               <Box textAlign={'left'} ml={2}>
-                <Card order={2} {...MessageCardStyle} bg={'white'}>
+                <Card order={2} {...MessageCardStyle} bg={'#F6F6F6'}>
                   <Markdown source={`~~~guide \n${welcomeText}`} isChatting={false} />
                 </Card>
               </Box>
@@ -555,7 +555,7 @@ const ChatBox = (
               <ChatAvatar src={appAvatar} type={'AI'} />
               {/* message */}
               <Box textAlign={'left'}>
-                <Card order={2} mt={2} bg={'white'} w={'400px'} {...MessageCardStyle}>
+                <Card order={2} mt={2} bg={'#F6F6F6'} w={'400px'} {...MessageCardStyle}>
                   {variableModules.map((item) => (
                     <Box key={item.id} mb={4}>
                       <VariableLabel required={item.required}>{item.label}</VariableLabel>
@@ -659,9 +659,9 @@ const ChatBox = (
                   </Flex>
                 )}
                 {item.obj === 'AI' && (
-                  <Flex w={'100%'} alignItems={'start'}>
+                  <Flex w={'100%'} alignItems={'flex-start'}>
                     {/* control icon */}
-                    <Flex mr={1} alignItems={'center'}>
+                    <Flex mr={1}>
                       <ChatAvatar src={appAvatar} type={'AI'} />
                       {/* chatting status */}
                       {statusBoxData && index === chatHistory.length - 1 && (
@@ -688,7 +688,7 @@ const ChatBox = (
                     </Flex>
                     {/* content */}
                     <Box textAlign={'left'}>
-                      <Card bg={'white'} {...MessageCardStyle}>
+                      <Card bg={'#F6F6F6'} {...MessageCardStyle} minW={'400px'}>
                         <Markdown
                           source={item.value}
                           isChatting={index === chatHistory.length - 1 && isChatting}
