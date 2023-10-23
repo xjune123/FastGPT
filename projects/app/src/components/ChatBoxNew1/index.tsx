@@ -680,7 +680,7 @@ const ChatBox = (
                             borderRadius={'50%'}
                             mt={'1px'}
                           ></Box>
-                          <Box ml={2} color={'myGray.600'}>
+                          <Box ml={2} color={'myGray.600'} whiteSpace={'nowrap'}>
                             {statusBoxData.name}
                           </Box>
                         </Flex>
