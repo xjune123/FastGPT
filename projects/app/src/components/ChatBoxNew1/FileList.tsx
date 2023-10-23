@@ -3,6 +3,8 @@ import { Flex, Box, Divider } from '@chakra-ui/react';
 import { ChatHistoryItemResType } from '@/types/chat';
 import { FlowModuleTypeEnum } from '@/constants/flow';
 import MyIcon from '@/components/Icon';
+import type { SearchDataResponseItemType } from '@fastgpt/global/core/dataset/type';
+import { RawSourceText } from '@/pages/dataset/detail/components/InputDataModal';
 // import { RawFileText } from '@/pages/kb/detail/components/InputDataModal';
 import { useTranslation } from 'react-i18next';
 import styles from './index.module.scss';
@@ -12,7 +14,7 @@ type QuoteItemType = {
 };
 const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType[] }) => {
   const { t } = useTranslation();
-  const [quoteModalData, setQuoteModalData] = useState<QuoteItemType[]>();
+  const [quoteModalData, setQuoteModalData] = useState<SearchDataResponseItemType[]>();
   const [isShowMore, setIsShowMore] = useState(false);
   const { quoteList = [] } = useMemo(() => {
     const chatData = responseData.find((item) => item.moduleType === FlowModuleTypeEnum.chatNode);
@@ -23,7 +25,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
         .filter((item) => item.moduleType === FlowModuleTypeEnum.chatNode)
         .map((item) => item.quoteList)
         .flat()
-        .filter((item) => item) as QuoteItemType[],
+        .filter((item) => item) as SearchDataResponseItemType[],
       historyPreview: chatData?.historyPreview,
       runningTime: +responseData.reduce((sum, item) => sum + (item.runningTime || 0), 0).toFixed(2)
     };
@@ -38,8 +40,8 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
   }
 
   const getFileType = (source: string) => {
-    const index = source.lastIndexOf('.');
-    let type: string = source.substring(index + 1);
+    const index = source?.lastIndexOf('.');
+    let type: string = source?.substring(index + 1);
 
     switch (type) {
       case 'ppt':
@@ -51,6 +53,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
     }
   };
 
+  console.log(quoteList, 'quoteList');
   return responseData.length === 0 ? null : (
     <Flex flexDirection={'column'} mt={2} flexWrap={'wrap'}>
       {quoteList.length > 0 && <Divider />}
@@ -75,10 +78,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
               onClick={() => setQuoteModalData(quoteList)}
             >
               <MyIcon name={getFileType(item.source)} mr={2} />
-              {/* <RawFileText
-                filename={item.source || t('common.Unknow') || 'Unknow'}
-                fileId={item.file_id}
-              /> */}
+              <RawSourceText sourceName={item.source} sourceId={item.sourceId} onClick={() => {}} />
             </Flex>
           ))}
           {arrayUnique1(quoteList, 'source').length > 3 && (

@@ -537,12 +537,12 @@ const ChatBox = (
           {showEmpty && <Empty />}
 
           {!!welcomeText && (
-            <Box py={3}>
+            <Box py={3} display={'flex'}>
               {/* avatar */}
               <ChatAvatar src={appAvatar} type={'AI'} />
               {/* message */}
-              <Box textAlign={'left'}>
-                <Card order={2} mt={2} {...MessageCardStyle} bg={'white'}>
+              <Box textAlign={'left'} ml={2}>
+                <Card order={2} {...MessageCardStyle} bg={'white'}>
                   <Markdown source={`~~~guide \n${welcomeText}`} isChatting={false} />
                 </Card>
               </Box>
@@ -865,9 +865,9 @@ const ChatBox = (
                 />
               ) : (
                 <MyIcon
-                  name={'chatSend'}
-                  width={['18px', '20px']}
-                  height={['18px', '20px']}
+                  name={'send'}
+                  width={['18px', '32px']}
+                  height={['18px', '32px']}
                   cursor={'pointer'}
                   color={'gray.500'}
                   onClick={() => {
