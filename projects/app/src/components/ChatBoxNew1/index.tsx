@@ -694,7 +694,7 @@ const ChatBox = (
                           isChatting={index === chatHistory.length - 1 && isChatting}
                         />
                         <Flex justifyContent={'space-between'}>
-                          {!isShare && <ResponseTags responseData={item.responseData} />}
+                          <ResponseTags responseData={item.responseData} />
                           <ChatController
                             ml={2}
                             chat={item}
