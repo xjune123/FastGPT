@@ -9,7 +9,6 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/web/common/hooks/useToast';
-import InputModal, { FormData as InputDataType, RawFileText } from './InputDataModaNew';
 import { debounce } from 'lodash';
 import { getErrText } from '@fastgpt/global/common/error/utils';
 import { useConfirm } from '@/web/common/hooks/useConfirm';
@@ -19,7 +18,7 @@ import MyIcon from '@/components/Icon';
 import MyInput from '@/components/MyInput';
 import { useLoading } from '@/web/common/hooks/useLoading';
 import { getCollectionIcon } from '@fastgpt/global/core/dataset/utils';
-import InputDataModal, { RawSourceText } from '../components/InputDataModaNew';
+import InputDataModal, { RawSourceText, type InputDataType } from '../components/InputDataModaNew';
 import type { DatasetDataListItemType } from '@/global/core/dataset/response.d';
 import { TabEnum } from '..';
 
