@@ -67,7 +67,7 @@ const Login = () => {
         flexDirection={'column'}
         alignItems={'center'}
         justifyContent={'center'}
-        bg={`url('/icon/login-bg.svg') no-repeat`}
+        bg={`url('/icon/login-bg1.png') no-repeat`}
         backgroundSize={'cover'}
         userSelect={'none'}
         h={'100%'}

@@ -1,56 +1,67 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Box, Flex, Button, Textarea, IconButton, BoxProps } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import {
   postData2Dataset,
   putDatasetDataById,
   delOneDatasetDataById
-} from '@/web/core/api/dataset';
+} from '@/web/core/dataset/api';
 import { useToast } from '@/web/common/hooks/useToast';
-import { getErrText } from '@/utils/tools';
+import { getErrText } from '@fastgpt/global/common/error/utils';
 import MyIcon from '@/components/Icon';
 import MyModal from '@/components/MyModal';
 import MyTooltip from '@/components/MyTooltip';
-import { QuestionOutlineIcon } from '@chakra-ui/icons';
+import { QuestionOutlineIcon, AddIcon } from '@chakra-ui/icons';
 import { useQuery } from '@tanstack/react-query';
-import { DatasetDataItemType } from '@/types/core/dataset/data';
 import { useTranslation } from 'react-i18next';
-import { useDatasetStore } from '@/web/core/store/dataset';
-import { getFileAndOpen } from '@/web/common/utils/file';
-import { datasetSpecialIdMap, datasetSpecialIds } from '@fastgpt/core/dataset/constant';
-import { strIsLink } from '@fastgpt/common/tools/str';
-import { useGlobalStore } from '@/web/common/store/global';
-import { useSelectFile } from '@/web/common/hooks/useSelectFile';
+import { useDatasetStore } from '@/web/core/dataset/store/dataset';
+import { getFileAndOpen } from '@/web/common/file/utils';
+import { strIsLink } from '@fastgpt/global/common/string/tools';
+import { useSystemStore } from '@/web/common/system/useSystemStore';
+import type { SetOneDatasetDataProps } from '@/global/core/api/datasetReq';
+import { useRequest } from '@/web/common/hooks/useRequest';
+import { countPromptTokens } from '@/global/common/tiktoken';
+import { useConfirm } from '@/web/common/hooks/useConfirm';
+import { useSelectFile } from '@/web/common/file/hooks/useSelectFile';
 
-export type FormData = { dataId?: string } & DatasetDataItemType;
+export type RawSourceType = {
+  sourceName?: string;
+  sourceId?: string;
+};
+export type RawSourceTextProps = BoxProps & RawSourceType;
+export type InputDataType = SetOneDatasetDataProps & RawSourceType;
 
 const InputDataModal = ({
   onClose,
   onSuccess,
   onDelete,
-  kbId,
-  defaultValues
+  datasetId,
+  defaultValues = {
+    datasetId: '',
+    collectionId: '',
+    sourceId: '',
+    sourceName: ''
+  }
 }: {
   onClose: () => void;
-  onSuccess: (data: FormData) => void;
+  onSuccess: (data: SetOneDatasetDataProps) => void;
   onDelete?: () => void;
-  kbId: string;
-  defaultValues: FormData;
+  datasetId: string;
+  defaultValues: InputDataType;
 }) => {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { datasetDetail, loadDatasetDetail } = useDatasetStore();
 
-  const [data, setData] = useState(defaultValues);
-
-  const { kbDetail, getKbDetail } = useDatasetStore();
-
-  const { getValues, setValue, register, handleSubmit, reset } = useForm<FormData>({
+  const { register, handleSubmit, reset, getValues, setValue } = useForm<InputDataType>({
     defaultValues
   });
 
-  const maxToken = kbDetail.vectorModel?.maxToken || 2000;
+  const { ConfirmModal, openConfirm } = useConfirm({
+    content: t('dataset.data.Delete Tip')
+  });
+
+  const maxToken = datasetDetail.vectorModel?.maxToken || 2000;
 
   const { File, onOpen: onOpenSelectFile } = useSelectFile({
     fileType: '.svg,.jpg,.png',
@@ -60,87 +71,70 @@ const InputDataModal = ({
   /**
    * 确认导入新数据
    */
-  const sureImportData = useCallback(
-    async (e: FormData) => {
-      if (e.q.length >= maxToken) {
-        toast({
+  const { mutate: sureImportData, isLoading: isImporting } = useRequest({
+    mutationFn: async (e: InputDataType) => {
+      if (!e.q) {
+        return toast({
+          title: '匹配的知识点不能为空',
+          status: 'warning'
+        });
+      }
+      if (countPromptTokens(e.q) >= maxToken) {
+        return toast({
           title: '总长度超长了',
           status: 'warning'
         });
-        return;
       }
-      setLoading(true);
 
-      try {
-        const data = {
-          ...e,
-          dataId: '',
-          // @ts-ignore
-          source: e.source || datasetSpecialIdMap[e.file_id]?.sourceName
-        };
-        data.dataId = await postData2Dataset({
-          kbId,
-          data
-        });
+      const data = { ...e };
+      delete data.sourceName;
+      delete data.sourceId;
 
-        toast({
-          title: '导入数据成功,需要一段时间训练',
-          status: 'success'
-        });
-        reset({
-          ...e,
-          a: '',
-          q: ''
-        });
+      data.id = await postData2Dataset(data);
 
-        onSuccess(data);
-      } catch (err: any) {
-        toast({
-          title: getErrText(err, '出现了点意外~'),
-          status: 'error'
-        });
-      }
-      setLoading(false);
+      return data;
     },
-    [kbId, maxToken, onSuccess, reset, toast]
-  );
-
-  const updateData = useCallback(
-    async (e: FormData) => {
-      if (!e.dataId) return;
-
-      if (e.a !== defaultValues.a || e.q !== defaultValues.q) {
-        setLoading(true);
-        try {
-          const data = {
-            ...e,
-            dataId: e.dataId,
-            kbId,
-            q: e.q === defaultValues.q ? '' : e.q
-          };
-          await putDatasetDataById(data);
-          onSuccess(data);
-        } catch (err) {
-          toast({
-            status: 'error',
-            title: getErrText(err, '更新数据失败')
-          });
-        }
-        setLoading(false);
-      }
-
-      toast({
-        title: '修改数据成功',
-        status: 'success'
+    successToast: t('dataset.data.Input Success Tip'),
+    onSuccess(e) {
+      reset({
+        ...e,
+        q: '',
+        a: ''
       });
-      onClose();
-    },
-    [defaultValues.a, defaultValues.q, kbId, onClose, onSuccess, toast]
-  );
 
-  useQuery(['getKbDetail'], () => {
-    if (kbDetail._id === kbId) return null;
-    return getKbDetail(kbId);
+      onSuccess(e);
+    },
+    errorToast: t('common.error.unKnow')
+  });
+
+  const { mutate: onUpdateData, isLoading: isUpdating } = useRequest({
+    mutationFn: async (e: SetOneDatasetDataProps) => {
+      if (!e.id) return e;
+
+      // not exactly same
+      if (e.q !== defaultValues.q || e.a !== defaultValues.a) {
+        await putDatasetDataById({
+          ...e,
+          q: e.q === defaultValues.q ? '' : e.q
+        });
+        return e;
+      }
+
+      return e;
+    },
+    successToast: t('dataset.data.Update Success Tip'),
+    errorToast: t('common.error.unKnow'),
+    onSuccess(data) {
+      onSuccess(data);
+      onClose();
+    }
+  });
+
+  const loading = useMemo(() => isImporting || isUpdating, [isImporting, isUpdating]);
+
+  useQuery(['loadDatasetDetail'], () => {
+    if (datasetDetail._id === datasetId) return null;
+    return loadDatasetDetail(datasetId);
   });
 
   const onSelectFile = useCallback(async (e: File[]) => {
@@ -170,9 +164,8 @@ const InputDataModal = ({
   return (
     <MyModal
       isOpen={true}
-      onClose={onClose}
       isCentered
-      title={defaultValues.dataId ? '变更数据' : '手动导入数据'}
+      title={defaultValues.id ? t('dataset.data.Update Data') : t('dataset.data.Input Data')}
       w={'90vw'}
       maxW={'90vw'}
       h={'90vh'}
@@ -203,7 +196,6 @@ const InputDataModal = ({
                 required: true
               })}
             />
-            <File onSelect={onSelectFile} />
           </Box>
           <Box flex={1} h={['50%', '100%']}>
             <Flex>
@@ -236,9 +228,10 @@ const InputDataModal = ({
           >
             上传图片
           </Button>
-          <RawFileText
-            fileId={getValues('file_id')}
-            filename={getValues('source')}
+          <File onSelect={onSelectFile} />
+          <RawSourceText
+            sourceName={defaultValues.sourceName}
+            sourceId={defaultValues.sourceId}
             position={'absolute'}
             left={'50%'}
             top={['16px', '50%']}
@@ -246,7 +239,7 @@ const InputDataModal = ({
           />
 
           <Box flex={1}>
-            {defaultValues.dataId && onDelete && (
+            {defaultValues.id && onDelete && (
               <IconButton
                 variant={'outline'}
                 icon={<MyIcon name={'delete'} w={'16px'} h={'16px'} />}
@@ -257,10 +250,10 @@ const InputDataModal = ({
                   color: 'red.600',
                   borderColor: 'red.600'
                 }}
-                onClick={async () => {
-                  if (!onDelete || !defaultValues.dataId) return;
+                onClick={openConfirm(async () => {
+                  if (!onDelete || !defaultValues.id) return;
                   try {
-                    await delOneDatasetDataById(defaultValues.dataId);
+                    await delOneDatasetDataById(defaultValues.id);
                     onDelete();
                     onClose();
                     toast({
@@ -274,61 +267,60 @@ const InputDataModal = ({
                     });
                     console.log(error);
                   }
-                }}
+                })}
               />
             )}
           </Box>
           <Box>
             <Button variant={'base'} mr={3} isLoading={loading} onClick={onClose}>
-              取消
+              {t('common.Close')}
             </Button>
             <Button
               isLoading={loading}
-              onClick={handleSubmit(defaultValues.dataId ? updateData : sureImportData)}
+              // @ts-ignore
+              onClick={handleSubmit(defaultValues.id ? onUpdateData : sureImportData)}
             >
-              {defaultValues.dataId ? '确认变更' : '确认导入'}
+              {defaultValues.id ? '确认变更' : '确认导入'}
             </Button>
           </Box>
         </Flex>
       </Flex>
+      <ConfirmModal />
     </MyModal>
   );
 };
 
 export default InputDataModal;
 
-interface RawFileTextProps extends BoxProps {
-  filename?: string;
-  fileId?: string;
-}
-export function RawFileText({ fileId, filename = '', ...props }: RawFileTextProps) {
+export function RawSourceText({ sourceId, sourceName = '', ...props }: RawSourceTextProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const { setLoading } = useGlobalStore();
+  const { setLoading } = useSystemStore();
 
-  const hasFile = useMemo(() => fileId && !datasetSpecialIds.includes(fileId), [fileId]);
-  const formatName = useMemo(
-    () => (filename.startsWith('kb') ? t(filename) : filename),
-    [filename, t]
-  );
+  const canPreview = useMemo(() => !!sourceId, [sourceId]);
 
   return (
-    <MyTooltip label={hasFile ? t('file.Click to view file') || '' : ''} shouldWrapChildren={false}>
+    <MyTooltip
+      label={sourceId ? t('file.Click to view file') || '' : ''}
+      shouldWrapChildren={false}
+    >
       <Box
         color={'myGray.600'}
         display={'inline-block'}
         whiteSpace={'nowrap'}
-        {...(hasFile
+        maxW={['200px', '300px']}
+        className={'textEllipsis'}
+        {...(canPreview
           ? {
               cursor: 'pointer',
               textDecoration: 'underline',
               onClick: async () => {
-                if (strIsLink(fileId)) {
-                  return window.open(fileId, '_blank');
+                if (strIsLink(sourceId)) {
+                  return window.open(sourceId, '_blank');
                 }
                 setLoading(true);
                 try {
-                  await getFileAndOpen(fileId as string);
+                  await getFileAndOpen(sourceId as string);
                 } catch (error) {
                   toast({
                     title: getErrText(error, '获取文件地址失败'),
@@ -341,7 +333,7 @@ export function RawFileText({ fileId, filename = '', ...props }: RawFileTextProp
           : {})}
         {...props}
       >
-        {formatName}
+        {sourceName || t('common.Unknow Source')}
       </Box>
     </MyTooltip>
   );

@@ -19,7 +19,7 @@ import MyIcon from '@/components/Icon';
 import MyInput from '@/components/MyInput';
 import { useLoading } from '@/web/common/hooks/useLoading';
 import { getCollectionIcon } from '@fastgpt/global/core/dataset/utils';
-import InputDataModal, { RawSourceText } from '../components/InputDataModal';
+import InputDataModal, { RawSourceText } from '../components/InputDataModaNew';
 import type { DatasetDataListItemType } from '@/global/core/dataset/response.d';
 import { TabEnum } from '..';
 
