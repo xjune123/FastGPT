@@ -841,19 +841,19 @@ const ChatBox = (
             position={'relative'}
             boxShadow={`0px 6px 20px 0px rgba(0,0,0,0.08)`}
             border={'1px solid'}
-            borderColor={'#E5E5E5'}
+            borderColor={'#E5E5E5 !important'}
             borderRadius={16}
             backgroundColor={'white'}
           >
             {/* 输入框 */}
             <Textarea
               ref={TextareaDom}
-              py={0}
+              // py={0}
               pr={['45px', '55px']}
-              border={'none'}
-              _focusVisible={{
-                border: 'none'
-              }}
+              // border={'none'}
+              // _focusVisible={{
+              //   border: 'none'
+              // }}
               placeholder="请输入提问信息..."
               resize={'none'}
               rows={1}
@@ -866,6 +866,8 @@ const ChatBox = (
               wordBreak={'break-all'}
               boxShadow={'none !important'}
               color={'myGray.900'}
+              border={'1px solid'}
+              borderColor={'#E5E5E5 !important'}
               onChange={(e) => {
                 const textarea = e.target;
                 textarea.style.height = textareaMinH;

@@ -466,7 +466,7 @@ const ChatBox = (
     px: 4,
     py: 3,
     borderRadius: '0 8px 8px 8px',
-    boxShadow: '0 0 8px rgba(0,0,0,0.15)',
+    // boxShadow: '0 0 8px rgba(0,0,0,0.15)',
     display: 'inline-block',
     maxW: ['calc(100% - 25px)', 'calc(100% - 40px)']
   };
@@ -533,7 +533,7 @@ const ChatBox = (
 
       {/* chat box container */}
       <Box ref={ChatBoxRef} flex={'1 0 0'} h={0} w={'100%'} overflow={'overlay'} px={[4, 0]} pb={3}>
-        <Box id="chat-container" maxW={['100%', '92%']} h={'100%'} mx={'auto'}>
+        <Box id="chat-container" maxW={['auto', 'min(750px, 100%)']} h={'100%'} mx={'auto'}>
           {showEmpty && <Empty />}
 
           {!!welcomeText && (
@@ -800,10 +800,10 @@ const ChatBox = (
           <Box
             py={'18px'}
             position={'relative'}
-            boxShadow={`0 0 10px rgba(0,0,0,0.2)`}
-            borderTop={['1px solid', 0]}
-            borderTopColor={'myGray.200'}
-            borderRadius={['none', 'md']}
+            // boxShadow={`0 0 10px rgba(0,0,0,0.2)`}
+            border={'1px solid'}
+            borderColor={'#E5E5E5 !important'}
+            borderRadius={16}
             backgroundColor={'white'}
           >
             {/* 输入框 */}
@@ -815,7 +815,7 @@ const ChatBox = (
               _focusVisible={{
                 border: 'none'
               }}
-              placeholder="提问"
+              placeholder="请输入提问信息..."
               resize={'none'}
               rows={1}
               height={'22px'}
@@ -1154,7 +1154,7 @@ function ChatController({
           onClick={() => copyData(chat.value)}
         >
           <MyIcon {...controlIconStyle} name={'copy_white'} _hover={{ color: '#3B6EFF' }} />
-          复制
+          <Box whiteSpace={'nowrap'}>复制</Box>
         </Box>
       </MyTooltip>
       {!!onDelete && (
@@ -1257,7 +1257,7 @@ function ChatController({
               name={chat.userFeedback ? 'bad1' : 'bad2'}
               _hover={{ color: '#3B6EFF' }}
             />
-            <Box>{chat.userFeedback ? '' : '反馈'}</Box>
+            <Box whiteSpace={'nowrap'}>{chat.userFeedback ? '' : '反馈'}</Box>
           </Box>
         </MyTooltip>
       )}

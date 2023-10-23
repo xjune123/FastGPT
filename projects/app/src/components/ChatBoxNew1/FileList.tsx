@@ -35,13 +35,18 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
     const res = new Map();
     const list = arr
       .filter((item) => !res.has(item[name]) && res.set(item[name], 1))
-      .filter((item) => item.source !== '手动录入' && item.source !== 'kb.Manual Data');
+      .filter(
+        (item) =>
+          item.sourceName !== '手动录入' &&
+          item.sourceName !== '未知来源' &&
+          item.sourceName !== 'kb.Manual Data'
+      );
     return list.slice(0, isShowMore ? quoteList.length : 3);
   }
 
-  const getFileType = (source: string) => {
-    const index = source?.lastIndexOf('.');
-    let type: string = source?.substring(index + 1);
+  const getFileType = (sourceName: string) => {
+    const index = sourceName?.lastIndexOf('.');
+    let type: string = sourceName?.substring(index + 1);
 
     switch (type) {
       case 'ppt':
@@ -53,18 +58,17 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
     }
   };
 
-  console.log(quoteList, 'quoteList');
   return responseData.length === 0 ? null : (
     <Flex flexDirection={'column'} mt={2} flexWrap={'wrap'}>
-      {quoteList.length > 0 && <Divider />}
-      {quoteList.length > 0 && (
+      {arrayUnique1(quoteList, 'sourceName').length > 0 && <Divider />}
+      {arrayUnique1(quoteList, 'sourceName').length > 0 && (
         <Box color={'#999999'} mt={4} mb={3} fontSize={'sm'}>
           来源:
         </Box>
       )}
       {quoteList.length > 0 && (
         <Box>
-          {arrayUnique1(quoteList, 'source').map((item) => (
+          {arrayUnique1(quoteList, 'sourceName').map((item) => (
             <Flex
               key={item.id}
               alignItems={'center'}
@@ -77,11 +81,11 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
               pr={2}
               onClick={() => setQuoteModalData(quoteList)}
             >
-              <MyIcon name={getFileType(item.source)} mr={2} />
-              <RawSourceText sourceName={item.source} sourceId={item.sourceId} onClick={() => {}} />
+              <MyIcon name={getFileType(item.sourceName)} mr={2} />
+              <RawSourceText sourceName={item.sourceName} sourceId={item.sourceId} />
             </Flex>
           ))}
-          {arrayUnique1(quoteList, 'source').length > 3 && (
+          {arrayUnique1(quoteList, 'sourceName').length > 3 && (
             <Flex justifyContent={'center'} alignItems={'center'} cursor={'pointer'}>
               <Flex
                 w={95}

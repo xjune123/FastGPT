@@ -46,11 +46,12 @@ const ResponseTags = ({ responseData = [] }: { responseData?: ChatHistoryItemRes
 
   const TagStyles: BoxProps = {
     mr: 2,
-    bg: 'transparent'
+    bg: 'transparent',
+    whiteSpace: 'nowrap'
   };
 
   return responseData.length === 0 ? null : (
-    <Flex alignItems={'center'} mt={2} flexWrap={'wrap'}>
+    <Flex alignItems={'center'} mt={2} flexWrap={'nowrap'}>
       {quoteList.length > 0 && (
         <MyTooltip label="查看引用">
           <Tag
