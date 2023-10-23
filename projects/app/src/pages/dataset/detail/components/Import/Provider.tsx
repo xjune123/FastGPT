@@ -24,6 +24,7 @@ import { chunksUpload } from '@/web/core/dataset/utils';
 import { postCreateTrainingBill } from '@/web/common/bill/api';
 import { useTranslation } from 'react-i18next';
 import { ImportTypeEnum } from './ImportModal';
+import { Prompt_AgentCustom } from '@/global/core/prompt/agent';
 
 const filenameStyles = {
   className: 'textEllipsis',
@@ -47,6 +48,7 @@ type useImportStoreType = {
   setChunkLen: Dispatch<number>;
   showRePreview: boolean;
   setReShowRePreview: Dispatch<SetStateAction<boolean>>;
+  setPrompt: Dispatch<string>;
 };
 const StateContext = createContext<useImportStoreType>({
   onclickUpload: function (e: { files: FileItemType[] }): void {
@@ -81,6 +83,9 @@ const StateContext = createContext<useImportStoreType>({
   showRePreview: false,
   setReShowRePreview: function (value: React.SetStateAction<boolean>): void {
     throw new Error('Function not implemented.');
+  },
+  setPrompt: function (): void {
+    throw new Error('Function not implemented.');
   }
 });
 export const useImportStore = () => useContext(StateContext);
@@ -111,6 +116,7 @@ const Provider = ({
   const [chunkLen, setChunkLen] = useState(defaultChunkLen);
   const [previewFile, setPreviewFile] = useState<FileItemType>();
   const [showRePreview, setReShowRePreview] = useState(false);
+  const [prompt, setPrompt] = useState('');
 
   const isUnselectedFile = useMemo(() => files.length === 0, [files]);
 
@@ -122,6 +128,10 @@ const Provider = ({
   const price = useMemo(() => {
     return formatPrice(files.reduce((sum, file) => sum + file.tokens, 0) * unitPrice);
   }, [files, unitPrice]);
+
+  useEffect(() => {
+    setPrompt(Prompt_AgentCustom.prompt);
+  }, []);
 
   /* start upload data */
   const { mutate: onclickUpload, isLoading: uploading } = useRequest({
@@ -148,6 +158,7 @@ const Provider = ({
           billId,
           chunks,
           mode,
+          prompt,
           onUploading: (insertLen) => {
             setSuccessChunks((state) => state + insertLen);
           }
@@ -222,7 +233,8 @@ const Provider = ({
     chunkLen,
     setChunkLen,
     showRePreview,
-    setReShowRePreview
+    setReShowRePreview,
+    setPrompt
   };
   return <StateContext.Provider value={value}>{children}</StateContext.Provider>;
 };

@@ -24,14 +24,15 @@ const QAImport = ({ custom }: { custom: boolean }) => {
     onclickUpload,
     onReSplitChunks,
     uploading,
-    showRePreview
+    showRePreview,
+    setPrompt
   } = useImportStore();
 
   const { openConfirm, ConfirmModal } = useConfirm({
     content: `该任务无法终止！导入后会自动调用大模型生成问答对，会有一些细节丢失，请确认！如果余额不足，未完成的任务会被暂停。`
   });
 
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt1] = useState('');
 
   const previewQAPrompt = useMemo(() => {
     if (custom) {
