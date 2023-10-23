@@ -15,7 +15,7 @@ import { ChatSiteItemType } from '@/types/chat';
 import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12);
 
-import ChatBox, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBox';
+import ChatBox, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBoxNew1';
 import PageContainer from '@/components/PageContainer';
 import ChatHeader from './components/ChatHeader';
 import ChatHistorySlider from './components/ChatHistorySlider';
@@ -265,6 +265,7 @@ const OutLink = ({
               onDelMessage={({ contentId, index }) =>
                 delShareChatHistoryItemById({ chatId, contentId, index })
               }
+              appId={''}
             />
           </Box>
         </Flex>

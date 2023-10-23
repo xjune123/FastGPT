@@ -1,17 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { Box, Flex, Button, Input } from '@chakra-ui/react';
+import { Box, Flex, Button, Input, Textarea } from '@chakra-ui/react';
 import { useConfirm } from '@/web/common/hooks/useConfirm';
 import { formatPrice } from '@fastgpt/global/common/bill/tools';
 import MyTooltip from '@/components/MyTooltip';
 import { QuestionOutlineIcon, InfoOutlineIcon } from '@chakra-ui/icons';
-import { Prompt_AgentQA } from '@/global/core/prompt/agent';
+import { Prompt_AgentQA, Prompt_AgentCustom } from '@/global/core/prompt/agent';
 import { replaceVariable } from '@/global/common/string/tools';
 import { useImportStore, SelectorContainer, PreviewFileOrChunk } from './Provider';
 import { useDatasetStore } from '@/web/core/dataset/store/dataset';
 
 const fileExtension = '.txt, .doc, .docx, .pdf, .md';
 
-const QAImport = () => {
+const QAImport = ({ custom }: { custom: boolean }) => {
   const { datasetDetail } = useDatasetStore();
   const vectorModel = datasetDetail.vectorModel;
   const unitPrice = vectorModel?.price || 0.2;
@@ -34,9 +34,15 @@ const QAImport = () => {
   const [prompt, setPrompt] = useState('');
 
   const previewQAPrompt = useMemo(() => {
-    return replaceVariable(Prompt_AgentQA.prompt, {
-      theme: prompt || Prompt_AgentQA.defaultTheme
-    });
+    if (custom) {
+      return replaceVariable(Prompt_AgentCustom.prompt, {
+        theme: prompt || Prompt_AgentCustom.defaultTheme
+      });
+    } else {
+      return replaceVariable(Prompt_AgentQA.prompt, {
+        theme: prompt || Prompt_AgentQA.defaultTheme
+      });
+    }
   }, [prompt]);
 
   return (
@@ -44,23 +50,40 @@ const QAImport = () => {
       <SelectorContainer fileExtension={fileExtension}>
         {/* prompt */}
         <Box py={5}>
-          <Box mb={2}>
-            QA 拆分引导词{' '}
-            <MyTooltip label={previewQAPrompt} forceShow>
-              <InfoOutlineIcon ml={1} />
-            </MyTooltip>
-          </Box>
-          <Flex alignItems={'center'} fontSize={'sm'}>
-            <Box mr={2}>文件主题</Box>
-            <Input
-              fontSize={'sm'}
-              flex={1}
-              placeholder={Prompt_AgentQA.defaultTheme}
-              bg={'myWhite.500'}
-              defaultValue={prompt}
-              onChange={(e) => setPrompt(e.target.value || '')}
-            />
-          </Flex>
+          {!custom && (
+            <Box mb={2}>
+              QA 拆分引导词{' '}
+              <MyTooltip label={previewQAPrompt} forceShow>
+                <InfoOutlineIcon ml={1} />
+              </MyTooltip>
+            </Box>
+          )}
+          {custom ? (
+            <Flex alignItems={'top'} fontSize={'sm'}>
+              <Box mr={2}>提示词</Box>
+              <Textarea
+                fontSize={'sm'}
+                flex={1}
+                h={194}
+                bg={'myWhite.500'}
+                placeholder={Prompt_AgentCustom.defaultTheme}
+                defaultValue={Prompt_AgentCustom.prompt}
+                onChange={(e) => setPrompt(e.target.value || '')}
+              />
+            </Flex>
+          ) : (
+            <Flex alignItems={'center'} fontSize={'sm'}>
+              <Box mr={2}>文件主题</Box>
+              <Input
+                fontSize={'sm'}
+                flex={1}
+                placeholder={Prompt_AgentQA.defaultTheme}
+                bg={'myWhite.500'}
+                defaultValue={prompt}
+                onChange={(e) => setPrompt(e.target.value || '')}
+              />
+            </Flex>
+          )}
         </Box>
         {/* price */}
         <Flex py={5} alignItems={'center'}>

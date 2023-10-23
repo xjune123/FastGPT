@@ -16,7 +16,8 @@ import { TrainingModeEnum } from '@fastgpt/global/core/dataset/constant';
 export enum ImportTypeEnum {
   index = 'index',
   qa = 'qa',
-  csv = 'csv'
+  csv = 'csv',
+  custom = 'custom'
 }
 
 const ImportData = ({
@@ -95,6 +96,12 @@ const ImportData = ({
                 title: 'CSV 导入',
                 desc: '批量导入问答对，是最精准的数据',
                 value: ImportTypeEnum.csv
+              },
+              {
+                icon: 'custom',
+                title: '自定义导入',
+                desc: '根据指令让AI总结文档内容',
+                value: ImportTypeEnum.custom
               }
             ]}
             value={importType}
@@ -111,7 +118,8 @@ const ImportData = ({
         >
           <Box flex={'1 0 0'} h={0}>
             {importType === ImportTypeEnum.index && <ChunkImport />}
-            {importType === ImportTypeEnum.qa && <QAImport />}
+            {importType === ImportTypeEnum.qa && <QAImport custom={false} />}
+            {importType === ImportTypeEnum.custom && <QAImport custom={true} />}
             {importType === ImportTypeEnum.csv && <CsvImport />}
           </Box>
         </Provider>
