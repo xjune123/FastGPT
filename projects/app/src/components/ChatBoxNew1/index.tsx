@@ -1071,7 +1071,7 @@ function ChatAvatar({ src, type }: { src?: string; type: 'Human' | 'AI' }) {
     <Box
       w={['28px', '34px']}
       h={['28px', '34px']}
-      p={'2px'}
+      // p={'2px'}
       borderRadius={'lg'}
       border={theme.borders.base}
       boxShadow={'0 0 5px rgba(0,0,0,0.1)'}
