@@ -11,7 +11,7 @@ import {
   DrawerContent,
   useTheme
 } from '@chakra-ui/react';
-import { useGlobalStore } from '@/web/common/store/global';
+import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { useQuery } from '@tanstack/react-query';
 import { streamFetch } from '@/web/common/api/fetch';
 import { useChatStore } from '@/web/core/store/chat';
@@ -22,14 +22,14 @@ const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12);
 import type { ChatHistoryItemType } from '@/types/chat';
 import { useTranslation } from 'react-i18next';
 
-import ChatBoxNew, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBoxNew';
+import ChatBoxNew1, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBoxNew1';
 import PageContainer from '@/components/PageContainer';
 import SideBar from '@/components/SideBar';
 import ChatHistorySlider from './components/ChatHistorySlider';
 import SliderApps from './components/SliderApps';
 import ChatHeader from './components/ChatHeader';
-import { getErrText } from '@/utils/tools';
-import { useUserStore } from '@/web/support/store/user';
+import { getErrText } from '@fastgpt/global/common/error/utils';
+import { useUserStore } from '@/web/support/user/useUserStore';
 import { serviceSideProps } from '@/web/common/utils/i18n';
 
 const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
@@ -56,7 +56,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
   } = useChatStore();
   const { myApps, loadMyApps, userInfo } = useUserStore();
 
-  const { isPc } = useGlobalStore();
+  const { isPc } = useSystemStore();
   const { Loading, setIsLoading } = useLoading();
   const { isOpen: isOpenSlider, onClose: onCloseSlider, onOpen: onOpenSlider } = useDisclosure();
 
@@ -179,7 +179,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
         if (e?.code === 501) {
           router.replace('/app/list');
         } else {
-          router.replace('/chat_new');
+          router.replace('/chat_new1');
         }
       }
       setIsLoading(false);
@@ -356,7 +356,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
 
             {/* chat box */}
             <Box flex={1}>
-              <ChatBoxNew
+              <ChatBoxNew1
                 ref={ChatBoxRef}
                 showEmptyIntro
                 appAvatar={chatData.app.avatar}

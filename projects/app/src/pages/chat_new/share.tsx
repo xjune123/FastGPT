@@ -15,7 +15,7 @@ import { ChatSiteItemType } from '@/types/chat';
 import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12);
 
-import ChatBoxNew, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBoxNew';
+import ChatBoxNew1, { type ComponentRef, type StartChatFnProps } from '@/components/ChatBoxNew1';
 import PageContainer from '@/components/PageContainer';
 import ChatHeader from './components/ChatHeader';
 import ChatHistorySlider from './components/ChatHistorySlider';
@@ -246,7 +246,7 @@ const OutLink = ({
           />
           {/* chat box */}
           <Box flex={1}>
-            <ChatBoxNew
+            <ChatBoxNew1
               active={!!shareChatData.app.name}
               ref={ChatBoxRef}
               appAvatar={shareChatData.app.avatar}

@@ -1,12 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import { Flex, Box, Divider } from '@chakra-ui/react';
-import { ChatHistoryItemResType, QuoteItemType } from '@/types/chat';
+import { ChatHistoryItemResType } from '@/types/chat';
 import { FlowModuleTypeEnum } from '@/constants/flow';
 import MyIcon from '@/components/Icon';
-import { RawFileText } from '@/pages/kb/detail/components/InputDataModal';
+// import { RawFileText } from '@/pages/kb/detail/components/InputDataModal';
 import { useTranslation } from 'react-i18next';
 import styles from './index.module.scss';
-
+type QuoteItemType = {
+  file_id?: string;
+  filename: string;
+};
 const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType[] }) => {
   const { t } = useTranslation();
   const [quoteModalData, setQuoteModalData] = useState<QuoteItemType[]>();
@@ -72,10 +75,10 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
               onClick={() => setQuoteModalData(quoteList)}
             >
               <MyIcon name={getFileType(item.source)} mr={2} />
-              <RawFileText
+              {/* <RawFileText
                 filename={item.source || t('common.Unknow') || 'Unknow'}
                 fileId={item.file_id}
-              />
+              /> */}
             </Flex>
           ))}
           {arrayUnique1(quoteList, 'source').length > 3 && (
