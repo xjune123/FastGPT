@@ -47,7 +47,7 @@ const ChatHeader = ({
           </Box> */}
           <Image src={'/imgs/files/chat_logo.svg'} />
           <Divider orientation="vertical" h={5} m={'0 12px'} />
-          <Tag>
+          <Tag borderColor={'#CDD5DF'} color={'#BBC3CD'} bg={'#fff'}>
             <MyIcon name={'history'} w={'14px'} />
             <Box ml={1}>{history.length === 0 ? '新的对话' : `${history.length}条记录`}</Box>
           </Tag>

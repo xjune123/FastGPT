@@ -688,7 +688,7 @@ const ChatBox = (
                     </Flex>
                     {/* content */}
                     <Box textAlign={'left'}>
-                      <Card bg={'#F6F6F6'} {...MessageCardStyle} minW={'400px'}>
+                      <Card bg={'#F6F6F6'} {...MessageCardStyle} minW={'430px'}>
                         <Markdown
                           source={item.value}
                           isChatting={index === chatHistory.length - 1 && isChatting}
