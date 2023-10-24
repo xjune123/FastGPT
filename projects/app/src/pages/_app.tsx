@@ -92,7 +92,7 @@ function App({ Component, pageProps }: AppProps) {
         <title>{feConfigs?.systemTitle || 'AI'}</title>
         <meta
           name="description"
-          content="FastGPT is a knowledge-based question answering system built on the LLM. It offers out-of-the-box data processing and model invocation capabilities. Moreover, it allows for workflow orchestration through Flow visualization, thereby enabling complex question and answer scenarios!"
+          content="璞康AI知识库是基于 LLM 大语言模型的知识库系统，提供开箱即用的数据处理、模型调用等能力。提供可视化界面，一键创建企业AI知识库并且能够基于用户的互动和最新数据源扩展和更新其知识。"
         />
         <meta
           name="viewport"
