@@ -30,10 +30,7 @@ const handlers = [
       window.dispatchEvent(new Event("resize"));
       let text = VueWrapper(target).$el.innerHTML
       text = text.replace(/<script[^>]*?>[\s\S]*?<\/script>/ig, '');     //匹配js标签
-      console.log(text, '222')
-
       text = text.replace(/<style[^>]*?>[\s\S]*?<\/style>/ig, '');     //匹配style标签
-      console.log(text, '333')
       text = text.replace(/<(.|\n)+?>/ig, '')
       // 使用正则表达式删除所有标签
       return text;
