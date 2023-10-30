@@ -10,7 +10,9 @@ import {
   readCsvContent,
   readTxtContent,
   readPdfContent,
-  readDocContent
+  readDocContent,
+  readPptContent,
+  readExcelContent
 } from '@/web/common/file/utils';
 import { Box, Flex, useDisclosure, type BoxProps } from '@chakra-ui/react';
 import { DragEvent, useCallback, useState } from 'react';
@@ -161,10 +163,15 @@ const FileSelect = ({
               case 'doc':
               case 'docx':
                 return readDocContent(file);
+              case 'xlsx':
+                return readExcelContent(file);
+              case 'pptx':
+              case 'ppt':
+                return readPptContent(file);
             }
             return '';
           })();
-
+          console.log(text, 'text');
           if (text) {
             text = simpleText(text);
             const splitRes = splitText2Chunks({
@@ -354,6 +361,7 @@ const FileSelect = ({
       w={'100%'}
       position={'relative'}
       {...props}
+      className="previewFile"
       onDragEnter={handleDragEnter}
       onDragOver={handleDragEnter}
       onDragLeave={handleDragLeave}

@@ -272,6 +272,7 @@ export const PreviewFileOrChunk = () => {
             h={['auto', 0]}
             overflow={'overlay'}
             px={[4, 8]}
+            className="previewFile"
             my={4}
             contentEditable
             dangerouslySetInnerHTML={{ __html: previewFile.text }}
