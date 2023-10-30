@@ -29,10 +29,10 @@ const handlers = [
       await renderPptx(buffer, target, null);
       window.dispatchEvent(new Event("resize"));
       let text = VueWrapper(target).$el.innerHTML
+      // 使用正则表达式删除所有标签
       text = text.replace(/<script[^>]*?>[\s\S]*?<\/script>/ig, '');     //匹配js标签
       text = text.replace(/<style[^>]*?>[\s\S]*?<\/style>/ig, '');     //匹配style标签
-      text = text.replace(/<(.|\n)+?>/ig, '')
-      // 使用正则表达式删除所有标签
+      text = text.replace(/<[^>]+>/g, '')
       return text;
     },
   },
