@@ -47,10 +47,11 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
   const getFileType = (sourceName: string) => {
     const index = sourceName?.lastIndexOf('.');
     let type: string = sourceName?.substring(index + 1);
-
     switch (type) {
       case 'ppt':
-        return 'pdf1';
+        return 'ppt';
+      case 'pptx':
+        return 'ppt';
       case 'pdf':
         return 'pdf1';
       default:

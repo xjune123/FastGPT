@@ -6,6 +6,7 @@ export const fileImgs = [
   { suffix: '(doc|docs)', src: '/imgs/files/doc.svg' },
   { suffix: 'txt', src: '/imgs/files/txt.svg' },
   { suffix: 'md', src: '/imgs/files/markdown.svg' },
+  { suffix: 'pptx', src: '/imgs/files/ppt.svg' },
   { suffix: '.', src: '/imgs/files/file.svg' }
 ];
 

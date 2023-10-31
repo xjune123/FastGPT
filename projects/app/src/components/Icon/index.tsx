@@ -69,6 +69,7 @@ const iconPaths = {
   voice: () => import('./icons/voice.svg'),
   html: () => import('./icons/file/html.svg'),
   pdf: () => import('./icons/file/pdf.svg'),
+  ppt: () => import('./icons/file/ppt.svg'),
   markdown: () => import('./icons/file/markdown.svg'),
   importLight: () => import('./icons/light/import.svg'),
   manualImport: () => import('./icons/file/manualImport.svg'),
