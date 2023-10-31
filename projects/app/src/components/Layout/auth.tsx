@@ -9,7 +9,8 @@ const unAuthPage: { [key: string]: boolean } = {
   '/login': true,
   '/login/provider': true,
   '/appStore': true,
-  '/chat/share': true
+  '/chat/share': true,
+  '/chat_new1/share': true
 };
 
 const Auth = ({ children }: { children: JSX.Element }) => {
