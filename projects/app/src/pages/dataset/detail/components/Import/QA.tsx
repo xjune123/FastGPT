@@ -9,7 +9,7 @@ import { replaceVariable } from '@/global/common/string/tools';
 import { useImportStore, SelectorContainer, PreviewFileOrChunk } from './Provider';
 import { useDatasetStore } from '@/web/core/dataset/store/dataset';
 
-const fileExtension = '.txt, .doc, .docx, .pdf, .md, .xlsx, .pptx, .ppt';
+const fileExtension = '.txt, .doc, .docx, .pdf, .md, .pptx, .ppt';
 
 const QAImport = ({ custom }: { custom: boolean }) => {
   const { datasetDetail } = useDatasetStore();

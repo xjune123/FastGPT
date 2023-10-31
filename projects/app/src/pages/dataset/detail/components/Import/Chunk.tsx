@@ -17,7 +17,7 @@ import { useDatasetStore } from '@/web/core/dataset/store/dataset';
 
 import { useImportStore, SelectorContainer, PreviewFileOrChunk } from './Provider';
 
-const fileExtension = '.txt, .doc, .docx, .pdf, .md, .xlsx, .pptx, .ppt';
+const fileExtension = '.txt, .doc, .docx, .pdf, .md';
 
 const ChunkImport = () => {
   const { datasetDetail } = useDatasetStore();
