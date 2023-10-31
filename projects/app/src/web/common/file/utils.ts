@@ -1,7 +1,7 @@
 import mammoth from 'mammoth';
 import Papa from 'papaparse';
 import { postUploadImg, postUploadFiles, getFileViewUrl } from '@/web/common/system/api';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx';
 import './utils';
 import { getExtend, readBuffer, render } from './util';
 
@@ -171,47 +171,45 @@ export const readCsvContent = async (file: File) => {
 };
 // 读取excel
 export const readExcelContent = (file: File) => {
-  new Promise<string>((resolve, reject) => {
-    try {
-      // 获取上传的文件对象
-      // 通过FileReader对象读取文件
-      let fileReader = new FileReader();
-      fileReader.readAsArrayBuffer(file);
-      fileReader.onload = async (event) => {
-        try {
-          if (!event?.target?.result) return reject('解析 PDF 失败');
-
-          const result = event?.target?.result;
-          // 以二进制流方式读取得到整份excel表格对象
-          const workbook = XLSX.read(result, { type: 'binary' });
-          let data: any[] = []; // 存储获取到的数据
-          // 遍历每张工作表进行读取（这里默认只读取第一张表）
-          for (const sheet in workbook.Sheets) {
-            if (workbook.Sheets.hasOwnProperty(sheet)) {
-              // 利用 sheet_to_json 方法将 excel 转成 json 数据
-              data = data.concat(XLSX.utils.sheet_to_html(workbook.Sheets[sheet]));
-              // break; // 如果只取第一张表，就取消注释这行
-            }
-          }
-          // const pageTexts = await Promise.all(data);
-          // const pageTexts = await Promise.all(data);
-
-          resolve(data[0]);
-          return data[0];
-        } catch (e) {
-          // 这里可以抛出文件类型错误不正确的相关提示
-          reject('文件类型不正确');
-        }
-      };
-      fileReader.onerror = (err) => {
-        console.log(err, 'pdf load error');
-        reject('解析 xlsx 失败');
-      };
-    } catch (e) {
-      // 这里可以抛出文件类型错误不正确的相关提示
-      reject('文件类型不正确');
-    }
-  });
+  // new Promise<string>((resolve, reject) => {
+  //   try {
+  //     // 获取上传的文件对象
+  //     // 通过FileReader对象读取文件
+  //     let fileReader = new FileReader();
+  //     fileReader.readAsArrayBuffer(file);
+  //     fileReader.onload = async (event) => {
+  //       try {
+  //         if (!event?.target?.result) return reject('解析 PDF 失败');
+  //         const result = event?.target?.result;
+  //         // 以二进制流方式读取得到整份excel表格对象
+  //         const workbook = XLSX.read(result, { type: 'binary' });
+  //         let data: any[] = []; // 存储获取到的数据
+  //         // 遍历每张工作表进行读取（这里默认只读取第一张表）
+  //         for (const sheet in workbook.Sheets) {
+  //           if (workbook.Sheets.hasOwnProperty(sheet)) {
+  //             // 利用 sheet_to_json 方法将 excel 转成 json 数据
+  //             data = data.concat(XLSX.utils.sheet_to_html(workbook.Sheets[sheet]));
+  //             // break; // 如果只取第一张表，就取消注释这行
+  //           }
+  //         }
+  //         // const pageTexts = await Promise.all(data);
+  //         // const pageTexts = await Promise.all(data);
+  //         resolve(data[0]);
+  //         return data[0];
+  //       } catch (e) {
+  //         // 这里可以抛出文件类型错误不正确的相关提示
+  //         reject('文件类型不正确');
+  //       }
+  //     };
+  //     fileReader.onerror = (err) => {
+  //       console.log(err, 'pdf load error');
+  //       reject('解析 xlsx 失败');
+  //     };
+  //   } catch (e) {
+  //     // 这里可以抛出文件类型错误不正确的相关提示
+  //     reject('文件类型不正确');
+  //   }
+  // });
 };
 /**
  * file download
