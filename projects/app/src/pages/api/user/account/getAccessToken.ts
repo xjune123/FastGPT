@@ -9,7 +9,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const response = await fetch('https://pkdc.pooksh.com:8080/oauth/oauth/token', {
       method: 'POST',
-      body: JSON.stringify(req.body)
+      body: JSON.stringify({
+        ...req.body,
+        client_id: 'pk-fastgpt',
+        client_secret: 'Pooksh888',
+        grant_type: 'authorization_code'
+      })
     });
     const authUser = await MongoUser.findOne({
       username: 'root'

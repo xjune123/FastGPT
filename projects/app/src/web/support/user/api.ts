@@ -74,25 +74,9 @@ export const postLogin = ({ username, password }: { username: string; password: 
     username,
     password: hashStr(password)
   });
-export const getAccessToken = ({
-  client_id,
-  client_secret,
-  grant_type,
-  code,
-  redirect_uri
-}: {
-  client_id: string;
-  client_secret: string;
-  grant_type: string;
-  code: any;
-  redirect_uri: string;
-}) =>
+export const getAccessToken = ({ code }: { code: any }) =>
   POST<ResLogin>('/user/account/getAccessToken', {
-    client_id,
-    client_secret,
-    grant_type,
-    code,
-    redirect_uri
+    code
   });
 
 export const loginOut = () => GET('/user/account/loginout');

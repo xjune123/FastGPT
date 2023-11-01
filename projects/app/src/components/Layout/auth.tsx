@@ -1,4 +1,3 @@
-import React from 'react';
 import { useRouter } from 'next/router';
 import { useToast } from '@chakra-ui/react';
 import { useUserStore } from '@/web/support/user/useUserStore';
@@ -52,12 +51,9 @@ const Auth = ({ children }: { children: JSX.Element }) => {
 
   const getToken = async () => {
     await getAccessToken({
-      client_id: 'pk-fastgpt',
-      client_secret: 'Pooksh888',
-      grant_type: 'authorization_code',
-      code: router.query.code,
-      redirect_uri: location.href
+      code: router.query.code
     });
+    router.reload();
   };
 
   return userInfo || unAuthPage[router.pathname] === true ? children : null;
