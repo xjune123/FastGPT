@@ -14,6 +14,15 @@ export const sendAuthCode = (data: {
 }) => POST(`/plusApi/support/user/inform/sendAuthCode`, data);
 
 export const getTokenLogin = () => GET<UserType>('/user/account/tokenLogin');
+
+export const getToken = (data: {
+  client_id: string;
+  client_secret: string;
+  grant_type: string;
+  code: any;
+  redirect_uri: string;
+}) => POST<{}>('https://pkdc.pooksh.com:8080/oauth/oauth/token', data);
+
 export const oauthLogin = (params: {
   type: `${OAuthEnum}`;
   code: string;
@@ -64,6 +73,26 @@ export const postLogin = ({ username, password }: { username: string; password: 
   POST<ResLogin>('/user/account/loginByPassword', {
     username,
     password: hashStr(password)
+  });
+export const getAccessToken = ({
+  client_id,
+  client_secret,
+  grant_type,
+  code,
+  redirect_uri
+}: {
+  client_id: string;
+  client_secret: string;
+  grant_type: string;
+  code: any;
+  redirect_uri: string;
+}) =>
+  POST<ResLogin>('/user/account/getAccessToken', {
+    client_id,
+    client_secret,
+    grant_type,
+    code,
+    redirect_uri
   });
 
 export const loginOut = () => GET('/user/account/loginout');
