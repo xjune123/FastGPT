@@ -14,9 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const authUser = await MongoUser.findOne({
       username: 'root'
     });
-    console.log(authUser?._id, '_id');
     if (authUser) {
-      const token = generateToken(authUser?._id);
+      const token = generateToken(authUser._id);
       setCookie(res, token);
 
       jsonRes(res, {
