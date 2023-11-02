@@ -25,3 +25,10 @@ export type VectorModelItemType = {
   price: number;
   maxToken: number;
 };
+
+export type TokenInfoType = {
+  client_id: string;
+  client_secret: string;
+  grant_type: string;
+  base_url: string;
+};

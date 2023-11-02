@@ -4,7 +4,8 @@ import {
   ChatModelItemType,
   FunctionModelItemType,
   LLMModelItemType,
-  VectorModelItemType
+  VectorModelItemType,
+  TokenInfoType
 } from './model';
 import { TrackEventName } from '@/constants/common';
 
@@ -22,7 +23,7 @@ declare global {
   var qaQueueLen: number;
   var vectorQueueLen: number;
   var TikToken: Tiktoken;
-
+  var tokenInfo: TokenInfoType;
   var sendInformQueue: (() => Promise<void>)[];
   var sendInformQueueLen: number;
 

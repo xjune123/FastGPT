@@ -8,7 +8,8 @@ import {
   defaultCQModels,
   defaultExtractModels,
   defaultQGModels,
-  defaultVectorModels
+  defaultVectorModels,
+  defaultTokenInfo
 } from '@/constants/model';
 
 export let feConfigs: FeConfigsType = {};
@@ -21,7 +22,7 @@ export let qaModelList = defaultQAModels;
 export let cqModelList = defaultCQModels;
 export let extractModelList = defaultExtractModels;
 export let qgModelList = defaultQGModels;
-
+export let tokenInfo = defaultTokenInfo;
 let retryTimes = 3;
 
 export const clientInitData = async (): Promise<InitDateResponse> => {
@@ -39,11 +40,12 @@ export const clientInitData = async (): Promise<InitDateResponse> => {
     feConfigs = res.feConfigs;
     priceMd = res.priceMd;
     systemVersion = res.systemVersion;
+    tokenInfo = res.tokenInfo;
 
     return res;
   } catch (error) {
     retryTimes--;
-    await delay(500);
+    await delay(10000);
     return clientInitData();
   }
 };

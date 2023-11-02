@@ -3,6 +3,7 @@ import { useToast } from '@chakra-ui/react';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useQuery } from '@tanstack/react-query';
 import { getAccessToken } from '@/web/support/user/api';
+import { tokenInfo } from '@/web/common/system/staticData';
 
 const unAuthPage: { [key: string]: boolean } = {
   '/': true,
@@ -36,7 +37,7 @@ const Auth = ({ children }: { children: JSX.Element }) => {
             getToken();
           } else {
             router.replace(
-              `https://pkdc.pooksh.com:8080/oauth/oauth/authorize?response_type=code&client_id=pk-fastgpt&redirect_uri=${location.href}`
+              `${tokenInfo.base_url}/oauth/oauth/authorize?response_type=code&client_id=pk-fastgpt&redirect_uri=${location.href}`
             );
           }
         } else {

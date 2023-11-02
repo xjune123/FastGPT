@@ -4,7 +4,8 @@ import type {
   LLMModelItemType,
   ChatModelItemType,
   FunctionModelItemType,
-  VectorModelItemType
+  VectorModelItemType,
+  TokenInfoType
 } from '@/types/model';
 
 export const defaultChatModels: ChatModelItemType[] = [
@@ -117,4 +118,11 @@ export const defaultOutLinkForm: OutLinkEditType = {
     QPM: 100,
     credit: -1
   }
+};
+
+export const defaultTokenInfo: TokenInfoType = {
+  client_id: 'pk-fastgpt',
+  client_secret: 'Pooksh888',
+  grant_type: 'authorization_code',
+  base_url: 'https://pkdc.pooksh.com:8080'
 };

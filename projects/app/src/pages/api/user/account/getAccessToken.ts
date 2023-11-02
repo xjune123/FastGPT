@@ -7,13 +7,13 @@ import { MongoUser } from '@fastgpt/service/support/user/schema';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const response = await fetch('https://pkdc.pooksh.com:8080/oauth/oauth/token', {
+    const response = await fetch(`${tokenInfo.base_url}/oauth/oauth/token`, {
       method: 'POST',
       body: JSON.stringify({
         ...req.body,
-        client_id: 'pk-fastgpt',
-        client_secret: 'Pooksh888',
-        grant_type: 'authorization_code'
+        client_id: tokenInfo.client_id,
+        client_secret: tokenInfo.client_secret,
+        grant_type: tokenInfo.grant_type
       })
     });
     const authUser = await MongoUser.findOne({

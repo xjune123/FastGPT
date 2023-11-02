@@ -2,7 +2,8 @@ import type {
   ChatModelItemType,
   FunctionModelItemType,
   LLMModelItemType,
-  VectorModelItemType
+  VectorModelItemType,
+  TokenInfoType
 } from '@/types/model';
 import type { FeConfigsType } from '@fastgpt/global/common/system/types/index.d';
 
@@ -16,4 +17,5 @@ export type InitDateResponse = {
   feConfigs: FeConfigsType;
   priceMd: string;
   systemVersion: string;
+  tokenInfo: TokenInfoType;
 };

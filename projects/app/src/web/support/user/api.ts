@@ -75,7 +75,7 @@ export const postLogin = ({ username, password }: { username: string; password: 
     password: hashStr(password)
   });
 export const getAccessToken = ({ code }: { code: any }) =>
-  POST<ResLogin>('/user/account/getAccessToken', {
+  POST('/user/account/getAccessToken', {
     code
   });
 

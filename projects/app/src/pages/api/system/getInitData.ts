@@ -12,13 +12,15 @@ import {
   defaultCQModels,
   defaultExtractModels,
   defaultQGModels,
-  defaultVectorModels
+  defaultVectorModels,
+  defaultTokenInfo
 } from '@/constants/model';
 import {
   ChatModelItemType,
   FunctionModelItemType,
   LLMModelItemType,
-  VectorModelItemType
+  VectorModelItemType,
+  TokenInfoType
 } from '@/types/model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -35,6 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       qgModels: global.qgModels,
       vectorModels: global.vectorModels,
       priceMd: global.priceMd,
+      tokenInfo: global.tokenInfo,
       systemVersion: global.systemVersion || '0.0.0'
     }
   });
@@ -87,6 +90,7 @@ export function getInitConfig() {
       ExtractModels: FunctionModelItemType[];
       QGModels: LLMModelItemType[];
       VectorModels: VectorModelItemType[];
+      TokenInfo: TokenInfoType;
     };
 
     console.log(`System Version: ${global.systemVersion}`);
@@ -105,6 +109,8 @@ export function getInitConfig() {
     global.qgModels = res.QGModels || defaultQGModels;
 
     global.vectorModels = res.VectorModels || defaultVectorModels;
+
+    global.tokenInfo = res.TokenInfo || defaultTokenInfo;
   } catch (error) {
     setDefaultData();
     console.log('get init config error, set default', error);
@@ -123,7 +129,7 @@ export function setDefaultData() {
 
   global.vectorModels = defaultVectorModels;
   global.priceMd = '';
-
+  global.tokenInfo = defaultTokenInfo;
   console.log('use default config');
   console.log({
     feConfigs: defaultFeConfigs,
