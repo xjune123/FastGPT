@@ -28,7 +28,7 @@ const QuoteModal = ({
   const { setIsLoading, Loading } = useLoading();
   const [editInputData, setEditInputData] = useState<InputDataType>();
 
-  const isShare = useMemo(() => router.pathname === '/chat/share', [router.pathname]);
+  const isShare = useMemo(() => router.pathname === '/chat_new1/share', [router.pathname]);
 
   /**
    * click edit, get new kbDataItem
