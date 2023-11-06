@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="105px" height="720px" viewBox="0 0 105 720" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>椭圆形@2x</title>
+    <defs>
+        <linearGradient x1="50%" y1="2.18983897%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#C515AD" stop-opacity="0.719398765" offset="0%"></stop>
+            <stop stop-color="#0612BE" offset="100%"></stop>
+        </linearGradient>
+        <filter x="-950.0%" y="-17.5%" width="2000.0%" height="135.1%" filterUnits="objectBoundingBox" id="filter-2">
+            <feGaussianBlur stdDeviation="38" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+    </defs>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="问答主界面" transform="translate(-1075.000000, -20.000000)" fill="url(#linearGradient-1)">
+            <g id="位图" transform="translate(20.000000, 20.000000)">
+                <g id="椭圆形-2" transform="translate(1055.000000, 0.000000)">
+                    <ellipse id="椭圆形" filter="url(#filter-2)" cx="102" cy="383" rx="6" ry="325"></ellipse>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

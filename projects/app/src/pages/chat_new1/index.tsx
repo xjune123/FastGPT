@@ -257,7 +257,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
         </Box>
       )}
 
-      <PageContainer flex={'1 0 0'} w={0} bg={'myWhite.600'} position={'relative'}>
+      <PageContainer flex={'1 0 0'} w={0} bg={'myWhite.100'} position={'relative'}>
         <Flex h={'100%'} flexDirection={['column', 'row']}>
           {/* pc always show history. */}
           {((children: React.ReactNode) => {
@@ -342,6 +342,8 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
             w={['100%', 0]}
             flex={'1 0 0'}
             flexDirection={'column'}
+            bg={`url('/imgs/chat_bg.svg') no-repeat`}
+            backgroundPosition={'right'}
           >
             {/* header */}
             <ChatHeader
