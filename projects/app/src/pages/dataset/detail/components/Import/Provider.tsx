@@ -25,6 +25,7 @@ import { postCreateTrainingBill } from '@/web/common/bill/api';
 import { useTranslation } from 'react-i18next';
 import { ImportTypeEnum } from './ImportModal';
 import { Prompt_AgentCustom } from '@/global/core/prompt/agent';
+import { replaceFileVariable } from '@/global/common/string/tools';
 
 const filenameStyles = {
   className: 'textEllipsis',
@@ -48,6 +49,7 @@ type useImportStoreType = {
   setChunkLen: Dispatch<number>;
   showRePreview: boolean;
   setReShowRePreview: Dispatch<SetStateAction<boolean>>;
+  prompt: string;
   setPrompt: Dispatch<string>;
 };
 const StateContext = createContext<useImportStoreType>({
@@ -84,6 +86,7 @@ const StateContext = createContext<useImportStoreType>({
   setReShowRePreview: function (value: React.SetStateAction<boolean>): void {
     throw new Error('Function not implemented.');
   },
+  prompt: Prompt_AgentCustom.prompt,
   setPrompt: function (): void {
     throw new Error('Function not implemented.');
   }
@@ -130,8 +133,14 @@ const Provider = ({
   }, [files, unitPrice]);
 
   useEffect(() => {
-    setPrompt(Prompt_AgentCustom.prompt);
+    setPrompt(getString());
   }, []);
+
+  const getString = () => {
+    return replaceFileVariable(Prompt_AgentCustom.prompt, '', {
+      filename: prompt
+    });
+  };
 
   /* start upload data */
   const { mutate: onclickUpload, isLoading: uploading } = useRequest({
@@ -234,6 +243,7 @@ const Provider = ({
     setChunkLen,
     showRePreview,
     setReShowRePreview,
+    prompt,
     setPrompt
   };
   return <StateContext.Provider value={value}>{children}</StateContext.Provider>;
@@ -243,6 +253,7 @@ export default React.memo(Provider);
 
 export const PreviewFileOrChunk = () => {
   const theme = useTheme();
+
   const { setFiles, previewFile, setPreviewFile, setReShowRePreview, totalChunks, files } =
     useImportStore();
 
@@ -407,14 +418,29 @@ export const SelectorContainer = ({
   fileExtension,
   showUrlFetch,
   showCreateFile,
-  children
+  children,
+  custom
 }: {
   fileExtension: string;
   showUrlFetch?: boolean;
   showCreateFile?: boolean;
   children: React.ReactNode;
+  custom: boolean;
 }) => {
-  const { files, setPreviewFile, isUnselectedFile, setFiles, chunkLen } = useImportStore();
+  const { files, setPreviewFile, isUnselectedFile, setFiles, chunkLen, setPrompt, prompt } =
+    useImportStore();
+
+  const setPromptStr = (data: { filename: string }[]) => {
+    if (custom) {
+      const endIndex = data[0]?.filename.indexOf('-');
+      const str = data[0]?.filename.substring(0, endIndex);
+      const textStr = replaceFileVariable(Prompt_AgentCustom.prompt, str, {
+        filename: Prompt_AgentCustom.prompt
+      });
+      setPrompt(textStr);
+    }
+  };
+
   return (
     <Box
       h={'100%'}
@@ -430,6 +456,7 @@ export const SelectorContainer = ({
       <FileSelect
         fileExtension={fileExtension}
         onPushFiles={(files) => {
+          setPromptStr(files);
           setFiles((state) => files.concat(state));
         }}
         chunkLen={chunkLen}

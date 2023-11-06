@@ -14,6 +14,17 @@ export function replaceVariable(text: string, obj: Record<string, string | numbe
   return text || '';
 }
 
+export function replaceFileVariable(
+  text: string,
+  val: string,
+  obj: Record<string, string | number>
+) {
+  for (const key in obj) {
+    text = text.replace(new RegExp(`{{(${key})}}`, 'g'), val);
+  }
+  return text || '';
+}
+
 /**
  * text split into chunks
  * maxLen - one chunk len. max: 3500

@@ -171,7 +171,6 @@ const FileSelect = ({
             }
             return '';
           })();
-          console.log(text, 'text');
           if (text) {
             text = simpleText(text);
             const splitRes = splitText2Chunks({

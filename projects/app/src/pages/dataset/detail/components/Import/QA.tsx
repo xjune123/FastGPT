@@ -5,7 +5,7 @@ import { formatPrice } from '@fastgpt/global/common/bill/tools';
 import MyTooltip from '@/components/MyTooltip';
 import { QuestionOutlineIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import { Prompt_AgentQA, Prompt_AgentCustom } from '@/global/core/prompt/agent';
-import { replaceVariable } from '@/global/common/string/tools';
+import { replaceVariable, replaceFileVariable } from '@/global/common/string/tools';
 import { useImportStore, SelectorContainer, PreviewFileOrChunk } from './Provider';
 import { useDatasetStore } from '@/web/core/dataset/store/dataset';
 
@@ -25,6 +25,7 @@ const QAImport = ({ custom }: { custom: boolean }) => {
     onReSplitChunks,
     uploading,
     showRePreview,
+    prompt,
     setPrompt
   } = useImportStore();
 
@@ -32,12 +33,10 @@ const QAImport = ({ custom }: { custom: boolean }) => {
     content: `该任务无法终止！导入后会自动调用大模型生成问答对，会有一些细节丢失，请确认！如果余额不足，未完成的任务会被暂停。`
   });
 
-  const [prompt, setPrompt1] = useState('');
-
   const previewQAPrompt = useMemo(() => {
     if (custom) {
-      return replaceVariable(Prompt_AgentCustom.prompt, {
-        theme: prompt || Prompt_AgentCustom.defaultTheme
+      return replaceFileVariable(Prompt_AgentCustom.prompt, '', {
+        filename: prompt
       });
     } else {
       return replaceVariable(Prompt_AgentQA.prompt, {
@@ -48,7 +47,7 @@ const QAImport = ({ custom }: { custom: boolean }) => {
 
   return (
     <Box display={['block', 'flex']} h={['auto', '100%']}>
-      <SelectorContainer fileExtension={fileExtension}>
+      <SelectorContainer fileExtension={fileExtension} custom={custom}>
         {/* prompt */}
         <Box py={5}>
           {!custom && (
@@ -68,7 +67,7 @@ const QAImport = ({ custom }: { custom: boolean }) => {
                 h={194}
                 bg={'myWhite.500'}
                 placeholder={Prompt_AgentCustom.defaultTheme}
-                defaultValue={Prompt_AgentCustom.prompt}
+                value={prompt}
                 onChange={(e) => setPrompt(e.target.value || '')}
               />
             </Flex>
