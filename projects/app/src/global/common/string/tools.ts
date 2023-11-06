@@ -20,7 +20,7 @@ export function replaceFileVariable(
   obj: Record<string, string | number>
 ) {
   for (const key in obj) {
-    text = text.replace(new RegExp(`{{(${key})}}`, 'g'), val);
+    text = text.replace(new RegExp(`{{(${key})}}`, 'g'), val || '营销方案');
   }
   return text || '';
 }
