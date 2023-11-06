@@ -138,15 +138,19 @@ const Provider = ({
   }, [files, unitPrice]);
 
   useEffect(() => {
-    if (custom) {
-      setPrompt(getString());
-    }
-  }, []);
+    setPrompt(getString());
+  }, [custom]);
 
   const getString = () => {
-    return replaceFileVariable(Prompt_AgentCustom.prompt, '', {
-      filename: prompt
-    });
+    if (custom) {
+      return replaceFileVariable(Prompt_AgentCustom.prompt, '', {
+        filename: prompt
+      });
+    }
+    return '';
+    // return replaceVariable(Prompt_AgentQA.prompt, {
+    //   theme: prompt || Prompt_AgentQA.defaultTheme
+    // });
   };
 
   /* start upload data */
