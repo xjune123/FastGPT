@@ -62,9 +62,10 @@ const ChatHeader = ({
       ) : (
         <>
           <MyIcon name={'menu'} w={'20px'} h={'20px'} color={'myGray.900'} onClick={onOpenSlider} />
-          <Flex px={3} alignItems={'center'} flex={'1 0 0'} w={0} justifyContent={'center'}>
-            <Avatar src={appAvatar} w={'16px'} />
-            <Box
+          <Flex px={3} alignItems={'center'} flex={'1 0 0'} w={0} justifyContent={'left'}>
+            {/* <Avatar src={appAvatar} w={'16px'} /> */}
+            <Image src={'/imgs/files/chat_logo.svg'} />
+            {/* <Box
               ml={1}
               className="textEllipsis"
               onClick={() => {
@@ -72,7 +73,7 @@ const ChatHeader = ({
               }}
             >
               {appName}
-            </Box>
+            </Box> */}
           </Flex>
         </>
       )}

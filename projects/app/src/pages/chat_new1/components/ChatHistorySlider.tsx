@@ -100,7 +100,7 @@ const ChatHistorySlider = ({
       flexDirection={'column'}
       w={'100%'}
       h={'100%'}
-      bg={'white'}
+      bg={isPc ? 'white' : '#272727'}
       borderRight={['', theme.borders.base]}
       whiteSpace={'nowrap'}
     >
@@ -129,7 +129,15 @@ const ChatHistorySlider = ({
       )}
 
       {/* menu */}
-      <Flex w={'100%'} px={[2, 5]} h={'42px'} my={5} alignItems={'center'}>
+      <Flex
+        w={'100%'}
+        px={[2, 5]}
+        h={'42px'}
+        my={5}
+        alignItems={'center'}
+        position={isPc ? 'relative' : 'fixed'}
+        bottom={isPc ? '' : '25px'}
+      >
         {!isPc && !isShare && (
           <Tabs
             w={'120px'}
@@ -156,7 +164,7 @@ const ChatHistorySlider = ({
           {t('chat.Create New Chat')}
         </Button>
 
-        {(isPc || isShare) && (
+        {isPc && (
           <IconButton
             ml={3}
             h={'100%'}
@@ -169,6 +177,31 @@ const ChatHistorySlider = ({
           </IconButton>
         )}
       </Flex>
+
+      {!isPc && (
+        <Flex
+          w={'100%'}
+          px={[2, 5]}
+          h={'42px'}
+          my={5}
+          fontSize={'18px'}
+          color={'#fff'}
+          alignItems={'center'}
+          justifyContent={'space-between'}
+        >
+          对话记录
+          <IconButton
+            ml={3}
+            h={'100%'}
+            border={'none'}
+            variant={'base'}
+            aria-label={''}
+            onClick={openConfirm(onClearHistory)}
+          >
+            <MyIcon name={'delete1'} w={'16px'} color={'#999999'} />
+          </IconButton>
+        </Flex>
+      )}
 
       <Box flex={'1 0 0'} h={0} px={[2, 5]} overflow={'overlay'}>
         {/* chat history */}
@@ -186,7 +219,7 @@ const ChatHistorySlider = ({
                 borderRadius={'lg'}
                 mb={2}
                 _hover={{
-                  bg: 'myGray.100',
+                  bg: isPc ? 'myGray.100' : '#222331',
                   '& .more': {
                     display: 'block'
                   }
@@ -194,10 +227,11 @@ const ChatHistorySlider = ({
                 bg={item.top ? '#E2E2E2 !important' : ''}
                 {...(item.id === activeChatId
                   ? {
-                      backgroundColor: 'myBlue.100 !important',
-                      color: 'myBlue.700'
+                      backgroundColor: isPc ? 'myBlue.100 !important' : '#222331',
+                      color: isPc ? 'myBlue.700' : '#fff'
                     }
                   : {
+                      color: isPc ? '' : '#fff',
                       onClick: () => {
                         onChangeChat(item.id);
                       }

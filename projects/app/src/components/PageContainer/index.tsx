@@ -7,7 +7,7 @@ const PageContainer = ({ children, ...props }: BoxProps) => {
     <Box bg={'myGray.100'} h={'100%'} p={[0, 5]} px={[0, 6]} {...props}>
       <Box
         h={'100%'}
-        bg={'white'}
+        bg={props?.bg || 'white'}
         borderRadius={props?.borderRadius || [0, '2xl']}
         border={['none', theme.borders.lg]}
         overflow={'overlay'}

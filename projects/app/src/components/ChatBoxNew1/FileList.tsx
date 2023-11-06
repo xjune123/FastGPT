@@ -3,17 +3,18 @@ import { Flex, Box, Divider } from '@chakra-ui/react';
 import { ChatHistoryItemResType } from '@/types/chat';
 import { FlowModuleTypeEnum } from '@/constants/flow';
 import MyIcon from '@/components/Icon';
+import { useSystemStore } from '@/web/common/system/useSystemStore';
+
 import type { SearchDataResponseItemType } from '@fastgpt/global/core/dataset/type';
 import { RawSourceText } from '@/pages/dataset/detail/components/InputDataModal';
 // import { RawFileText } from '@/pages/kb/detail/components/InputDataModal';
 import { useTranslation } from 'react-i18next';
 import styles from './index.module.scss';
-type QuoteItemType = {
-  file_id?: string;
-  filename: string;
-};
+
 const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType[] }) => {
   const { t } = useTranslation();
+  const { isPc } = useSystemStore();
+
   const [quoteModalData, setQuoteModalData] = useState<SearchDataResponseItemType[]>();
   const [isShowMore, setIsShowMore] = useState(false);
   const { quoteList = [] } = useMemo(() => {
@@ -74,7 +75,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
               key={item.id}
               alignItems={'center'}
               cursor={'pointer'}
-              bg={'white'}
+              bg={isPc ? 'white' : '#F6F6F6'}
               borderRadius={8}
               mb={2}
               lineHeight={9}

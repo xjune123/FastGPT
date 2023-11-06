@@ -170,7 +170,10 @@ const OutLink = ({
   }, []);
 
   return (
-    <PageContainer {...(isEmbed ? { p: '0 !important', borderRadius: '0' } : {})}>
+    <PageContainer
+      {...(isEmbed ? { p: '0 !important', borderRadius: '0' } : {})}
+      bg={`url('/imgs/share_bg.png') no-repeat`}
+    >
       <Head>
         <title>{shareChatData.app.name}</title>
       </Head>
@@ -188,7 +191,7 @@ const OutLink = ({
                   onClose={onCloseSlider}
                 >
                   <DrawerOverlay backgroundColor={'rgba(255,255,255,0.5)'} />
-                  <DrawerContent maxWidth={'250px'} boxShadow={'2px 0 10px rgba(0,0,0,0.15)'}>
+                  <DrawerContent maxWidth={'250px'} backgroundColor={'#272727'}>
                     {children}
                   </DrawerContent>
                 </Drawer>

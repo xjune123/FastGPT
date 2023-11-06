@@ -466,7 +466,7 @@ const ChatBox = (
     px: 4,
     py: 3,
     borderRadius: '0 8px 8px 8px',
-    // boxShadow: '0 0 8px rgba(0,0,0,0.15)',
+    boxShadow: 'none',
     display: 'inline-block',
     maxW: ['calc(100% - 25px)', 'calc(100% - 40px)']
   };
@@ -542,7 +542,7 @@ const ChatBox = (
               <ChatAvatar src={appAvatar} type={'AI'} />
               {/* message */}
               <Box textAlign={'left'} ml={2}>
-                <Card order={2} {...MessageCardStyle} bg={'#F6F6F6'}>
+                <Card order={2} {...MessageCardStyle} bg={isPc ? '#F6F6F6' : '#fff'}>
                   <Markdown source={`~~~guide \n${welcomeText}`} isChatting={false} />
                 </Card>
               </Box>
@@ -555,7 +555,13 @@ const ChatBox = (
               <ChatAvatar src={appAvatar} type={'AI'} />
               {/* message */}
               <Box textAlign={'left'}>
-                <Card order={2} mt={2} bg={'#F6F6F6'} w={'400px'} {...MessageCardStyle}>
+                <Card
+                  order={2}
+                  mt={2}
+                  bg={isPc ? '#F6F6F6' : '#fff'}
+                  w={'400px'}
+                  {...MessageCardStyle}
+                >
                   {variableModules.map((item) => (
                     <Box key={item.id} mb={4}>
                       <VariableLabel required={item.required}>{item.label}</VariableLabel>
@@ -631,12 +637,7 @@ const ChatBox = (
                         color={'#fff'}
                         textAlign={'left'}
                       >
-                        <Box
-                          as={'p'}
-                          bg={'myBlue.1100'}
-                          borderRadius={'8px 8px 8px 8px'}
-                          padding={3}
-                        >
+                        <Box as={'p'} bg={'myBlue.1100'} borderRadius={'16px'} padding={3}>
                           {item.value}
                         </Box>
                         <ChatController
@@ -688,7 +689,11 @@ const ChatBox = (
                     </Flex>
                     {/* content */}
                     <Box textAlign={'left'}>
-                      <Card bg={'#F6F6F6'} {...MessageCardStyle} minW={'430px'}>
+                      <Card
+                        bg={isPc ? '#F6F6F6' : '#fff'}
+                        {...MessageCardStyle}
+                        minW={isPc ? '430px' : '230px'}
+                      >
                         <Markdown
                           source={item.value}
                           isChatting={index === chatHistory.length - 1 && isChatting}
@@ -798,13 +803,14 @@ const ChatBox = (
       {onStartChat && variableIsFinish && active ? (
         <Box m={['0 auto', '10px auto']} w={'100%'} maxW={['auto', 'min(750px, 100%)']} px={[0, 5]}>
           <Box
-            py={'18px'}
+            py={isPc ? '18px' : '10px'}
             position={'relative'}
             // boxShadow={`0 0 10px rgba(0,0,0,0.2)`}
             border={'1px solid'}
-            borderColor={'#E5E5E5 !important'}
-            borderRadius={16}
+            borderColor={isPc ? '#E5E5E5 !important' : '#FFF !important'}
+            borderRadius={21}
             backgroundColor={'white'}
+            margin={'10px'}
           >
             {/* 输入框 */}
             <Textarea
@@ -851,7 +857,7 @@ const ChatBox = (
               w={'25px'}
               position={'absolute'}
               right={['12px', '20px']}
-              bottom={'15px'}
+              bottom={isPc ? '15px' : '9px'}
             >
               {isChatting ? (
                 <MyIcon
@@ -866,8 +872,8 @@ const ChatBox = (
               ) : (
                 <MyIcon
                   name={'send'}
-                  width={['18px', '32px']}
-                  height={['18px', '32px']}
+                  width={['32px', '32px']}
+                  height={['32px', '32px']}
                   cursor={'pointer'}
                   color={'gray.500'}
                   onClick={() => {
