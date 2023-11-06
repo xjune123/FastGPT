@@ -135,6 +135,7 @@ const ChatHistorySlider = ({
         h={'42px'}
         my={5}
         alignItems={'center'}
+        justifyContent={'center'}
         position={isPc ? 'relative' : 'fixed'}
         bottom={isPc ? '' : '25px'}
       >
@@ -152,7 +153,8 @@ const ChatHistorySlider = ({
         )}
         <Button
           // variant={'base'}
-          flex={1}
+          // flex={1}
+          width={isPc ? '100%' : '90%'}
           h={'100%'}
           bg={'myBlue.700'}
           color={'white'}
