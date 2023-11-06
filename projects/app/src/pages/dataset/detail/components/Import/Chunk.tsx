@@ -44,7 +44,7 @@ const ChunkImport = () => {
 
   return (
     <Box display={['block', 'flex']} h={['auto', '100%']}>
-      <SelectorContainer fileExtension={fileExtension}>
+      <SelectorContainer fileExtension={fileExtension} custom={false}>
         {/* chunk size */}
         <Flex py={4} alignItems={'center'}>
           <Box>

@@ -51,6 +51,7 @@ type useImportStoreType = {
   setReShowRePreview: Dispatch<SetStateAction<boolean>>;
   prompt: string;
   setPrompt: Dispatch<string>;
+  setCustom: Dispatch<SetStateAction<boolean>>;
 };
 const StateContext = createContext<useImportStoreType>({
   onclickUpload: function (e: { files: FileItemType[] }): void {
@@ -89,6 +90,9 @@ const StateContext = createContext<useImportStoreType>({
   prompt: Prompt_AgentCustom.prompt,
   setPrompt: function (): void {
     throw new Error('Function not implemented.');
+  },
+  setCustom: function (): void {
+    throw new Error('Function not implemented.');
   }
 });
 export const useImportStore = () => useContext(StateContext);
@@ -101,8 +105,7 @@ const Provider = ({
   defaultChunkLen = 500,
   importType,
   onUploadSuccess,
-  children,
-  custom
+  children
 }: {
   datasetId: string;
   parentId: string;
@@ -112,7 +115,6 @@ const Provider = ({
   importType: `${ImportTypeEnum}`;
   onUploadSuccess: () => void;
   children: React.ReactNode;
-  custom: string;
 }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -122,6 +124,7 @@ const Provider = ({
   const [previewFile, setPreviewFile] = useState<FileItemType>();
   const [showRePreview, setReShowRePreview] = useState(false);
   const [prompt, setPrompt] = useState('');
+  const [custom, setCustom] = useState(false);
 
   const isUnselectedFile = useMemo(() => files.length === 0, [files]);
 
@@ -248,7 +251,8 @@ const Provider = ({
     showRePreview,
     setReShowRePreview,
     prompt,
-    setPrompt
+    setPrompt,
+    setCustom
   };
   return <StateContext.Provider value={value}>{children}</StateContext.Provider>;
 };
