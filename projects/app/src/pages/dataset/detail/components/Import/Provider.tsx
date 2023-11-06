@@ -101,7 +101,8 @@ const Provider = ({
   defaultChunkLen = 500,
   importType,
   onUploadSuccess,
-  children
+  children,
+  custom
 }: {
   datasetId: string;
   parentId: string;
@@ -111,6 +112,7 @@ const Provider = ({
   importType: `${ImportTypeEnum}`;
   onUploadSuccess: () => void;
   children: React.ReactNode;
+  custom: string;
 }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -133,7 +135,9 @@ const Provider = ({
   }, [files, unitPrice]);
 
   useEffect(() => {
-    setPrompt(getString());
+    if (custom) {
+      setPrompt(getString());
+    }
   }, []);
 
   const getString = () => {
@@ -427,7 +431,7 @@ export const SelectorContainer = ({
   children: React.ReactNode;
   custom: boolean;
 }) => {
-  const { files, setPreviewFile, isUnselectedFile, setFiles, chunkLen, setPrompt, prompt } =
+  const { files, setPreviewFile, isUnselectedFile, setFiles, chunkLen, setPrompt } =
     useImportStore();
 
   const setPromptStr = (data: { filename: string }[]) => {
