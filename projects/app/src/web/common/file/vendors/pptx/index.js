@@ -104,7 +104,7 @@ export default renderPptx;
 
 function processCharts(queue) {
   for (let i = 0; i < queue.length; i++) {
-    processSingleChart(queue[i].data);
+    // processSingleChart(queue[i].data);
   }
 }
 

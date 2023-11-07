@@ -92,26 +92,24 @@ const QuoteModal = ({
               _hover={{ '& .edit': { display: 'flex' } }}
               overflow={'hidden'}
             >
-              {!isShare && (
-                <Flex alignItems={'center'} mb={1}>
-                  <RawSourceText sourceName={item.sourceName} sourceId={item.sourceId} />
-                  <Box flex={'1'} />
-                  {item.score && (
-                    <>
-                      <Progress
-                        mx={2}
-                        w={['60px', '100px']}
-                        value={item.score * 100}
-                        size="sm"
-                        borderRadius={'20px'}
-                        colorScheme="gray"
-                        border={theme.borders.base}
-                      />
-                      <Box>{item.score.toFixed(4)}</Box>
-                    </>
-                  )}
-                </Flex>
-              )}
+              <Flex alignItems={'center'} mb={1}>
+                <RawSourceText sourceName={item.sourceName} sourceId={item.sourceId} />
+                <Box flex={'1'} />
+                {item.score && (
+                  <>
+                    <Progress
+                      mx={2}
+                      w={['60px', '100px']}
+                      value={item.score * 100}
+                      size="sm"
+                      borderRadius={'20px'}
+                      colorScheme="gray"
+                      border={theme.borders.base}
+                    />
+                    <Box>{item.score.toFixed(4)}</Box>
+                  </>
+                )}
+              </Flex>
 
               <Box>{item.q}</Box>
               <Box>{item.a}</Box>
