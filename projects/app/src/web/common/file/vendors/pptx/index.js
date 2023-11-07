@@ -69,8 +69,8 @@ const renderPptx = (pptx, resultElement, thumbElement) => {
     */
     const worker = {
       // shim worker
-      postMessage: () => {},
-      terminate: () => {},
+      postMessage: () => { },
+      terminate: () => { },
     };
     // processMessage方法，成功之后执行
     processPptx((func) => {

@@ -172,7 +172,7 @@ const OutLink = ({
   return (
     <PageContainer
       {...(isEmbed ? { p: '0 !important', borderRadius: '0' } : {})}
-      bg={`url('/imgs/share_bg.png') no-repeat`}
+      bg={isPc ? '' : `url('/imgs/share_bg.png') no-repeat`}
     >
       <Head>
         <title>{shareChatData.app.name}</title>
@@ -238,6 +238,8 @@ const OutLink = ({
           w={['100%', 0]}
           flex={'1 0 0'}
           flexDirection={'column'}
+          bg={isPc ? `url('/imgs/chat_bg.svg') no-repeat` : ''}
+          backgroundPosition={'right'}
         >
           {/* header */}
           <ChatHeader
