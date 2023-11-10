@@ -35,7 +35,10 @@ export async function authOutLinkChat({
   }
 
   const { cookie } = req.headers || {};
-  const uid = await authCookieToken(cookie, '');
+  const uid = String(outLink.userId);
+  if (pathName === '/chat_new1/share') {
+    await authCookieToken(cookie, '');
+  }
 
   const [user] = await Promise.all([
     authBalanceByUid(uid), // authBalance
