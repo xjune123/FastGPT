@@ -66,7 +66,8 @@ const OutLink = ({
           variables,
           shareId,
           chatId: completionChatId,
-          authToken
+          authToken,
+          pathName: location.pathname
         },
         onMessage: generatingMessage,
         abortSignal: controller

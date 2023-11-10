@@ -22,6 +22,7 @@ export const streamFetch = ({
     [TaskResponseKeyEnum.responseData]: ChatHistoryItemResType[];
   }>(async (resolve, reject) => {
     try {
+      const { pathName, ...others } = data;
       const response = await window.fetch(url, {
         method: 'POST',
         headers: {
@@ -30,7 +31,7 @@ export const streamFetch = ({
         },
         signal: abortSignal.signal,
         body: JSON.stringify({
-          ...data,
+          ...others,
           detail: true,
           stream: true
         })

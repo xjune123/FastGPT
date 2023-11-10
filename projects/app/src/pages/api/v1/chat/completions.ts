@@ -55,6 +55,7 @@ export type Props = CreateChatCompletionRequest &
     stream?: boolean;
     detail?: boolean;
     variables: Record<string, any>;
+    pathName?: string;
   };
 export type ChatResponseType = {
   newChatId: string;
@@ -78,7 +79,8 @@ export default withNextCors(async function handler(req: NextApiRequest, res: Nex
     stream = false,
     detail = false,
     messages = [],
-    variables = {}
+    variables = {},
+    pathName = ''
   } = req.body as Props;
 
   try {
@@ -118,6 +120,7 @@ export default withNextCors(async function handler(req: NextApiRequest, res: Nex
           shareId,
           ip: requestIp.getClientIp(req),
           authToken,
+          pathName,
           question:
             (messages[messages.length - 2]?.role === 'user'
               ? messages[messages.length - 2].content

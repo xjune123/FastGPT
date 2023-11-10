@@ -6,7 +6,12 @@ import { NextApiRequest } from 'next';
 import Cookie from 'cookie';
 import { ERROR_ENUM } from '@fastgpt/global/common/error/errorCode';
 
-export type AuthLinkProps = { ip?: string | null; authToken?: string; question: string };
+export type AuthLinkProps = {
+  ip?: string | null;
+  authToken?: string;
+  question: string;
+  pathName: String;
+};
 export type AuthLinkLimitProps = AuthLinkProps & { outLink: OutLinkSchema };
 
 export async function authOutLinkChat({
@@ -14,7 +19,8 @@ export async function authOutLinkChat({
   ip,
   authToken,
   question,
-  req
+  req,
+  pathName
 }: AuthLinkProps & {
   shareId: string;
   req: NextApiRequest;
@@ -33,7 +39,9 @@ export async function authOutLinkChat({
 
   const [user] = await Promise.all([
     authBalanceByUid(uid), // authBalance
-    ...(global.feConfigs?.isPlus ? [authOutLinkLimit({ outLink, ip, authToken, question })] : []) // limit auth
+    ...(global.feConfigs?.isPlus
+      ? [authOutLinkLimit({ outLink, ip, authToken, question, pathName })]
+      : []) // limit auth
   ]);
 
   return {
