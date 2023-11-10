@@ -50,7 +50,7 @@ export async function dispatchKBSearch(props: Record<string, any>): Promise<KBSe
   });
 
   // search kb
-  const results: any = await PgClient.query(
+  /* const results: any = await PgClient.query(
     `BEGIN;
     SET LOCAL hnsw.ef_search = ${global.systemEnv.pgHNSWEfSearch || 60};
     select id, q, a, dataset_id, collection_id, (vector <#> '[${
@@ -58,6 +58,19 @@ export async function dispatchKBSearch(props: Record<string, any>): Promise<KBSe
     }]') * -1 AS score from ${PgDatasetTableName} where user_id='${
       user._id
     }' AND dataset_id IN (${datasets
+      .map((item) => `'${item.datasetId}'`)
+      .join(',')}) AND vector <#> '[${vectors[0]}]' < -${similarity} order by vector <#> '[${
+      vectors[0]
+    }]' limit ${limit};
+    COMMIT;`
+  );*/
+  // search kb 删除用户ID限制
+  const results: any = await PgClient.query(
+    `BEGIN;
+    SET LOCAL hnsw.ef_search = ${global.systemEnv.pgHNSWEfSearch || 60};
+    select id, q, a, dataset_id, collection_id, (vector <#> '[${
+      vectors[0]
+    }]') * -1 AS score from ${PgDatasetTableName} where dataset_id IN (${datasets
       .map((item) => `'${item.datasetId}'`)
       .join(',')}) AND vector <#> '[${vectors[0]}]' < -${similarity} order by vector <#> '[${
       vectors[0]

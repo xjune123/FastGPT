@@ -1,7 +1,10 @@
-import { AuthUserTypeEnum, authBalanceByUid } from '../user/auth';
+import { AuthUserTypeEnum, authBalanceByUid, authJWT } from '../user/auth';
 import { MongoOutLink } from './schema';
 import { POST } from '../../common/api/plusRequest';
 import { OutLinkSchema } from '@fastgpt/global/support/outLink/type';
+import { NextApiRequest } from 'next';
+import Cookie from 'cookie';
+import { ERROR_ENUM } from '@fastgpt/global/common/error/errorCode';
 
 export type AuthLinkProps = { ip?: string | null; authToken?: string; question: string };
 export type AuthLinkLimitProps = AuthLinkProps & { outLink: OutLinkSchema };
@@ -10,12 +13,14 @@ export async function authOutLinkChat({
   shareId,
   ip,
   authToken,
-  question
+  question,
+  req
 }: AuthLinkProps & {
   shareId: string;
+  req: NextApiRequest;
 }) {
   // get outLink
-  const outLink = await MongoOutLink.findOne({
+  let outLink = await MongoOutLink.findOne({
     shareId
   });
 
@@ -23,7 +28,8 @@ export async function authOutLinkChat({
     return Promise.reject('分享链接无效');
   }
 
-  const uid = String(outLink.userId);
+  const { cookie } = req.headers || {};
+  const uid = await authCookieToken(cookie, '');
 
   const [user] = await Promise.all([
     authBalanceByUid(uid), // authBalance
@@ -32,13 +38,23 @@ export async function authOutLinkChat({
 
   return {
     user,
-    userId: String(outLink.userId),
+    userId: uid,
     appId: String(outLink.appId),
     authType: AuthUserTypeEnum.token,
     responseDetail: outLink.responseDetail
   };
 }
+const authCookieToken = async (cookie?: string, token?: string): Promise<string> => {
+  // 获取 cookie
+  const cookies = Cookie.parse(cookie || '');
+  const cookieToken = cookies.token || token;
 
+  if (!cookieToken) {
+    return Promise.reject(ERROR_ENUM.unAuthorization);
+  }
+
+  return await authJWT(cookieToken);
+};
 export function authOutLinkLimit(data: AuthLinkLimitProps) {
   return POST('/support/outLink/authLimit', data);
 }

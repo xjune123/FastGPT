@@ -113,6 +113,7 @@ export default withNextCors(async function handler(req: NextApiRequest, res: Nex
       apikey?: string;
     }> => {
       if (shareId) {
+        //TODO 区分新旧聊天窗口
         return authOutLinkChat({
           shareId,
           ip: requestIp.getClientIp(req),
@@ -120,7 +121,8 @@ export default withNextCors(async function handler(req: NextApiRequest, res: Nex
           question:
             (messages[messages.length - 2]?.role === 'user'
               ? messages[messages.length - 2].content
-              : messages[messages.length - 1]?.content) || ''
+              : messages[messages.length - 1]?.content) || '',
+          req
         });
       }
       return authUser({ req, authToken: true, authApiKey: true, authBalance: true });
