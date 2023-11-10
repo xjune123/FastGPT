@@ -52,7 +52,8 @@ const Auth = ({ children }: { children: JSX.Element }) => {
 
   const getToken = async () => {
     await getAccessToken({
-      code: router.query.code
+      code: router.query.code,
+      redirect_uri: location.href
     });
     router.reload();
   };

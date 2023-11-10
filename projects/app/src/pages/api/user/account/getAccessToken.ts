@@ -4,14 +4,13 @@ import { jsonRes } from '@/service/response';
 import { generateToken } from '@fastgpt/service/support/user/auth';
 import { setCookie } from '@fastgpt/service/support/user/auth';
 import { MongoUser } from '@fastgpt/service/support/user/schema';
-import { constant } from 'lodash';
 import { hashStr } from '@fastgpt/global/common/string/tools';
 import { PRICE_SCALE } from '@fastgpt/global/common/bill/constants';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { code } = req.body;
-    const authCodeCheckUrl = `${tokenInfo.base_url}/oauth/oauth/token?client_id=${tokenInfo.client_id}&client_secret=${tokenInfo.client_secret}&grant_type=${tokenInfo.grant_type}&code=${code}&redirect_uri=http://localhost:3000/chat_new1/share?shareId=3mnm58stef6ztuiss5ieylp1`;
+    const { code, redirect_uri } = req.body;
+    const authCodeCheckUrl = `${tokenInfo.base_url}/oauth/oauth/token?client_id=${tokenInfo.client_id}&client_secret=${tokenInfo.client_secret}&grant_type=${tokenInfo.grant_type}&code=${code}&redirect_uri=${redirect_uri}`;
     const response = await fetch(authCodeCheckUrl, {
       method: 'POST'
     }).then((res) => res.json());

@@ -74,9 +74,10 @@ export const postLogin = ({ username, password }: { username: string; password: 
     username,
     password: hashStr(password)
   });
-export const getAccessToken = ({ code }: { code: any }) =>
+export const getAccessToken = ({ code, redirect_uri }: { code: any; redirect_uri: string }) =>
   POST('/user/account/getAccessToken', {
-    code
+    code,
+    redirect_uri
   });
 
 export const loginOut = () => GET('/user/account/loginout');
