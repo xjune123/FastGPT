@@ -37,7 +37,7 @@ const Auth = ({ children }: { children: JSX.Element }) => {
             getToken();
           } else {
             router.replace(
-              `${tokenInfo.base_url}/oauth/oauth/authorize?response_type=code&client_id=pk-fastgpt&redirect_uri=${location.href}`
+              `${tokenInfo.auth_url}?response_type=code&client_id=${tokenInfo.client_id}&redirect_uri=${location.href}`
             );
           }
         } else {

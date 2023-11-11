@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     form.append('client_id', tokenInfo.client_id);
     form.append('client_secret', tokenInfo.client_secret);
     form.append('code', code);
-    //TODO URL 需要改写
+    //TODO URL 需要改写，并且一定要识别好参数，不能多也不能少，否则无法飞书正常跳转
     form.append(
       'redirect_uri',
       'http://localhost:3000/chat_new1/share?shareId=3mnm58stef6ztuiss5ieylp1'
@@ -41,10 +41,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         error: 'Invalid authorization code'
       });
     }
-
     console.log(response);
 
-    //TODO 解决报错用户名不存问题
+    if (response.error) {
+      jsonRes(res, {
+        code: 401,
+        error: response.error_description
+      });
+      return;
+    }
+
+    //TODO 解决报错用户名不存问题,有二次重进问题
 
     const userInfoUrl = `${tokenInfo.user_info_url}?client_id=${tokenInfo.client_id}`;
     const userInfoResponse = await fetch(userInfoUrl, {

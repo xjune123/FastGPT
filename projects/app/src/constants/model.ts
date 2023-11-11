@@ -121,8 +121,10 @@ export const defaultOutLinkForm: OutLinkEditType = {
 };
 
 export const defaultTokenInfo: TokenInfoType = {
-  client_id: 'pk-fastgpt',
-  client_secret: 'Pooksh888',
+  client_id: 'aca2da94520e8b4ae8aa123dff15f50c0c',
+  client_secret: 'MmmZ2YSzCyu3xyceeZVY8zWOxRPhfVHyzLolWs_EXV0',
   grant_type: 'authorization_code',
-  base_url: 'https://pkdc.pooksh.com:8080'
+  auth_url: 'https://anycross.feishu.cn/sso/584964903/oauth2/auth',
+  token_url: 'https://anycross.feishu.cn/sso/584964903/oauth2/token',
+  user_info_url: 'https://anycross.feishu.cn/sso/584964903/oauth2/userinfo'
 };
