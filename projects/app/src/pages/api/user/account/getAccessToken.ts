@@ -10,9 +10,24 @@ import { PRICE_SCALE } from '@fastgpt/global/common/bill/constants';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { code, redirect_uri } = req.body;
-    const authCodeCheckUrl = `${tokenInfo.base_url}/oauth/oauth/token?client_id=${tokenInfo.client_id}&client_secret=${tokenInfo.client_secret}&grant_type=${tokenInfo.grant_type}&code=${code}&redirect_uri=${redirect_uri}`;
-    const response = await fetch(authCodeCheckUrl, {
-      method: 'POST'
+
+    const form = new URLSearchParams();
+    form.append('grant_type', tokenInfo.grant_type);
+    form.append('client_id', tokenInfo.client_id);
+    form.append('client_secret', tokenInfo.client_secret);
+    form.append('code', code);
+    //TODO URL 需要改写
+    form.append(
+      'redirect_uri',
+      'http://localhost:3000/chat_new1/share?shareId=3mnm58stef6ztuiss5ieylp1'
+    );
+
+    const response = await fetch(tokenInfo.token_url, {
+      method: 'POST',
+      body: form.toString(),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     }).then((res) => res.json());
     if (response.status === 401) {
       jsonRes(res, {
@@ -31,27 +46,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     //TODO 解决报错用户名不存问题
 
-    const userInfoUrl = `${tokenInfo.base_url}/iam/hzero/v1/users/self?client_id=${tokenInfo.client_id}`;
+    const userInfoUrl = `${tokenInfo.user_info_url}?client_id=${tokenInfo.client_id}`;
     const userInfoResponse = await fetch(userInfoUrl, {
       method: 'GET',
       headers: { Authorization: `bearer ${response.access_token}` }
     }).then((useInfoRes) => useInfoRes.json());
     let authUser;
+    let userName;
     if (!userInfoResponse.status) {
+      userName = userInfoResponse.phone_number.replace('+86', '');
       authUser = await MongoUser.findOne({
-        username: userInfoResponse.phone
+        username: userName
       });
     } else {
       jsonRes(res, {
         code: 401,
         error: 'Unauthorized'
       });
+      return;
     }
 
     if (!authUser) {
       const psw = process.env.DEFAULT_ROOT_PSW || '123456';
       authUser = await MongoUser.create({
-        username: userInfoResponse.phone,
+        username: userName,
         password: hashStr(psw),
         balance: 999999 * PRICE_SCALE
       });

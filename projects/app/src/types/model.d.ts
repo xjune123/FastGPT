@@ -30,5 +30,6 @@ export type TokenInfoType = {
   client_id: string;
   client_secret: string;
   grant_type: string;
-  base_url: string;
+  token_url: string;
+  user_info_url: string;
 };
