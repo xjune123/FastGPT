@@ -4,6 +4,7 @@ import { postUploadImg, postUploadFiles, getFileViewUrl } from '@/web/common/sys
 // import * as XLSX from 'xlsx';
 import './utils';
 import { getExtend, readBuffer, render } from './util';
+import { getToken } from '@/web/support/user/auth';
 
 /**
  * upload file to mongo gridfs
@@ -239,8 +240,11 @@ export const fileDownload = ({
 
 export async function getFileAndOpen(fileId: string) {
   const url = await getFileViewUrl(fileId);
-  const asPath = `${location.origin}${url}`;
-  window.open(asPath, '_blank');
+  // const asPath = `${location.origin}${url}`;
+  // window.open(asPath, '_blank');
+  window.open(
+    `https://fast.pooksh.com/file/v1/fastgpt/downloadFileById?fileId=${fileId}&token=${getToken()}`
+  );
 }
 
 export const fileToBase64 = (file: File) => {
