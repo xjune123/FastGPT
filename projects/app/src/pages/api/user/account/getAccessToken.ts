@@ -16,11 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     form.append('client_id', tokenInfo.client_id);
     form.append('client_secret', tokenInfo.client_secret);
     form.append('code', code);
-    //TODO URL 需要改写，并且一定要识别好参数，不能多也不能少，否则无法飞书正常跳转
-    form.append(
-      'redirect_uri',
-      'http://localhost:3000/chat_new1/share?shareId=3mnm58stef6ztuiss5ieylp1'
-    );
+    form.append('redirect_uri', redirect_uri);
 
     const response = await fetch(tokenInfo.token_url, {
       method: 'POST',
@@ -34,14 +30,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         code: 401,
         error: 'Unauthorized'
       });
+      return;
     }
     if (response.status === 400) {
       jsonRes(res, {
         code: 400,
         error: 'Invalid authorization code'
       });
+      return;
     }
-    console.log(response);
 
     if (response.error) {
       jsonRes(res, {
@@ -87,7 +84,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       jsonRes(res, {
         data: {
-          token
+          token,
+          ...userInfoResponse
         }
       });
     }

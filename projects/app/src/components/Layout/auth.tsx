@@ -36,11 +36,7 @@ const Auth = ({ children }: { children: JSX.Element }) => {
           if (router.query.code) {
             getToken();
           } else {
-            const redirect_uri = `${location.origin}${location.pathname}?shareId=${router.query.shareId}&appId=${router.query.appId}`;
-            console.log(
-              `${tokenInfo.auth_url}?response_type=code&client_id=${tokenInfo.client_id}&redirect_uri=${redirect_uri}`,
-              'redirect_uri'
-            );
+            const redirect_uri = `${location.origin}${location.pathname}?shareId=${router.query.shareId}%26appId=${router.query.appId}`;
             router.replace(
               `${tokenInfo.auth_url}?response_type=code&client_id=${tokenInfo.client_id}&redirect_uri=${redirect_uri}`
             );
@@ -54,15 +50,17 @@ const Auth = ({ children }: { children: JSX.Element }) => {
       }
     }
   );
-
   const getToken = async () => {
     const redirect_uri = `${location.origin}${location.pathname}?shareId=${router.query.shareId}&appId=${router.query.appId}`;
-    // console.log(redirect_uri, 'redirect_uri')
-    await getAccessToken({
-      code: router.query.code,
-      redirect_uri
-    });
-    // router.reload();
+    try {
+      await getAccessToken({
+        code: router.query.code,
+        redirect_uri
+      });
+      window.location.href = redirect_uri;
+    } catch (err) {
+      console.log(err, 'err');
+    }
   };
 
   return userInfo || unAuthPage[router.pathname] === true ? children : null;
