@@ -20,7 +20,7 @@ const pcUnShowLayoutRoute: Record<string, boolean> = {
   '/chat': true,
   '/chat_new1': true,
   '/chat_new1/share': true,
-  '/chat_new1/share1': true
+  '/chat_new1/share2': true
 };
 const phoneUnShowLayoutRoute: Record<string, boolean> = {
   '/': true,

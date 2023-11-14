@@ -56,7 +56,7 @@ const OutLink = ({
   useEffect(() => {
     (async () => {
       const res = await getChatHistory({
-        appId: '653249b7664b3c9203c07824',
+        appId: router.query.appId as string,
         pageNum: 1,
         pageSize: 20
       });
