@@ -267,6 +267,9 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
       {...(isEmbed ? { p: '0 !important', borderRadius: '0' } : {})}
       bg={isPc ? '' : `url('/imgs/share_bg.png') no-repeat`}
     >
+      <Head>
+        <title>{chatData.app.name}</title>
+      </Head>
       <Flex h={'100%'} flexDirection={['column', 'row']}>
         {/* pc always show history. */}
         {((children: React.ReactNode) => {
@@ -317,31 +320,6 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
                 }
               });
             }}
-            onSetHistoryTop={async (e) => {
-              try {
-                await putChatHistory(e);
-                const historyItem = history.find((item) => item.chatId === e.chatId);
-                if (!historyItem) return;
-                updateHistory({
-                  ...historyItem,
-                  top: e.top
-                });
-              } catch (error) {}
-            }}
-            onSetCustomTitle={async (e) => {
-              try {
-                await putChatHistory({
-                  chatId: e.chatId,
-                  customTitle: e.title
-                });
-                const historyItem = history.find((item) => item.chatId === e.chatId);
-                if (!historyItem) return;
-                updateHistory({
-                  ...historyItem,
-                  customTitle: e.title
-                });
-              } catch (error) {}
-            }}
           />
         )}
         {/* chat container */}
@@ -358,9 +336,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
           <ChatHeader
             appAvatar={chatData.app.avatar}
             appName={chatData.app.name}
-            appId={appId}
             history={chatData.history}
-            chatModels={chatData.app.chatModels}
             onOpenSlider={onOpenSlider}
           />
 
@@ -388,10 +364,18 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
 };
 
 export async function getServerSideProps(context: any) {
+  const shareId = context?.query?.shareId || '';
+  const chatId = context?.query?.chatId || '';
+  const showHistory = context?.query?.showHistory || '1';
+  const authToken = context?.query?.authToken || '';
+  const appId = context?.query?.appId || '';
   return {
     props: {
-      appId: context?.query?.appId || '',
-      chatId: context?.query?.chatId || '',
+      shareId,
+      chatId,
+      showHistory,
+      authToken,
+      appId,
       ...(await serviceSideProps(context))
     }
   };
