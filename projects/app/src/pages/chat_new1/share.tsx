@@ -32,7 +32,19 @@ import { getErrText } from '@fastgpt/global/common/error/utils';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { serviceSideProps } from '@/web/common/utils/i18n';
 
-const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
+const Chat = ({
+  shareId,
+  chatId,
+  showHistory,
+  authToken,
+  appId
+}: {
+  shareId: string;
+  chatId: string;
+  showHistory: '0' | '1';
+  authToken?: string;
+  appId: string;
+}) => {
   const router = useRouter();
   const theme = useTheme();
   const { t } = useTranslation();
@@ -113,7 +125,6 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
         title: newTitle,
         history: ChatBoxRef.current?.getChatHistory() || state.history
       }));
-
       return { responseText, responseData, isNewChat: forbidRefresh.current };
     },
     [appId, chatId, history, router, setChatData, updateHistory]
@@ -250,7 +261,6 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
     setIdEmbed(window !== parent);
   }, []);
 
-  console.log(isPc, 'isPc');
   return (
     // <Flex h={'100%'}>
     //   <Head>
@@ -304,7 +314,8 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
               router.replace({
                 query: {
                   chatId: chatId || '',
-                  appId
+                  appId,
+                  shareId
                 }
               });
               if (!isPc) {
@@ -343,8 +354,8 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
           {/* chat box */}
           <Box flex={1}>
             <ChatBox
+              active={!!chatData.app.name}
               ref={ChatBoxRef}
-              showEmptyIntro
               appAvatar={chatData.app.avatar}
               userAvatar={userInfo?.avatar}
               userGuideModule={chatData.app?.userGuideModule}
