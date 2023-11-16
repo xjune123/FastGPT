@@ -17,7 +17,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
 
   const [quoteModalData, setQuoteModalData] = useState<SearchDataResponseItemType[]>();
   // const [isShowMore, setIsShowMore] = useState(false);
-  const [isRotate, setIsRotate] = useState(false);
+  const [isRotate, setIsRotate] = useState(true);
   const { quoteList = [] } = useMemo(() => {
     const chatData = responseData.find((item) => item.moduleType === FlowModuleTypeEnum.chatNode);
     return {
