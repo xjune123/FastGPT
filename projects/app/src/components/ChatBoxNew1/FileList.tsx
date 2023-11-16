@@ -16,7 +16,8 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
   const { isPc } = useSystemStore();
 
   const [quoteModalData, setQuoteModalData] = useState<SearchDataResponseItemType[]>();
-  const [isShowMore, setIsShowMore] = useState(false);
+  // const [isShowMore, setIsShowMore] = useState(false);
+  const [isRotate, setIsRotate] = useState(false);
   const { quoteList = [] } = useMemo(() => {
     const chatData = responseData.find((item) => item.moduleType === FlowModuleTypeEnum.chatNode);
     return {
@@ -32,18 +33,22 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
     };
   }, [responseData]);
 
-  function arrayUnique1(arr: any[], name: string) {
+  const newQuoteList = useMemo(() => {
     const res = new Map();
-    const list = arr
-      .filter((item) => !res.has(item[name]) && res.set(item[name], 1))
+    let list = quoteList
+      .filter((item) => !res.has(item['sourceName']) && res.set(item['sourceName'], 1))
       .filter(
         (item) =>
           item.sourceName !== '手动录入' &&
           item.sourceName !== '未知来源' &&
           item.sourceName !== 'kb.Manual Data'
       );
-    return list.slice(0, isShowMore ? quoteList.length : 3);
-  }
+    return list;
+  }, [quoteList]);
+
+  const isShowMore = useMemo(() => {
+    return newQuoteList.length > 3;
+  }, [newQuoteList]);
 
   const getFileType = (sourceName: string) => {
     const index = sourceName?.lastIndexOf('.');
@@ -60,17 +65,27 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
     }
   };
 
+  const getList = useMemo(() => {
+    let _newQuoteList = newQuoteList;
+    _newQuoteList = _newQuoteList.slice(0, 3);
+    if (isRotate) {
+      return _newQuoteList;
+    } else {
+      return newQuoteList;
+    }
+  }, [isRotate]);
+
   return responseData.length === 0 ? null : (
     <Flex flexDirection={'column'} mt={2} flexWrap={'wrap'}>
-      {arrayUnique1(quoteList, 'sourceName').length > 0 && <Divider />}
-      {arrayUnique1(quoteList, 'sourceName').length > 0 && (
+      {newQuoteList.length > 0 && <Divider />}
+      {newQuoteList.length > 0 && (
         <Box color={'#999999'} mt={4} mb={3} fontSize={'sm'}>
           来源:
         </Box>
       )}
       {quoteList.length > 0 && (
         <Box>
-          {arrayUnique1(quoteList, 'sourceName').map((item) => (
+          {getList.map((item) => (
             <Flex
               key={item.id}
               alignItems={'center'}
@@ -87,7 +102,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
               <RawSourceText sourceName={item.sourceName} sourceId={item.sourceId} />
             </Flex>
           ))}
-          {arrayUnique1(quoteList, 'sourceName').length > 3 && (
+          {isShowMore && (
             <Flex justifyContent={'center'} alignItems={'center'} cursor={'pointer'}>
               <Flex
                 w={95}
@@ -96,13 +111,13 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
                 borderRadius={16}
                 justifyContent={'center'}
                 alignItems={'center'}
-                onClick={() => setIsShowMore(!isShowMore)}
+                onClick={() => setIsRotate(!isRotate)}
               >
                 展开更多
                 <MyIcon
                   name="arrow"
                   className={styles.show_more}
-                  transform={isShowMore ? 'rotate(180deg)' : 'rotate(0deg)'}
+                  transform={isRotate ? 'rotate(180deg)' : 'rotate(0deg)'}
                 />
               </Flex>
             </Flex>
