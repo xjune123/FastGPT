@@ -99,7 +99,11 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
               onClick={() => setQuoteModalData(quoteList)}
             >
               <MyIcon name={getFileType(item.sourceName)} mr={2} />
-              <RawSourceText sourceName={item.sourceName} sourceId={item.sourceId} />
+              {isPc ? (
+                <RawSourceText sourceName={item.sourceName} sourceId={item.sourceId} />
+              ) : (
+                <Flex>{item.sourceName}</Flex>
+              )}
             </Flex>
           ))}
           {isShowMore && (
