@@ -36,7 +36,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
   const newQuoteList = useMemo(() => {
     const res = new Map();
     let list = quoteList
-      .filter((item) => !res.has(item['sourceName']) && res.set(item['sourceName'], 1))
+      .filter((item) => !res.has(item['sourceId']) && res.set(item['sourceId'], 1))
       .filter(
         (item) =>
           item.sourceName !== '手动录入' &&
