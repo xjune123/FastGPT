@@ -57,8 +57,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }).then((useInfoRes) => useInfoRes.json());
     let authUser;
     let userName;
+    let personName;
     if (!userInfoResponse.status) {
       userName = userInfoResponse.phone_number.replace('+86', '');
+      personName = userInfoResponse.name;
       authUser = await MongoUser.findOne({
         username: userName
       });
@@ -75,7 +77,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       authUser = await MongoUser.create({
         username: userName,
         password: hashStr(psw),
-        balance: 999999 * PRICE_SCALE
+        balance: 999999 * PRICE_SCALE,
+        personName: personName
       });
     }
     if (authUser) {
