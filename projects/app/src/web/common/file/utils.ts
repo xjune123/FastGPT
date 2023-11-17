@@ -5,6 +5,7 @@ import { postUploadImg, postUploadFiles, getFileViewUrl } from '@/web/common/sys
 import './utils';
 import { getExtend, readBuffer, render } from './util';
 import { getToken } from '@/web/support/user/auth';
+import { tokenInfo } from '@/web/common/system/staticData';
 
 /**
  * upload file to mongo gridfs
@@ -243,7 +244,7 @@ export async function getFileAndOpen(fileId: string) {
   // const asPath = `${location.origin}${url}`;
   // window.open(asPath, '_blank');
   window.open(
-    `https://fast.pooksh.com/file/v1/fastgpt/downloadFileById?fileId=${fileId}&token=${getToken()}`
+    `${tokenInfo.base_url}/file/v1/fastgpt/downloadFileById?fileId=${fileId}&token=${getToken()}`
   );
 }
 

@@ -33,4 +33,5 @@ export type TokenInfoType = {
   auth_url: string;
   token_url: string;
   user_info_url: string;
+  base_url: string;
 };

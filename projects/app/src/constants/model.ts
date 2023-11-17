@@ -126,5 +126,6 @@ export const defaultTokenInfo: TokenInfoType = {
   grant_type: 'authorization_code',
   auth_url: 'https://anycross.feishu.cn/sso/584964903/oauth2/auth',
   token_url: 'https://anycross.feishu.cn/sso/584964903/oauth2/token',
-  user_info_url: 'https://anycross.feishu.cn/sso/584964903/oauth2/userinfo'
+  user_info_url: 'https://anycross.feishu.cn/sso/584964903/oauth2/userinfo',
+  base_url: 'https://fast.pooksh.com'
 };
