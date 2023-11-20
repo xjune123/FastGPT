@@ -57,6 +57,10 @@ const UserSchema = new Schema({
   timezone: {
     type: String,
     default: 'Asia/Shanghai'
+  },
+  personName: {
+    // 姓名
+    type: String
   }
 });
 
