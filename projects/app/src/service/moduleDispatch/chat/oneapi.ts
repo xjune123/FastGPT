@@ -215,11 +215,14 @@ function filterQuote({
   });
 
   // slice filterSearch
-  const filterQuoteQA = quoteQA.slice(0, sliceResult.length);
+  const qaLength = sliceResult.length > 5 ? 5 : sliceResult.length;
+  const filterQuoteQA = quoteQA;
+  let quoteQATop5 = filterQuoteQA;
+  quoteQATop5 = quoteQATop5.slice(0, qaLength);
 
   const quoteText =
-    filterQuoteQA.length > 0
-      ? `${filterQuoteQA
+    quoteQATop5.length > 0
+      ? `${quoteQATop5
           .map((item, index) =>
             replaceVariable(quoteTemplate || Prompt_QuoteTemplateList[0].value, {
               q: item.q,
