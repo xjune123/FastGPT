@@ -276,7 +276,7 @@ export const KBSearchModule: FlowModuleTemplateType = {
       description: '最多取 n 条记录作为本次问题引用',
       value: 5,
       min: 1,
-      max: 20,
+      max: 100,
       step: 1,
       markList: [
         { label: '1', value: 1 },
