@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     jsonRes(res, {
-      data: `/file/v1/fastgpt/read?token=${token}`
+      data: `/pook/public/file/v1/read?token=${token}`
     });
   } catch (error) {
     jsonRes(res, {
@@ -37,31 +37,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 }
 
-// export const createFileToken = (data: { userId: string; fileId: string }) => {
-//   if (!process.env.FILE_TOKEN_KEY) {
-//     return Promise.reject('System unset FILE_TOKEN_KEY');
-//   }
-//   const expiredTime = Math.floor(Date.now() / 1000) + 60 * 30;
+export const createFileToken = (data: { userId: string; fileId: string }) => {
+  if (!process.env.FILE_TOKEN_KEY) {
+    return Promise.reject('System unset FILE_TOKEN_KEY');
+  }
+  const expiredTime = Math.floor(Date.now() / 1000) + 60 * 30;
 
-//   const key = process.env.FILE_TOKEN_KEY as string;
-//   const token = jwt.sign(
-//     {
-//       ...data,
-//       exp: expiredTime
-//     },
-//     key
-//   );
-//   return Promise.resolve(token);
-// };
-
-export const createFileToken = async (data: { userId: string; fileId: string }) => {
-  console.log(tokenInfo.base_url, 'tokenInfo.base_url');
-  let url = `${tokenInfo.base_url}/file/v1/fastgpt/generateToken?userId=${data.userId}&fileId=${data.fileId}`;
-  const token = await fetch(url, {
-    method: 'GET'
-  }).then((res) => res.text());
-  return token;
+  const key = process.env.FILE_TOKEN_KEY as string;
+  const token = jwt.sign(
+    {
+      ...data,
+      exp: expiredTime
+    },
+    key
+  );
+  return Promise.resolve(token);
 };
+
+// export const createFileToken = async (data: { userId: string; fileId: string }) => {
+//   console.log(tokenInfo.base_url, 'tokenInfo.base_url');
+//   let url = `${tokenInfo.base_url}/file/v1/fastgpt/generateToken?userId=${data.userId}&fileId=${data.fileId}`;
+//   const token = await fetch(url, {
+//     method: 'GET'
+//   }).then((res) => res.text());
+//   return token;
+// };
 
 export const authFileToken = (token?: string) =>
   new Promise<{ userId: string; fileId: string }>((resolve, reject) => {
