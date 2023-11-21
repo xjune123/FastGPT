@@ -4,7 +4,7 @@ import { ChatHistoryItemResType } from '@/types/chat';
 import { FlowModuleTypeEnum } from '@/constants/flow';
 import MyIcon from '@/components/Icon';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
-
+import { Pagination, Carousel } from 'antd';
 import type { SearchDataResponseItemType } from '@fastgpt/global/core/dataset/type';
 import { RawSourceText } from '@/pages/dataset/detail/components/InputDataModal';
 // import { RawFileText } from '@/pages/kb/detail/components/InputDataModal';
@@ -18,6 +18,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
   const [quoteModalData, setQuoteModalData] = useState<SearchDataResponseItemType[]>();
   // const [isShowMore, setIsShowMore] = useState(false);
   const [isRotate, setIsRotate] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const { quoteList = [] } = useMemo(() => {
     const chatData = responseData.find((item) => item.moduleType === FlowModuleTypeEnum.chatNode);
     return {
@@ -67,13 +68,24 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
 
   const getList = useMemo(() => {
     let _newQuoteList = newQuoteList;
-    _newQuoteList = _newQuoteList.slice(0, 3);
+    _newQuoteList = _newQuoteList.slice((currentPage - 1) * 10, currentPage * 10);
     if (isRotate) {
-      return _newQuoteList;
-    } else {
-      return newQuoteList;
+      _newQuoteList = _newQuoteList.slice(0, 3);
     }
-  }, [isRotate]);
+    return _newQuoteList;
+  }, [isRotate, currentPage]);
+
+  const contentStyle: React.CSSProperties = {
+    margin: 0,
+    height: '160px',
+    color: '#fff',
+    lineHeight: '160px',
+    textAlign: 'center'
+  };
+
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return responseData.length === 0 ? null : (
     <Flex flexDirection={'column'} mt={2} flexWrap={'wrap'}>
@@ -125,6 +137,30 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
                 />
               </Flex>
             </Flex>
+          )}
+          {isPc && newQuoteList.length > 10 && (
+            <Pagination
+              current={currentPage}
+              total={newQuoteList.length}
+              className={styles.page}
+              onChange={onPageChange}
+            />
+          )}
+          {!isPc && (
+            <Carousel style={{ width: 300 }} afterChange={onPageChange}>
+              <div style={{ width: 300 }}>
+                <h3 style={contentStyle}>1</h3>
+              </div>
+              <div style={{ width: 300 }}>
+                <h3 style={contentStyle}>2</h3>
+              </div>
+              <div style={{ width: 300 }}>
+                <h3 style={contentStyle}>3</h3>
+              </div>
+              <div style={{ width: 300 }}>
+                <h3 style={contentStyle}>4</h3>
+              </div>
+            </Carousel>
           )}
         </Box>
       )}
