@@ -300,10 +300,7 @@ export function RawSourceText({ sourceId, sourceName = '', ...props }: RawSource
   const canPreview = useMemo(() => !!sourceId, [sourceId]);
 
   return (
-    <MyTooltip
-      label={sourceId ? t('file.Click to view file') || '' : ''}
-      shouldWrapChildren={false}
-    >
+    <MyTooltip label={sourceId ? sourceName || '' : ''} shouldWrapChildren={false}>
       <Box
         color={'myGray.600'}
         display={'inline-block'}

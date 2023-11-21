@@ -112,7 +112,8 @@ const iconPaths = {
   custom: () => import('./icons/custom.svg'),
   copy_white: () => import('./icons/copy_white.svg'),
   login_user: () => import('./icons/login_user.svg'),
-  login_pas: () => import('./icons/login_pas.svg')
+  login_pas: () => import('./icons/login_pas.svg'),
+  switch: () => import('./icons/switch.svg')
 };
 
 export type IconName = keyof typeof iconPaths;

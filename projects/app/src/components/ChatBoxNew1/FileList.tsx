@@ -87,17 +87,11 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
     setCurrentPage(page);
   };
 
-  return responseData.length === 0 ? null : (
-    <Flex flexDirection={'column'} mt={2} flexWrap={'wrap'}>
-      {newQuoteList.length > 0 && <Divider />}
-      {newQuoteList.length > 0 && (
-        <Box color={'#999999'} mt={4} mb={3} fontSize={'sm'}>
-          来源:
-        </Box>
-      )}
-      {quoteList.length > 0 && (
-        <Box>
-          {getList.map((item) => (
+  const filesContent = () => {
+    return (
+      <Box>
+        {getList.map((item) => {
+          return (
             <Flex
               key={item.id}
               alignItems={'center'}
@@ -117,27 +111,43 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
                 <Flex>{item.sourceName}</Flex>
               )}
             </Flex>
-          ))}
-          {isShowMore && (
-            <Flex justifyContent={'center'} alignItems={'center'} cursor={'pointer'}>
-              <Flex
-                w={95}
-                h={10}
-                bg={'#EAEBEB'}
-                borderRadius={16}
-                justifyContent={'center'}
-                alignItems={'center'}
-                onClick={() => setIsRotate(!isRotate)}
-              >
-                展开更多
-                <MyIcon
-                  name="arrow"
-                  className={styles.show_more}
-                  transform={isRotate ? 'rotate(180deg)' : 'rotate(0deg)'}
-                />
-              </Flex>
+          );
+        })}
+        {isShowMore && (
+          <Flex justifyContent={'center'} alignItems={'center'} cursor={'pointer'}>
+            <Flex
+              w={95}
+              h={10}
+              bg={'#EAEBEB'}
+              borderRadius={16}
+              justifyContent={'center'}
+              alignItems={'center'}
+              onClick={() => setIsRotate(!isRotate)}
+            >
+              展开更多
+              <MyIcon
+                name="arrow"
+                className={styles.show_more}
+                transform={isRotate ? 'rotate(180deg)' : 'rotate(0deg)'}
+              />
             </Flex>
-          )}
+          </Flex>
+        )}
+      </Box>
+    );
+  };
+
+  return responseData.length === 0 ? null : (
+    <Flex flexDirection={'column'} mt={2} flexWrap={'wrap'}>
+      {newQuoteList.length > 0 && <Divider />}
+      {newQuoteList.length > 0 && (
+        <Box color={'#999999'} mt={4} mb={3} fontSize={'sm'}>
+          来源:
+        </Box>
+      )}
+      {quoteList.length > 0 && (
+        <Box>
+          {isPc && filesContent()}
           {isPc && newQuoteList.length > 10 && (
             <Pagination
               current={currentPage}
@@ -148,18 +158,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
           )}
           {!isPc && (
             <Carousel style={{ width: 300 }} afterChange={onPageChange}>
-              <div style={{ width: 300 }}>
-                <h3 style={contentStyle}>1</h3>
-              </div>
-              <div style={{ width: 300 }}>
-                <h3 style={contentStyle}>2</h3>
-              </div>
-              <div style={{ width: 300 }}>
-                <h3 style={contentStyle}>3</h3>
-              </div>
-              <div style={{ width: 300 }}>
-                <h3 style={contentStyle}>4</h3>
-              </div>
+              {filesContent()}
             </Carousel>
           )}
         </Box>
