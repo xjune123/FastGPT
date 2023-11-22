@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import MyIcon from '@/components/Icon';
 import Avatar from '@/components/Avatar';
 
-const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) => {
+const SliderApps = ({ appId }: { appId: string }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { myApps, loadMyApps } = useUserStore();
@@ -67,7 +67,6 @@ const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) 
                         appId: item._id
                       }
                     });
-                    callback && callback();
                   }
                 })}
           >

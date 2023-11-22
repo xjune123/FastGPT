@@ -248,108 +248,111 @@ const ChatHistorySlider = ({
       <Box flex={'1 0 0'} h={0} px={[2, 5]} pb={'60px'} overflow={'overlay'}>
         {/* chat history */}
         {(currentTab === TabEnum.history || isPc) && (
-          <>
-            {concatHistory.map((item, i) => (
-              <Flex
-                position={'relative'}
-                key={item.id || `${i}`}
-                alignItems={'center'}
-                py={3}
-                px={4}
-                cursor={'pointer'}
-                userSelect={'none'}
-                borderRadius={'lg'}
-                mb={2}
-                _hover={{
-                  bg: isPc ? 'myGray.100' : '#222331',
-                  '& .more': {
-                    display: 'block'
-                  }
-                }}
-                bg={item.top ? '#E2E2E2 !important' : ''}
-                {...(item.id === activeChatId
-                  ? {
-                      backgroundColor: isPc ? 'myBlue.100 !important' : '#222331',
-                      color: isPc ? 'myBlue.700' : '#fff'
+          <Flex>
+            <SliderApps appId={''} callback={() => setOpen(false)} />
+            <Box>
+              {concatHistory.map((item, i) => (
+                <Flex
+                  position={'relative'}
+                  key={item.id || `${i}`}
+                  alignItems={'center'}
+                  py={3}
+                  px={4}
+                  cursor={'pointer'}
+                  userSelect={'none'}
+                  borderRadius={'lg'}
+                  mb={2}
+                  _hover={{
+                    bg: isPc ? 'myGray.100' : '#222331',
+                    '& .more': {
+                      display: 'block'
                     }
-                  : {
-                      color: isPc ? '' : '#fff',
-                      onClick: () => {
-                        onChangeChat(item.id);
+                  }}
+                  bg={item.top ? '#E2E2E2 !important' : ''}
+                  {...(item.id === activeChatId
+                    ? {
+                        backgroundColor: isPc ? 'myBlue.100 !important' : '#222331',
+                        color: isPc ? 'myBlue.700' : '#fff'
                       }
-                    })}
-              >
-                <MyIcon
-                  name={`chat${Math.floor(Math.random() * (8 - 1 + 1)) + 1}` as any}
-                  w={'24px'}
-                />
-                <Box flex={'1 0 0'} ml={3} className="textEllipsis">
-                  {item.customTitle || item.title}
-                  {item.top && <MyIcon ml={2} name={'top'} w={'16px'} />}
-                </Box>
-                {!!item.id && (
-                  <Box className="more" display={['block', 'none']}>
-                    <Menu autoSelect={false} isLazy offset={[0, 5]}>
-                      <MenuButton
-                        _hover={{ bg: 'white' }}
-                        cursor={'pointer'}
-                        borderRadius={'md'}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        <MyIcon name={'more'} w={'14px'} p={1} />
-                      </MenuButton>
-                      <MenuList color={'myGray.700'} minW={`90px !important`}>
-                        {onSetHistoryTop && (
-                          <MenuItem
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onSetHistoryTop({ chatId: item.id, top: !item.top });
-                            }}
-                          >
-                            <MyIcon mr={2} name={'setTop'} w={'16px'}></MyIcon>
-                            {item.top ? '取消置顶' : '置顶'}
-                          </MenuItem>
-                        )}
-                        {onSetCustomTitle && (
-                          <MenuItem
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onOpenModal({
-                                defaultVal: item.customTitle || item.title,
-                                onSuccess: (e) =>
-                                  onSetCustomTitle({
-                                    chatId: item.id,
-                                    title: e
-                                  })
-                              });
-                            }}
-                          >
-                            <MyIcon mr={2} name={'edit1'} w={'16px'}></MyIcon>
-                            编辑对话名称
-                          </MenuItem>
-                        )}
-                        <MenuItem
-                          _hover={{ color: 'red.500' }}
+                    : {
+                        color: isPc ? '' : '#fff',
+                        onClick: () => {
+                          onChangeChat(item.id);
+                        }
+                      })}
+                >
+                  <MyIcon
+                    name={`chat${Math.floor(Math.random() * (8 - 1 + 1)) + 1}` as any}
+                    w={'24px'}
+                  />
+                  <Box flex={'1 0 0'} ml={3} className="textEllipsis">
+                    {item.customTitle || item.title}
+                    {item.top && <MyIcon ml={2} name={'top'} w={'16px'} />}
+                  </Box>
+                  {!!item.id && (
+                    <Box className="more" display={['block', 'none']}>
+                      <Menu autoSelect={false} isLazy offset={[0, 5]}>
+                        <MenuButton
+                          _hover={{ bg: 'white' }}
+                          cursor={'pointer'}
+                          borderRadius={'md'}
                           onClick={(e) => {
                             e.stopPropagation();
-                            onDelHistory(item.id);
-                            if (item.id === activeChatId) {
-                              onChangeChat();
-                            }
                           }}
                         >
-                          <MyIcon mr={2} name={'delete1'} w={'16px'}></MyIcon>
-                          从对话列表删除
-                        </MenuItem>
-                      </MenuList>
-                    </Menu>
-                  </Box>
-                )}
-              </Flex>
-            ))}
-          </>
+                          <MyIcon name={'more'} w={'14px'} p={1} />
+                        </MenuButton>
+                        <MenuList color={'myGray.700'} minW={`90px !important`}>
+                          {onSetHistoryTop && (
+                            <MenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onSetHistoryTop({ chatId: item.id, top: !item.top });
+                              }}
+                            >
+                              <MyIcon mr={2} name={'setTop'} w={'16px'}></MyIcon>
+                              {item.top ? '取消置顶' : '置顶'}
+                            </MenuItem>
+                          )}
+                          {onSetCustomTitle && (
+                            <MenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenModal({
+                                  defaultVal: item.customTitle || item.title,
+                                  onSuccess: (e) =>
+                                    onSetCustomTitle({
+                                      chatId: item.id,
+                                      title: e
+                                    })
+                                });
+                              }}
+                            >
+                              <MyIcon mr={2} name={'edit1'} w={'16px'}></MyIcon>
+                              编辑对话名称
+                            </MenuItem>
+                          )}
+                          <MenuItem
+                            _hover={{ color: 'red.500' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelHistory(item.id);
+                              if (item.id === activeChatId) {
+                                onChangeChat();
+                              }
+                            }}
+                          >
+                            <MyIcon mr={2} name={'delete1'} w={'16px'}></MyIcon>
+                            从对话列表删除
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    </Box>
+                  )}
+                </Flex>
+              ))}
+            </Box>
+          </Flex>
         )}
         {currentTab === TabEnum.app && !isPc && (
           <>

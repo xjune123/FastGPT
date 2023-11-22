@@ -20,6 +20,13 @@ export type AppListItemType = {
   name: string;
   avatar: string;
   intro: string;
+};
+
+export type NewAppListItemType = {
+  _id: string;
+  name: string;
+  avatar: string;
+  intro: string;
   lastChoose: boolean;
 };
 

@@ -6,7 +6,7 @@ import { getMyModels, getNewMyModels, getModelById, putAppById } from '@/web/cor
 import { formatPrice } from '@fastgpt/global/common/bill/tools';
 import { getTokenLogin, putUserInfo } from '@/web/support/user/api';
 import { defaultApp } from '@/constants/model';
-import { AppListItemType, AppUpdateParams } from '@/types/app';
+import { AppListItemType, NewAppListItemType, AppUpdateParams } from '@/types/app';
 import { getToken } from '@/web/support/user/auth';
 
 import type { AppSchema } from '@/types/mongoSchema';
@@ -16,12 +16,12 @@ type State = {
   initUserInfo: () => Promise<UserType>;
   setUserInfo: (user: UserType | null) => void;
   updateUserInfo: (user: UserUpdateParams) => Promise<void>;
-  myNewApps: AppListItemType[];
+  myNewApps: NewAppListItemType[];
   myApps: AppListItemType[];
   myCollectionApps: AppListItemType[];
-  myCollectionNewApps: AppListItemType[];
+  myCollectionNewApps: NewAppListItemType[];
   loadMyApps: (init?: boolean) => Promise<AppListItemType[]>;
-  loadMyNewApps: (init?: boolean) => Promise<AppListItemType[]>;
+  loadMyNewApps: (init?: boolean) => Promise<NewAppListItemType[]>;
 
   appDetail: AppSchema;
   loadAppDetail: (id: string, init?: boolean) => Promise<AppSchema>;
