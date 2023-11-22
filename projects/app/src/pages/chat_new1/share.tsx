@@ -26,25 +26,12 @@ import ChatBox, { type ComponentRef, type StartChatFnProps } from '@/components/
 import PageContainer from '@/components/PageContainer';
 import SideBar from '@/components/SideBar';
 import ChatHistorySlider from './components/ChatHistorySlider';
-import SliderApps from './components/SliderApps';
 import ChatHeader from './components/ChatHeader';
 import { getErrText } from '@fastgpt/global/common/error/utils';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { serviceSideProps } from '@/web/common/utils/i18n';
 
-const Chat = ({
-  shareId,
-  chatId,
-  showHistory,
-  authToken,
-  appId
-}: {
-  shareId: string;
-  chatId: string;
-  showHistory: '0' | '1';
-  authToken?: string;
-  appId: string;
-}) => {
+const Chat = ({ appId, shareId, chatId }: { appId: string; shareId: string; chatId: string }) => {
   const router = useRouter();
   const theme = useTheme();
   const { t } = useTranslation();
@@ -67,7 +54,7 @@ const Chat = ({
     chatData,
     setChatData
   } = useChatStore();
-  const { myApps, loadMyApps, userInfo } = useUserStore();
+  const { myNewApps, loadMyNewApps, userInfo } = useUserStore();
 
   const { isPc } = useSystemStore();
   const { Loading, setIsLoading } = useLoading();
@@ -202,25 +189,25 @@ const Chat = ({
   // 初始化聊天框
   useQuery(['init', appId, chatId], () => {
     // pc: redirect to latest model chat
-    if (!appId && lastChatAppId) {
+    // if (!appId && lastChatAppId) {
+    //   return router.replace({
+    //     query: {
+    //       appId: lastChatAppId,
+    //       chatId: lastChatId
+    //     }
+    //   });
+    // }
+    if (!appId && myNewApps[0]) {
       return router.replace({
         query: {
-          appId: lastChatAppId,
-          chatId: lastChatId
-        }
-      });
-    }
-    if (!appId && myApps[0]) {
-      return router.replace({
-        query: {
-          appId: myApps[0]._id,
+          appId: myNewApps[0]._id,
           chatId: lastChatId
         }
       });
     }
     if (!appId) {
       (async () => {
-        const apps = await loadMyApps();
+        const apps = await loadMyNewApps();
         if (apps.length === 0) {
           toast({
             status: 'error',
@@ -228,9 +215,11 @@ const Chat = ({
           });
           router.replace('/app/list');
         } else {
+          const chooseList = apps.filter((item) => item.lastChoose);
+          const _id = chooseList.length ? chooseList[0]._id : apps[0]._id;
           router.replace({
             query: {
-              appId: apps[0]._id,
+              appId: _id,
               chatId: lastChatId
             }
           });

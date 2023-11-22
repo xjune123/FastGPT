@@ -21,7 +21,7 @@ export const getNewMyModels = async (token: string) => {
       'Content-Type': 'application/json'
     }
   }).then((res) => res.json());
-  return myApps.data;
+  return myApps;
 };
 
 /**

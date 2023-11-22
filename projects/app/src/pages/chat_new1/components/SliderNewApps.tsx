@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import { Flex, Box, IconButton } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useUserStore } from '@/web/support/user/useUserStore';
+import request from '@/web/support/user/request';
+
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import MyIcon from '@/components/Icon';
@@ -14,6 +16,11 @@ const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) 
   const isShare = useMemo(() => router.pathname === '/chat_new1/share', [router.pathname]);
 
   useQuery(['loadModels'], () => loadMyNewApps(false));
+
+  const setLastAppChoose = async (id: string) => {
+    const res = await request.post(`/pook/app/v1/setLastAppChoose`, { appId: id });
+    console.log(res, 'res');
+  };
 
   return (
     <Flex flexDirection={'column'} h={'100%'}>
@@ -67,6 +74,7 @@ const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) 
                         appId: item._id
                       }
                     });
+                    setLastAppChoose(item._id);
                     callback && callback();
                   }
                 })}
