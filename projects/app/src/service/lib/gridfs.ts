@@ -75,9 +75,10 @@ export class GridFSStorage {
       return Promise.reject(`file not found`);
     }
 
+    /* 不要验证权限
     if (file.metadata?.userId !== this.uid) {
       return Promise.reject(ERROR_ENUM.unAuthFile);
-    }
+    }*/
 
     return {
       id: String(file._id),
