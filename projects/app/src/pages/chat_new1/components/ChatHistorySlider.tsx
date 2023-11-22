@@ -22,7 +22,7 @@ import Tabs from '@/components/Tabs';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useQuery } from '@tanstack/react-query';
 import { Popover } from 'antd';
-import SliderApps from './SliderApps';
+import SliderApps from './SliderNewApps';
 import styles from '../index.module.scss';
 
 type HistoryItemType = {
@@ -136,9 +136,11 @@ const ChatHistorySlider = ({
                 <Box fontWeight={'bold'} className={'textEllipsis'}>
                   {appName}
                 </Box>
-                <Box fontSize={'12px'} color={'#999999'}>
-                  点击切换知识库
-                </Box>
+                {isShare && (
+                  <Box fontSize={'12px'} color={'#999999'}>
+                    点击切换知识库
+                  </Box>
+                )}
               </Box>
             </Flex>
 

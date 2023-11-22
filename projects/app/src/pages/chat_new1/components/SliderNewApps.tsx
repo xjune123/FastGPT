@@ -10,10 +10,10 @@ import Avatar from '@/components/Avatar';
 const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { myApps, loadMyApps } = useUserStore();
+  const { myNewApps, loadMyNewApps } = useUserStore();
   const isShare = useMemo(() => router.pathname === '/chat_new1/share', [router.pathname]);
 
-  useQuery(['loadModels'], () => loadMyApps(false));
+  useQuery(['loadModels'], () => loadMyNewApps(false));
 
   return (
     <Flex flexDirection={'column'} h={'100%'}>
@@ -43,7 +43,7 @@ const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) 
         </Box>
       )}
       <Box px={5} overflow={'overlay'}>
-        {myApps.map((item) => (
+        {myNewApps.map((item) => (
           <Flex
             key={item._id}
             py={2}

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import type { UserType, UserUpdateParams } from '@/types/user';
-import { getMyModels, getModelById, putAppById } from '@/web/core/app/api';
+import { getMyModels, getNewMyModels, getModelById, putAppById } from '@/web/core/app/api';
 import { formatPrice } from '@fastgpt/global/common/bill/tools';
 import { getTokenLogin, putUserInfo } from '@/web/support/user/api';
 import { defaultApp } from '@/constants/model';
@@ -16,9 +16,13 @@ type State = {
   initUserInfo: () => Promise<UserType>;
   setUserInfo: (user: UserType | null) => void;
   updateUserInfo: (user: UserUpdateParams) => Promise<void>;
+  myNewApps: AppListItemType[];
   myApps: AppListItemType[];
   myCollectionApps: AppListItemType[];
+  myCollectionNewApps: AppListItemType[];
   loadMyApps: (init?: boolean) => Promise<AppListItemType[]>;
+  loadMyNewApps: (init?: boolean) => Promise<AppListItemType[]>;
+
   appDetail: AppSchema;
   loadAppDetail: (id: string, init?: boolean) => Promise<AppSchema>;
   updateAppDetail(appId: string, data: AppUpdateParams): Promise<void>;
@@ -67,9 +71,19 @@ export const useUserStore = create<State>()(
         myCollectionApps: [],
         async loadMyApps(init = true) {
           if (get().myApps.length > 0 && !init) return [];
-          const res = await getMyModels({ token: getToken() });
+          const res = await getMyModels();
           set((state) => {
             state.myApps = res;
+          });
+          return res;
+        },
+        myNewApps: [],
+        myCollectionNewApps: [],
+        async loadMyNewApps(init = true) {
+          if (get().myNewApps.length > 0 && !init) return [];
+          const res = await getNewMyModels(getToken());
+          set((state) => {
+            state.myNewApps = res;
           });
           return res;
         },

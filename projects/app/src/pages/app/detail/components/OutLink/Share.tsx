@@ -161,7 +161,7 @@ const Share = ({ appId }: { appId: string }) => {
                       </MenuItem>
                       <MenuItem
                         onClick={() => {
-                          const url = `${location.origin}/chat_new1/share?shareId=${item.shareId}&appId=${item.appId}`;
+                          const url = `${location.origin}/chat_new1/share`;
                           copyData(url, '已复制分享链接，可直接分享使用');
                         }}
                         py={[2, 3]}

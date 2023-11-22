@@ -5,11 +5,24 @@ import { RequestPaging } from '@/types/index';
 import { addDays } from 'date-fns';
 import type { GetAppChatLogsParams } from '@/global/core/api/appReq.d';
 import type { CreateAppParams } from '@/types/app';
+import { tokenInfo } from '@/web/common/system/staticData';
 
 /**
  * 获取模型列表
  */
-export const getMyModels = (data: { token: string }) => GET<AppListItemType[]>('/app/myApps');
+
+export const getMyModels = () => GET<AppListItemType[]>('/app/myApps');
+
+export const getNewMyModels = async (token: string) => {
+  const myApps = await fetch(`${tokenInfo.base_url}/pook/app/v1/queryUserApp`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  }).then((res) => res.json());
+  return myApps.data;
+};
 
 /**
  * 创建一个模型
