@@ -36,7 +36,7 @@ const Auth = ({ children }: { children: JSX.Element }) => {
           if (router.query.code) {
             getToken();
           } else {
-            const redirect_uri = `${location.origin}${location.pathname}?shareId=${router.query.shareId}%26appId=${router.query.appId}`;
+            const redirect_uri = `${location.origin}${location.pathname}`;
             router.replace(
               `${tokenInfo.auth_url}?response_type=code&client_id=${tokenInfo.client_id}&redirect_uri=${redirect_uri}`
             );
@@ -51,12 +51,13 @@ const Auth = ({ children }: { children: JSX.Element }) => {
     }
   );
   const getToken = async () => {
-    const redirect_uri = `${location.origin}${location.pathname}?shareId=${router.query.shareId}&appId=${router.query.appId}`;
+    const redirect_uri = `${location.origin}${location.pathname}`;
     try {
-      await getAccessToken({
+      const res: any = await getAccessToken({
         code: router.query.code,
         redirect_uri
       });
+      localStorage.setItem('token', res?.token);
       window.location.href = redirect_uri;
     } catch (err) {
       console.log(err, 'err');
