@@ -121,28 +121,24 @@ const ChatHistorySlider = ({
             alignItems={'center'}
             cursor={appId ? 'pointer' : 'default'}
           >
-            <Flex
-              alignItems={'center'}
-              onClick={() =>
-                !isShare &&
-                router.replace({
-                  pathname: '/app/detail',
-                  query: { appId }
-                })
-              }
-            >
-              <Avatar src={appAvatar} w={'44px'} fontSize={'20px'} />
-              <Box flex={'1 0 0'} w={0} ml={2}>
-                <Box fontWeight={'bold'} className={'textEllipsis'}>
-                  {appName}
-                </Box>
-                {isShare && (
-                  <Box fontSize={'12px'} color={'#999999'}>
-                    点击切换知识库
+            {!isShare && (
+              <Flex
+                alignItems={'center'}
+                onClick={() =>
+                  router.replace({
+                    pathname: '/app/detail',
+                    query: { appId }
+                  })
+                }
+              >
+                <Avatar src={appAvatar} w={'44px'} fontSize={'20px'} />
+                <Box flex={'1 0 0'} w={0} ml={2}>
+                  <Box fontWeight={'bold'} className={'textEllipsis'}>
+                    {appName}
                   </Box>
-                )}
-              </Box>
-            </Flex>
+                </Box>
+              </Flex>
+            )}
 
             {isShare && (
               <Popover
@@ -153,7 +149,18 @@ const ChatHistorySlider = ({
                 onOpenChange={(e) => setOpen(e)}
                 content={<SliderApps appId={''} callback={() => setOpen(false)} />}
               >
-                <MyIcon name={'switch'} w={'16px'} p={'10px'} onClick={(e) => handleSwitch()} />
+                <Flex alignItems={'center'} flex={'1'} onClick={(e) => handleSwitch()}>
+                  <Avatar src={appAvatar} w={'44px'} fontSize={'20px'} />
+                  <Box flex={'1 0 0'} w={0} ml={2}>
+                    <Box fontWeight={'bold'} className={'textEllipsis'}>
+                      {appName}
+                    </Box>
+                    <Box fontSize={'12px'} color={'#999999'}>
+                      点击切换知识库
+                    </Box>
+                  </Box>
+                  <MyIcon name={'switch'} w={'16px'} p={'10px'} />
+                </Flex>
               </Popover>
             )}
           </Flex>
