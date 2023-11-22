@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     jsonRes(res, {
-      data: `/pook/public/file/v1/read?token=${token}`
+      data: token
     });
   } catch (error) {
     jsonRes(res, {

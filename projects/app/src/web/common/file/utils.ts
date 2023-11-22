@@ -240,12 +240,10 @@ export const fileDownload = ({
 };
 
 export async function getFileAndOpen(fileId: string) {
-  const url = await getFileViewUrl(fileId);
+  const res = await getFileViewUrl(fileId);
   // const asPath = `${location.origin}${url}`;
   // window.open(asPath, '_blank');
-  window.open(
-    `${tokenInfo.base_url}/file/v1/fastgpt/downloadFileById?fileId=${fileId}&token=${getToken()}`
-  );
+  window.open(`${tokenInfo.base_url}/pook/public/file/v1/read?token=${res}`);
 }
 
 export const fileToBase64 = (file: File) => {
