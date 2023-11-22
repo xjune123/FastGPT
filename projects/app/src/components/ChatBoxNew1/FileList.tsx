@@ -75,7 +75,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
       _newQuoteList = _newQuoteList.slice(0, 3);
     }
     return _newQuoteList;
-  }, [isExpand, currentPage, size, continueExpand]);
+  }, [newQuoteList, isExpand, currentPage, size, continueExpand]);
 
   const onPageChange = (page: number) => {
     setCurrentPage(page);
