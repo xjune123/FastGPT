@@ -1,13 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Flex, Box, Divider } from '@chakra-ui/react';
 import { ChatHistoryItemResType } from '@/types/chat';
 import { FlowModuleTypeEnum } from '@/constants/flow';
 import MyIcon from '@/components/Icon';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
-import { Pagination, Carousel } from 'antd';
+import { Pagination } from 'antd';
 import type { SearchDataResponseItemType } from '@fastgpt/global/core/dataset/type';
 import { RawSourceText } from '@/pages/dataset/detail/components/InputDataModal';
-// import { RawFileText } from '@/pages/kb/detail/components/InputDataModal';
 import { useTranslation } from 'react-i18next';
 import styles from './index.module.scss';
 
@@ -17,8 +16,11 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
 
   const [quoteModalData, setQuoteModalData] = useState<SearchDataResponseItemType[]>();
   // const [isShowMore, setIsShowMore] = useState(false);
-  const [isRotate, setIsRotate] = useState(true);
+  const [isExpand, setIsExpand] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [size, setSize] = useState(3);
+  const [continueExpand, setContinueExpand] = useState(false);
+
   const { quoteList = [] } = useMemo(() => {
     const chatData = responseData.find((item) => item.moduleType === FlowModuleTypeEnum.chatNode);
     return {
@@ -68,23 +70,28 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
 
   const getList = useMemo(() => {
     let _newQuoteList = newQuoteList;
-    _newQuoteList = _newQuoteList.slice((currentPage - 1) * 10, currentPage * 10);
-    if (isRotate) {
+    _newQuoteList = _newQuoteList.slice((currentPage - 1) * size, currentPage * size);
+    if (isExpand && !continueExpand) {
       _newQuoteList = _newQuoteList.slice(0, 3);
     }
     return _newQuoteList;
-  }, [isRotate, currentPage]);
-
-  const contentStyle: React.CSSProperties = {
-    margin: 0,
-    height: '160px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center'
-  };
+  }, [isExpand, currentPage, size, continueExpand]);
 
   const onPageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handleShowMore = () => {
+    if (isPc) {
+      setIsExpand(!isExpand);
+      setSize(10);
+    } else {
+      if (size < newQuoteList.length) {
+        setSize(size === 3 ? 10 : size + 10);
+      } else {
+        setSize(10);
+      }
+    }
   };
 
   const filesContent = () => {
@@ -122,13 +129,13 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
               borderRadius={16}
               justifyContent={'center'}
               alignItems={'center'}
-              onClick={() => setIsRotate(!isRotate)}
+              onClick={() => handleShowMore()}
             >
-              展开更多
+              {isExpand ? '展开' : '收起'}
               <MyIcon
                 name="arrow"
                 className={styles.show_more}
-                transform={isRotate ? 'rotate(180deg)' : 'rotate(0deg)'}
+                transform={isExpand ? 'rotate(0deg)' : 'rotate(180deg)'}
               />
             </Flex>
           </Flex>
@@ -147,7 +154,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
       )}
       {quoteList.length > 0 && (
         <Box>
-          {isPc && filesContent()}
+          {filesContent()}
           {isPc && newQuoteList.length > 10 && (
             <Pagination
               current={currentPage}
@@ -155,11 +162,6 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
               className={styles.page}
               onChange={onPageChange}
             />
-          )}
-          {!isPc && (
-            <Carousel style={{ width: 300 }} afterChange={onPageChange}>
-              {filesContent()}
-            </Carousel>
           )}
         </Box>
       )}

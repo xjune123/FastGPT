@@ -10,15 +10,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // 凭证校验
     const { userId } = await authUser({ req, authToken: true });
 
-    // 根据 userId 获取模型信息
-    const myApps = await App.find(
-      {
-        userId
-      },
-      '_id avatar name intro'
-    ).sort({
-      updateTime: -1
-    });
+    const { token } = req.body;
+    // 根据 获取模型信息
+    const myApps = await fetch(`${tokenInfo.base_url}/pook/app/v1/queryUserApp`, {
+      method: 'GET',
+      headers: {
+        Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzMjA5ODJlNzA0NjdhYmE1ZWMxMmEiLCJleHAiOjE3MDAxMTg1NTUsImlhdCI6MTY5OTUxMzc1NX0.AJUdU9c8RZ7zU2hYUBF7m0oGnCoilwA8qr4CGIfJXkQ`,
+        'Content-Type': 'application/json'
+      }
+    }).then((useInfoRes) => useInfoRes.json());
 
     jsonRes<AppListItemType[]>(res, {
       data: myApps

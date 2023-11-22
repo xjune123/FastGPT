@@ -21,6 +21,9 @@ import { useConfirm } from '@/web/common/hooks/useConfirm';
 import Tabs from '@/components/Tabs';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useQuery } from '@tanstack/react-query';
+import { Popover } from 'antd';
+import SliderApps from './SliderApps';
+import styles from '../index.module.scss';
 
 type HistoryItemType = {
   id: string;
@@ -66,8 +69,8 @@ const ChatHistorySlider = ({
   const { myApps, loadMyApps, userInfo } = useUserStore();
 
   const [currentTab, setCurrentTab] = useState<`${TabEnum}`>(TabEnum.history);
-
-  const isShare = useMemo(() => !appId || !userInfo, [appId, userInfo]);
+  const [open, setOpen] = useState(false);
+  const isShare = useMemo(() => router.pathname === '/chat_new1/share', [router.pathname]);
 
   // custom title edit
   const { onOpenModal, EditModal: EditTitleModal } = useEditTitle({
@@ -94,6 +97,10 @@ const ChatHistorySlider = ({
     return loadMyApps(false);
   });
 
+  const handleSwitch = () => {
+    setOpen(!open);
+  };
+
   return (
     <Flex
       position={'relative'}
@@ -105,25 +112,48 @@ const ChatHistorySlider = ({
       whiteSpace={'nowrap'}
     >
       {isPc && (
-        <MyTooltip label={appId ? t('app.App Detail') : ''} offset={[0, 0]}>
+        <MyTooltip label={''} offset={[0, 0]}>
           <Flex
             pt={5}
             pb={2}
             px={[2, 5]}
+            justifyContent={'space-between'}
             alignItems={'center'}
             cursor={appId ? 'pointer' : 'default'}
-            onClick={() =>
-              appId &&
-              router.replace({
-                pathname: '/app/detail',
-                query: { appId }
-              })
-            }
           >
-            <Avatar src={appAvatar} w={'44px'} fontSize={'20px'} />
-            <Box flex={'1 0 0'} w={0} ml={2} fontWeight={'bold'} className={'textEllipsis'}>
-              {appName}
-            </Box>
+            <Flex
+              alignItems={'center'}
+              onClick={() =>
+                appId &&
+                router.replace({
+                  pathname: '/app/detail',
+                  query: { appId }
+                })
+              }
+            >
+              <Avatar src={appAvatar} w={'44px'} fontSize={'20px'} />
+              <Box flex={'1 0 0'} w={0} ml={2}>
+                <Box fontWeight={'bold'} className={'textEllipsis'}>
+                  {appName}
+                </Box>
+                <Box fontSize={'12px'} color={'#999999'}>
+                  点击切换知识库
+                </Box>
+              </Box>
+            </Flex>
+
+            {isShare && (
+              <Popover
+                placement={'bottomRight'}
+                open={open}
+                trigger="click"
+                overlayClassName={styles.sharePopover}
+                onOpenChange={(e) => setOpen(e)}
+                content={<SliderApps appId={''} callback={() => setOpen(false)} />}
+              >
+                <MyIcon name={'switch'} w={'16px'} p={'10px'} onClick={(e) => handleSwitch()} />
+              </Popover>
+            )}
           </Flex>
         </MyTooltip>
       )}
@@ -137,9 +167,10 @@ const ChatHistorySlider = ({
         alignItems={'center'}
         justifyContent={'center'}
         position={isPc ? 'relative' : 'fixed'}
-        bottom={isPc ? '' : '25px'}
+        bottom={isPc ? '' : '0'}
+        zIndex={1}
       >
-        {!isPc && !isShare && (
+        {/* {!isPc && !isShare && (
           <Tabs
             w={'120px'}
             mr={2}
@@ -150,7 +181,7 @@ const ChatHistorySlider = ({
             activeId={currentTab}
             onChange={(e) => setCurrentTab(e as `${TabEnum}`)}
           />
-        )}
+        )} */}
         <Button
           // variant={'base'}
           // flex={1}
@@ -205,7 +236,7 @@ const ChatHistorySlider = ({
         </Flex>
       )}
 
-      <Box flex={'1 0 0'} h={0} px={[2, 5]} overflow={'overlay'}>
+      <Box flex={'1 0 0'} h={0} px={[2, 5]} pb={'60px'} overflow={'overlay'}>
         {/* chat history */}
         {(currentTab === TabEnum.history || isPc) && (
           <>
@@ -347,7 +378,7 @@ const ChatHistorySlider = ({
         )}
       </Box>
 
-      {!isPc && appId && (
+      {/* {!isPc && appId && (
         <Flex
           mt={2}
           borderTop={theme.borders.base}
@@ -368,7 +399,7 @@ const ChatHistorySlider = ({
           />
           {t('chat.Exit Chat')}
         </Flex>
-      )}
+      )} */}
       <EditTitleModal />
       <ConfirmModal />
     </Flex>

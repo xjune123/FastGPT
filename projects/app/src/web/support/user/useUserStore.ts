@@ -7,6 +7,7 @@ import { formatPrice } from '@fastgpt/global/common/bill/tools';
 import { getTokenLogin, putUserInfo } from '@/web/support/user/api';
 import { defaultApp } from '@/constants/model';
 import { AppListItemType, AppUpdateParams } from '@/types/app';
+import { getToken } from '@/web/support/user/auth';
 
 import type { AppSchema } from '@/types/mongoSchema';
 
@@ -66,7 +67,7 @@ export const useUserStore = create<State>()(
         myCollectionApps: [],
         async loadMyApps(init = true) {
           if (get().myApps.length > 0 && !init) return [];
-          const res = await getMyModels();
+          const res = await getMyModels({ token: getToken() });
           set((state) => {
             state.myApps = res;
           });
