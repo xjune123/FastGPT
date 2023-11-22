@@ -124,7 +124,7 @@ const ChatHistorySlider = ({
             <Flex
               alignItems={'center'}
               onClick={() =>
-                appId &&
+                !isShare &&
                 router.replace({
                   pathname: '/app/detail',
                   query: { appId }
