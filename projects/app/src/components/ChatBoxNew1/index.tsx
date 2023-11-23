@@ -698,7 +698,7 @@ const ChatBox = (
                           source={item.value}
                           isChatting={index === chatHistory.length - 1 && isChatting}
                         />
-                        <Flex justifyContent={'space-between'}>
+                        <Flex justifyContent={'space-between'} flexWrap={'wrap'}>
                           <ResponseTags responseData={item.responseData} />
                           <ChatController
                             ml={2}

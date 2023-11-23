@@ -3,6 +3,7 @@ import { Flex, Box, IconButton } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import request from '@/web/support/user/request';
+import { useSystemStore } from '@/web/common/system/useSystemStore';
 
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +15,7 @@ const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) 
   const router = useRouter();
   const { myNewApps, loadMyNewApps } = useUserStore();
   const isShare = useMemo(() => router.pathname === '/chat_new1/share', [router.pathname]);
+  const { isPc } = useSystemStore();
 
   useQuery(['loadModels'], () => loadMyNewApps(false));
 
@@ -25,7 +27,7 @@ const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) 
   return (
     <Flex flexDirection={'column'} h={'100%'}>
       {!isShare && (
-        <Box px={5} py={4}>
+        <Box px={isPc ? 5 : 0} py={isPc ? 4 : 0}>
           <Flex
             alignItems={'center'}
             cursor={'pointer'}
@@ -49,42 +51,82 @@ const SliderApps = ({ appId, callback }: { callback: Function; appId: string }) 
           </Flex>
         </Box>
       )}
-      <Box px={5} overflow={'overlay'}>
-        {myNewApps.map((item) => (
-          <Flex
-            key={item._id}
-            py={2}
-            px={3}
-            mb={3}
-            cursor={'pointer'}
-            borderRadius={'lg'}
-            alignItems={'center'}
-            {...(item._id === appId
-              ? {
-                  bg: 'white',
-                  boxShadow: 'md'
-                }
-              : {
-                  _hover: {
-                    bg: 'myGray.200'
-                  },
-                  onClick: () => {
-                    router.replace({
-                      query: {
-                        appId: item._id
-                      }
-                    });
-                    setLastAppChoose(item._id);
-                    callback && callback();
+      <Box px={isPc ? 5 : 0} overflow={'overlay'}>
+        {isPc &&
+          myNewApps.map((item) => (
+            <Flex
+              key={item._id}
+              py={2}
+              px={3}
+              mb={3}
+              cursor={'pointer'}
+              borderRadius={'lg'}
+              alignItems={'center'}
+              {...(item._id === appId
+                ? {
+                    bg: 'white',
+                    boxShadow: 'md'
                   }
-                })}
-          >
-            <Avatar src={item.avatar} w={'24px'} />
-            <Box ml={2} className={'textEllipsis'}>
-              {item.name}
-            </Box>
-          </Flex>
-        ))}
+                : {
+                    _hover: {
+                      bg: 'myGray.200'
+                    },
+                    onClick: () => {
+                      router.replace({
+                        query: {
+                          appId: item._id
+                        }
+                      });
+                      setLastAppChoose(item._id);
+                      callback && callback();
+                    }
+                  })}
+            >
+              <Avatar src={item.avatar} w={'24px'} />
+              <Box ml={2} className={'textEllipsis'}>
+                {item.name}
+              </Box>
+            </Flex>
+          ))}
+        {!isPc &&
+          myNewApps.map((item) => (
+            <Flex
+              key={item._id}
+              py={2}
+              px={3}
+              mb={3}
+              width={'50px'}
+              cursor={'pointer'}
+              borderRadius={'lg'}
+              alignItems={'center'}
+              {...(item._id === appId
+                ? {
+                    bg: 'white',
+                    boxShadow: 'md'
+                  }
+                : {
+                    _hover: {
+                      bg: 'myGray.200'
+                    },
+                    onClick: () => {
+                      router.replace({
+                        query: {
+                          appId: item._id
+                        }
+                      });
+                      setLastAppChoose(item._id);
+                      callback && callback();
+                    }
+                  })}
+            >
+              <Avatar src={item.avatar} w={'24px'} />
+              {isPc && (
+                <Box ml={2} className={'textEllipsis'}>
+                  {item.name}
+                </Box>
+              )}
+            </Flex>
+          ))}
       </Box>
     </Flex>
   );
