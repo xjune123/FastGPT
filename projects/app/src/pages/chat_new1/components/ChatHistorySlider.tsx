@@ -249,7 +249,7 @@ const ChatHistorySlider = ({
         {/* chat history */}
         {(currentTab === TabEnum.history || isPc) && (
           <Flex>
-            <SliderApps appId={''} callback={() => setOpen(false)} />
+            {!isPc && <SliderApps appId={''} callback={() => setOpen(false)} />}
             <Box>
               {concatHistory.map((item, i) => (
                 <Flex
