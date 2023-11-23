@@ -187,49 +187,41 @@ const Chat = ({ appId, shareId, chatId }: { appId: string; shareId: string; chat
     [setIsLoading, setChatData, router, setLastChatAppId, setLastChatId, toast]
   );
   // 初始化聊天框
-  useQuery(['init', appId, chatId], () => {
-    // pc: redirect to latest model chat
-    // if (!appId && lastChatAppId) {
-    //   return router.replace({
-    //     query: {
-    //       appId: lastChatAppId,
-    //       chatId: lastChatId
-    //     }
-    //   });
-    // }
-    if (!appId && myNewApps[0]) {
-      return router.replace({
-        query: {
-          appId: myNewApps[0]._id,
-          chatId: lastChatId
-        }
-      });
-    }
+  useQuery(['init', appId, chatId], async () => {
+    const apps = await loadMyNewApps();
+    const chooseList = apps.filter((item) => item.lastChoose);
+    const isExist = apps.filter((item) => appId === item._id);
+    const _id = chooseList.length ? chooseList[0]._id : apps[0]._id;
+
     if (!appId) {
-      (async () => {
-        const apps = await loadMyNewApps();
-        if (apps.length === 0) {
-          toast({
-            status: 'error',
-            title: t('chat.You need to a chat app')
-          });
-          router.replace('/app/list');
-        } else {
-          const chooseList = apps.filter((item) => item.lastChoose);
-          const _id = chooseList.length ? chooseList[0]._id : apps[0]._id;
-          router.replace({
-            query: {
-              appId: _id,
-              chatId: lastChatId
-            }
-          });
-        }
-      })();
+      if (apps.length === 0) {
+        toast({
+          status: 'error',
+          title: t('chat.You need to a chat app')
+        });
+        router.replace('/app/list');
+      } else {
+        router.replace({
+          query: {
+            appId: _id,
+            chatId: lastChatId
+          }
+        });
+      }
       return;
+    } else {
+      if (!isExist.length) {
+        router.replace({
+          query: {
+            appId: _id,
+            chatId: lastChatId
+          }
+        });
+      }
     }
 
     // store id
-    appId && setLastChatAppId(appId);
+    _id && setLastChatAppId(_id);
     setLastChatId(chatId);
 
     if (forbidRefresh.current) {
@@ -238,13 +230,15 @@ const Chat = ({ appId, shareId, chatId }: { appId: string; shareId: string; chat
     }
 
     return loadChatInfo({
-      appId,
+      appId: _id,
       chatId,
-      loading: appId !== chatData.appId
+      loading: _id !== chatData.appId
     });
   });
 
-  useQuery(['loadHistory', appId], () => (appId ? loadHistory({ appId }) : null));
+  useQuery(['loadHistory', appId], async () => {
+    return appId ? loadHistory({ appId }) : null;
+  });
 
   useEffect(() => {
     setIdEmbed(window !== parent);
