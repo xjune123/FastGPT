@@ -140,7 +140,7 @@ const ChatHistorySlider = ({
             )}
 
             {isShare && (
-              <Menu autoSelect={false} isLazy>
+              <Menu autoSelect={false} isLazy isOpen={open}>
                 <MenuButton width={'100%'}>
                   <Flex flex={'1'} justifyContent={'space-between'} onClick={(e) => handleSwitch()}>
                     <Avatar src={appAvatar} w={'44px'} fontSize={'20px'} />

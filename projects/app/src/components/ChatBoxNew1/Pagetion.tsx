@@ -54,7 +54,7 @@ const ContextModal = ({
   }, [current]);
 
   return (
-    <Flex>
+    <Flex justifyContent={'center'} mt={'20px'}>
       <Box as="button" style={btnStyle} disabled={current === 1} onClick={() => preChange()}>
         <MyIcon name="arrow" transform={'rotate(90deg)'} />
       </Box>
