@@ -4,11 +4,11 @@ import { ChatHistoryItemResType } from '@/types/chat';
 import { FlowModuleTypeEnum } from '@/constants/flow';
 import MyIcon from '@/components/Icon';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
-import { Pagination } from 'antd';
 import type { SearchDataResponseItemType } from '@fastgpt/global/core/dataset/type';
 import { RawSourceText } from '@/pages/dataset/detail/components/InputDataModal';
 import { useTranslation } from 'react-i18next';
 import styles from './index.module.scss';
+import Pagination from './Pagetion';
 
 const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType[] }) => {
   const { t } = useTranslation();
@@ -156,12 +156,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
         <Box>
           {filesContent()}
           {isPc && newQuoteList.length > 10 && (
-            <Pagination
-              current={currentPage}
-              total={newQuoteList.length}
-              className={styles.page}
-              onChange={onPageChange}
-            />
+            <Pagination current={currentPage} total={newQuoteList.length} onChange={onPageChange} />
           )}
         </Box>
       )}
