@@ -21,7 +21,6 @@ import { useConfirm } from '@/web/common/hooks/useConfirm';
 import Tabs from '@/components/Tabs';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useQuery } from '@tanstack/react-query';
-import { Popover } from 'antd';
 import SliderApps from './SliderNewApps';
 import styles from '../index.module.scss';
 
@@ -141,27 +140,25 @@ const ChatHistorySlider = ({
             )}
 
             {isShare && (
-              <Popover
-                placement={'bottomRight'}
-                open={open}
-                trigger="click"
-                overlayClassName={styles.sharePopover}
-                onOpenChange={(e) => setOpen(e)}
-                content={<SliderApps appId={''} callback={() => setOpen(false)} />}
-              >
-                <Flex alignItems={'center'} flex={'1'} onClick={(e) => handleSwitch()}>
-                  <Avatar src={appAvatar} w={'44px'} fontSize={'20px'} />
-                  <Box flex={'1 0 0'} w={0} ml={2}>
-                    <Box fontWeight={'bold'} className={'textEllipsis'}>
-                      {appName}
+              <Menu autoSelect={false} isLazy>
+                <MenuButton width={'100%'}>
+                  <Flex flex={'1'} justifyContent={'space-between'} onClick={(e) => handleSwitch()}>
+                    <Avatar src={appAvatar} w={'44px'} fontSize={'20px'} />
+                    <Box textAlign={'left'} ml={2}>
+                      <Box fontWeight={'bold'} className={'textEllipsis'}>
+                        {appName}
+                      </Box>
+                      <Box fontSize={'12px'} color={'#999999'}>
+                        点击切换知识库
+                      </Box>
                     </Box>
-                    <Box fontSize={'12px'} color={'#999999'}>
-                      点击切换知识库
-                    </Box>
-                  </Box>
-                  <MyIcon name={'switch'} w={'16px'} p={'10px'} />
-                </Flex>
-              </Popover>
+                    <MyIcon name={'switch'} w={'16px'} p={'10px'} />
+                  </Flex>
+                </MenuButton>
+                <MenuList zIndex={100}>
+                  <SliderApps appId={''} callback={() => setOpen(false)} />
+                </MenuList>
+              </Menu>
             )}
           </Flex>
         </MyTooltip>

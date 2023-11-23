@@ -1,4 +1,4 @@
-import renders from './renders';
+// import renders from './renders';
 
 export async function readBuffer(file) {
   return new Promise((resolve, reject) => {
@@ -33,9 +33,9 @@ export function getExtend(name) {
 }
 
 export async function render(buffer, type, target) {
-  const handler = renders[type];
-  if (handler) {
-    return handler(buffer, target);
-  }
-  return renders.error(buffer, target, type);
+  // const handler = renders[type];
+  // if (handler) {
+  //   return handler(buffer, target);
+  // }
+  // return renders.error(buffer, target, type);
 }

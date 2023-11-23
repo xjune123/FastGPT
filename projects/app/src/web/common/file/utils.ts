@@ -108,8 +108,8 @@ export const readPptContent = (file: File) =>
       let reader = new FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = async () => {
-        const data = await render(arrayBuffer, extend, node);
-        resolve(data);
+        // const data = await render(arrayBuffer, extend, node);
+        // resolve(data);
       };
     } catch (error) {
       reject('浏览器不支持文件内容读取');
