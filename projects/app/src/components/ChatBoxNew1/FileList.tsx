@@ -19,7 +19,6 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
   const [isExpand, setIsExpand] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [size, setSize] = useState(3);
-  const [continueExpand, setContinueExpand] = useState(false);
 
   const { quoteList = [] } = useMemo(() => {
     const chatData = responseData.find((item) => item.moduleType === FlowModuleTypeEnum.chatNode);
@@ -49,6 +48,22 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
     return list;
   }, [quoteList]);
 
+  const continueExpand = useMemo(() => {
+    let flag = false;
+    if (!isPc) {
+      setIsExpand(size < newQuoteList.length);
+      if (size === 3) {
+        flag = false;
+      } else if (size < newQuoteList.length) {
+        flag = true;
+      } else {
+        flag = false;
+      }
+      return flag;
+    }
+    return;
+  }, [size]);
+
   const isShowMore = useMemo(() => {
     return newQuoteList.length > 3;
   }, [newQuoteList]);
@@ -75,7 +90,7 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
       _newQuoteList = _newQuoteList.slice(0, 3);
     }
     return _newQuoteList;
-  }, [newQuoteList, isExpand, currentPage, size, continueExpand]);
+  }, [newQuoteList, isExpand, currentPage, size]);
 
   const onPageChange = (page: number) => {
     setCurrentPage(page);
@@ -87,9 +102,9 @@ const FileList = ({ responseData = [] }: { responseData?: ChatHistoryItemResType
       setSize(10);
     } else {
       if (size < newQuoteList.length) {
-        setSize(size === 3 ? 10 : size + 10);
+        setSize(size + 10);
       } else {
-        setSize(10);
+        setSize(3);
       }
     }
   };
