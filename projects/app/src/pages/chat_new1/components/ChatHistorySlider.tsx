@@ -282,7 +282,12 @@ const ChatHistorySlider = ({
                     name={`chat${Math.floor(Math.random() * (8 - 1 + 1)) + 1}` as any}
                     w={'24px'}
                   />
-                  <Box width={'100px'} ml={3} className="textEllipsis">
+                  <Box
+                    width={isPc ? '165px' : '100px'}
+                    flex={'1 0 0'}
+                    ml={3}
+                    className="textEllipsis"
+                  >
                     {item.customTitle || item.title}
                     {item.top && <MyIcon ml={2} name={'top'} w={'16px'} />}
                   </Box>
